@@ -12,21 +12,15 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
             color: #333;
+            background-color: #fff;
         }
 
         /* Header */
-        .top-bar {
-            background-color: #2c2c2c;
-            color: white;
-            padding: 8px 20px;
-            font-size: 14px;
-        }
-
         header {
             background-color: #ff6b35;
-            padding: 15px 40px;
+            padding: 12px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -41,20 +35,27 @@
         }
 
         .logo-circle {
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             background-color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            color: #ff6b35;
+            overflow: hidden;
+            flex-shrink: 0;
         }
 
+            .logo-circle img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
         .tagline {
-            font-size: 14px;
-            max-width: 300px;
+            font-size: 13px;
+            max-width: 280px;
+            font-weight: 500;
         }
 
         .search-bar {
@@ -64,47 +65,64 @@
             margin: 0 20px;
         }
 
-        .search-bar input {
-            flex: 1;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 25px 0 0 25px;
-            font-size: 14px;
-        }
+            .search-bar input {
+                flex: 1;
+                padding: 10px 18px;
+                border: none;
+                border-radius: 20px 0 0 20px;
+                font-size: 14px;
+                outline: none;
+            }
 
-        .search-bar button {
-            padding: 10px 20px;
-            background-color: white;
-            border: none;
-            border-radius: 0 25px 25px 0;
-            cursor: pointer;
-        }
+            .search-bar button {
+                padding: 10px 18px;
+                background-color: white;
+                border: none;
+                border-radius: 0 20px 20px 0;
+                cursor: pointer;
+                font-size: 16px;
+            }
 
         .header-actions {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             align-items: center;
         }
 
-        .btn {
-            padding: 10px 20px;
+        .btn-header {
+            padding: 8px 18px;
             border: 2px solid white;
             background-color: transparent;
             color: white;
-            border-radius: 25px;
+            border-radius: 20px;
             cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .btn:hover {
-            background-color: white;
-            color: #ff6b35;
+            .btn-header:hover {
+                background-color: white;
+                color: #ff6b35;
+            }
+
+        .btn-account {
+            background-color: #4a4aff;
+            border-color: #4a4aff;
         }
+
+            .btn-account:hover {
+                background-color: #3838dd;
+                border-color: #3838dd;
+                color: white;
+            }
 
         .cart-icon {
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             background-color: #4a4aff;
             border-radius: 50%;
             display: flex;
@@ -112,41 +130,48 @@
             justify-content: center;
             color: white;
             cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.2s;
         }
+
+            .cart-icon:hover {
+                background-color: #3838dd;
+            }
 
         /* Action Buttons */
         .action-buttons {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            padding: 30px;
-            background-color: #f5f5f5;
+            gap: 15px;
+            padding: 25px;
+            background-color: #f8f8f8;
         }
 
         .action-btn {
-            padding: 12px 30px;
+            padding: 11px 26px;
             background-color: white;
-            border: 2px solid #4a4aff;
-            border-radius: 25px;
+            border: 2px solid #e0e0e0;
+            border-radius: 22px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
+            font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 10px;
-            transition: all 0.3s;
+            gap: 8px;
+            transition: all 0.2s;
+            color: #333;
         }
 
-        .action-btn:hover {
-            background-color: #4a4aff;
-            color: white;
-        }
+            .action-btn:hover {
+                border-color: #4a4aff;
+                color: #4a4aff;
+            }
 
         /* Hero Section */
         .hero {
             position: relative;
-            height: 400px;
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), 
-                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"><rect fill="%23b8d4e3" width="1200" height="400"/></svg>');
+            height: 380px;
+            background: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)), url('images/bannernavidad2025.jpg');
             background-size: cover;
             background-position: center;
             display: flex;
@@ -156,136 +181,164 @@
             text-align: center;
         }
 
-        .hero h1 {
-            font-size: 48px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
+            .hero h1 {
+                font-size: 48px;
+                font-weight: 700;
+                text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+                line-height: 1.2;
+            }
 
         /* Products Section */
         .products-section {
             padding: 50px 40px;
+            background-color: #fff;
         }
 
-        .products-section h2 {
-            text-align: center;
-            margin-bottom: 40px;
-            font-size: 24px;
-            color: #2c2c2c;
-        }
+            .products-section h2 {
+                text-align: center;
+                margin-bottom: 40px;
+                font-size: 20px;
+                color: #333;
+                font-weight: 600;
+            }
 
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
             max-width: 1200px;
             margin: 0 auto;
         }
 
         .product-card {
             background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 20px;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            padding: 25px 20px;
             text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: all 0.2s;
         }
 
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
+            .product-card:hover {
+                box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+                border-color: #d0d0d0;
+            }
 
         .product-image {
-            height: 150px;
+            height: 160px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 15px;
-            font-size: 80px;
+            overflow: hidden;
         }
 
+            .product-image img {
+                max-width: 100%;
+                max-height: 100%;
+                object-fit: contain;
+            }
+
         .product-name {
-            font-size: 18px;
-            margin-bottom: 10px;
-            color: #2c2c2c;
+            font-size: 15px;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
         }
 
         .product-price {
-            font-size: 24px;
-            font-weight: bold;
-            color: #ff6b35;
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
         }
 
         /* Footer */
         footer {
-            background-color: #f5f5f5;
-            padding: 50px 40px 20px;
+            background-color: #f8f8f8;
+            padding: 45px 40px 25px;
+            border-top: 1px solid #e8e8e8;
         }
 
         .footer-content {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 40px;
             max-width: 1200px;
             margin: 0 auto 30px;
         }
 
         .footer-section h3 {
-            margin-bottom: 15px;
-            font-size: 16px;
-            color: #2c2c2c;
+            margin-bottom: 18px;
+            font-size: 15px;
+            color: #333;
+            font-weight: 600;
         }
 
         .footer-section ul {
             list-style: none;
         }
 
-        .footer-section ul li {
-            margin-bottom: 10px;
-        }
+            .footer-section ul li {
+                margin-bottom: 10px;
+            }
 
-        .footer-section ul li a {
-            color: #666;
-            text-decoration: none;
-            font-size: 14px;
-        }
+                .footer-section ul li a {
+                    color: #666;
+                    text-decoration: none;
+                    font-size: 13px;
+                    transition: color 0.2s;
+                }
 
-        .footer-section ul li a:hover {
-            color: #ff6b35;
-        }
+                    .footer-section ul li a:hover {
+                        color: #ff6b35;
+                    }
 
         .social-icons {
             display: flex;
-            gap: 15px;
-            margin-top: 15px;
+            gap: 12px;
+            margin-top: 20px;
         }
 
         .social-icon {
-            width: 35px;
-            height: 35px;
-            background-color: #2c2c2c;
-            color: white;
+            width: 36px;
+            height: 36px;
+            background-color: #333;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.2s;
+            overflow: hidden;
+            text-decoration: none;
         }
 
-        .social-icon:hover {
-            background-color: #ff6b35;
-        }
+            .social-icon:hover {
+                background-color: #ff6b35;
+                transform: translateY(-2px);
+            }
+
+            .social-icon img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
 
         @media (max-width: 768px) {
             header {
                 padding: 15px 20px;
             }
 
+            .tagline {
+                display: none;
+            }
+
             .search-bar {
                 width: 100%;
                 max-width: 100%;
                 margin: 10px 0;
+                order: 3;
             }
 
             .hero h1 {
@@ -293,36 +346,47 @@
                 padding: 0 20px;
             }
 
+            .action-buttons {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
             .products-grid {
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                gap: 15px;
+            }
+
+            .footer-content {
                 grid-template-columns: 1fr;
+                gap: 30px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="top-bar">Menú Principal</div>
-
     <header>
         <div class="logo">
-            <div class="logo-circle">D</div>
+            <div class="logo-circle">
+                <img src="images/logo-duviso.jpg" alt="Logo Duviso">
+            </div>
             <div class="tagline">Suministros Duviso - Donde tus ideas se ponen manos a la obra</div>
         </div>
-        
+
         <div class="search-bar">
             <input type="text" placeholder="¿Qué producto buscas?">
             <button>🔍</button>
         </div>
 
         <div class="header-actions">
-            <button class="btn">🌐 Idioma</button>
-            <button class="btn">❓ Ayuda</button>
-            <button class="btn">👤 Mi cuenta</button>
+            <button class="btn-header">🌐 Idioma</button>
+            <button class="btn-header">⚙️ Ayuda</button>
+            <button class="btn-header btn-account">👤 Mi cuenta</button>
             <div class="cart-icon">🛒</div>
         </div>
     </header>
 
     <div class="action-buttons">
-        <button class="action-btn">🛠️ Comprar Herramientas</button>
+        <button class="action-btn">🛒 Comprar Herramientas</button>
         <button class="action-btn">🔧 Reparar Herramientas</button>
         <button class="action-btn">💰 Crear Ofertas</button>
     </div>
@@ -333,28 +397,36 @@
 
     <section class="products-section">
         <h2>Artículos recomendados por los Profesionales de Duviso</h2>
-        
+
         <div class="products-grid">
             <div class="product-card">
-                <div class="product-image">🔧</div>
+                <div class="product-image">
+                    <img src="images/destornilladores.jpg" alt="Juego Destornilladores">
+                </div>
                 <div class="product-name">Juego Destornilladores</div>
                 <div class="product-price">28,95 €</div>
             </div>
 
             <div class="product-card">
-                <div class="product-image">🔪</div>
+                <div class="product-image">
+                    <img src="images/cutter.jpg" alt="Cutter Profesional">
+                </div>
                 <div class="product-name">Cutter Profesional</div>
                 <div class="product-price">3,49 €</div>
             </div>
 
             <div class="product-card">
-                <div class="product-image">🔨</div>
+                <div class="product-image">
+                    <img src="images/martillo.jpg" alt="Martillo Bellota">
+                </div>
                 <div class="product-name">Martillo Bellota</div>
                 <div class="product-price">12,95€</div>
-            </div>
+            </div>    
 
             <div class="product-card">
-                <div class="product-image">🔩</div>
+                <div class="product-image">
+                    <img src="images/llave-inglesa.jpg" alt="Llave Inglesa">
+                </div>
                 <div class="product-name">Llave Inglesa</div>
                 <div class="product-price">28,95 €</div>
             </div>
@@ -373,11 +445,21 @@
                     <li><a href="#">Política de cookies</a></li>
                 </ul>
                 <div class="social-icons">
-                    <div class="social-icon">𝕏</div>
-                    <div class="social-icon">📷</div>
-                    <div class="social-icon">▶️</div>
-                    <div class="social-icon">in</div>
+                    <a href="https://x.com/sanchezcastejon" target="_blank" class="social-icon">
+                        <img src="images/x.png" alt="Twitter/X">
+                    </a>
+                    <a href="https://instagram.com/kingafricaoficial" target="_blank" class="social-icon">
+                        <img src="images/instagram.png" alt="Instagram">
+                    </a>
+                    <a href="https://www.youtube.com/channel/UCaY_-ksFSQtTGk0y1HA_3YQ" target="_blank" class="social-icon">
+                        <img src="images/youtube.png" alt="YouTube">
+                    </a>
+                    <a href="https://www.linkedin.com/school/uclm/" target="_blank" class="social-icon">
+                        <img src="images/linkedin.png" alt="LinkedIn">
+                    </a>
                 </div>
+
+
             </div>
 
             <div class="footer-section">
