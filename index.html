@@ -3,10 +3,404 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Título de Mi Página</title>
+    <title>Ferretería Duviso - Donde tus ideas se ponen manos a la obra</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        /* Header */
+        .top-bar {
+            background-color: #2c2c2c;
+            color: white;
+            padding: 8px 20px;
+            font-size: 14px;
+        }
+
+        header {
+            background-color: #ff6b35;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+        }
+
+        .logo-circle {
+            width: 50px;
+            height: 50px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #ff6b35;
+        }
+
+        .tagline {
+            font-size: 14px;
+            max-width: 300px;
+        }
+
+        .search-bar {
+            display: flex;
+            flex: 1;
+            max-width: 400px;
+            margin: 0 20px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 25px 0 0 25px;
+            font-size: 14px;
+        }
+
+        .search-bar button {
+            padding: 10px 20px;
+            background-color: white;
+            border: none;
+            border-radius: 0 25px 25px 0;
+            cursor: pointer;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: 2px solid white;
+            background-color: transparent;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background-color: white;
+            color: #ff6b35;
+        }
+
+        .cart-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #4a4aff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 30px;
+            background-color: #f5f5f5;
+        }
+
+        .action-btn {
+            padding: 12px 30px;
+            background-color: white;
+            border: 2px solid #4a4aff;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background-color: #4a4aff;
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 400px;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), 
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"><rect fill="%23b8d4e3" width="1200" height="400"/></svg>');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* Products Section */
+        .products-section {
+            padding: 50px 40px;
+        }
+
+        .products-section h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 24px;
+            color: #2c2c2c;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .product-image {
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            font-size: 80px;
+        }
+
+        .product-name {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #2c2c2c;
+        }
+
+        .product-price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff6b35;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #f5f5f5;
+            padding: 50px 40px 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto 30px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #2c2c2c;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section ul li a {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .footer-section ul li a:hover {
+            color: #ff6b35;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .social-icon {
+            width: 35px;
+            height: 35px;
+            background-color: #2c2c2c;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .social-icon:hover {
+            background-color: #ff6b35;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            .search-bar {
+                width: 100%;
+                max-width: 100%;
+                margin: 10px 0;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+                padding: 0 20px;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>¡Hola, mundo!</h1>
-    <p>Este es el contenido visible de mi página web SIIIIIIIIIIIIIIIIIIIII.</p>
+    <div class="top-bar">Menú Principal</div>
+
+    <header>
+        <div class="logo">
+            <div class="logo-circle">D</div>
+            <div class="tagline">Suministros Duviso - Donde tus ideas se ponen manos a la obra</div>
+        </div>
+        
+        <div class="search-bar">
+            <input type="text" placeholder="¿Qué producto buscas?">
+            <button>🔍</button>
+        </div>
+
+        <div class="header-actions">
+            <button class="btn">🌐 Idioma</button>
+            <button class="btn">❓ Ayuda</button>
+            <button class="btn">👤 Mi cuenta</button>
+            <div class="cart-icon">🛒</div>
+        </div>
+    </header>
+
+    <div class="action-buttons">
+        <button class="action-btn">🛠️ Comprar Herramientas</button>
+        <button class="action-btn">🔧 Reparar Herramientas</button>
+        <button class="action-btn">💰 Crear Ofertas</button>
+    </div>
+
+    <section class="hero">
+        <h1>Prepara tu casa<br>para el otoño</h1>
+    </section>
+
+    <section class="products-section">
+        <h2>Artículos recomendados por los Profesionales de Duviso</h2>
+        
+        <div class="products-grid">
+            <div class="product-card">
+                <div class="product-image">🔧</div>
+                <div class="product-name">Juego Destornilladores</div>
+                <div class="product-price">28,95 €</div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">🔪</div>
+                <div class="product-name">Cutter Profesional</div>
+                <div class="product-price">3,49 €</div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">🔨</div>
+                <div class="product-name">Martillo Bellota</div>
+                <div class="product-price">12,95€</div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">🔩</div>
+                <div class="product-name">Llave Inglesa</div>
+                <div class="product-price">28,95 €</div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Sobre Ferretería Duviso</h3>
+                <ul>
+                    <li><a href="#">Quienes somos</a></li>
+                    <li><a href="#">Condiciones generales</a></li>
+                    <li><a href="#">Política de privacidad</a></li>
+                    <li><a href="#">Aviso legal</a></li>
+                    <li><a href="#">Política de cookies</a></li>
+                </ul>
+                <div class="social-icons">
+                    <div class="social-icon">𝕏</div>
+                    <div class="social-icon">📷</div>
+                    <div class="social-icon">▶️</div>
+                    <div class="social-icon">in</div>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3>Compra con Confianza</h3>
+                <ul>
+                    <li><a href="#">¿Cómo hacer un pedido?</a></li>
+                    <li><a href="#">Envíos y entregas</a></li>
+                    <li><a href="#">Formas de pago</a></li>
+                    <li><a href="#">Garantía compra segura</a></li>
+                    <li><a href="#">Devoluciones y reembolso</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Atención al cliente</h3>
+                <ul>
+                    <li><a href="#">Seguimiento del pedido</a></li>
+                    <li><a href="#">Contáctanos</a></li>
+                    <li><a href="#">Ayuda</a></li>
+                    <li><a href="#">Proceso de devolución</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
