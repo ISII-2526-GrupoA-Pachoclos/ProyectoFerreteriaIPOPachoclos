@@ -1,4 +1,13 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
+    // Navegación: logo siempre a index.html
+    const logo = document.querySelector('.logo');
+    if (logo) {
+        logo.style.cursor = 'pointer';
+        logo.addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+    }
+
     // Búsqueda básica
     const searchInput = document.querySelector('.search-bar input');
     const searchBtn = document.querySelector('.search-bar button');
@@ -15,7 +24,22 @@
     document.querySelector('.cart-icon')?.addEventListener('click', () => alert('Carrito: funcionalidad no implementada.'));
     document.querySelector('.btn-account')?.addEventListener('click', () => alert('Mi cuenta: funcionalidad no implementada.'));
 
-    // Abrir ayuda en overlay flotante (carga html/ayuda.html)
+    // Navegación: Comprar Herramientas -> catalogoCompras
+    const actionBtns = document.querySelectorAll('.action-btn');
+    actionBtns.forEach(btn => {
+        const text = btn.textContent.trim();
+        if (text.toLowerCase().includes('comprar herramientas')) {
+            btn.addEventListener('click', () => {
+                window.location.href = 'html/catalogoCompras.html';
+            });
+        } else {
+            btn.addEventListener('click', () => {
+                console.log('Acción seleccionada:', text);
+            });
+        }
+    });
+
+    // Abrir ayuda en overlay flotante
     const helpButton = document.querySelector('.btn-help');
     let helpOverlay = null;
 
@@ -56,7 +80,6 @@
         helpOverlay.appendChild(panel);
         document.body.appendChild(helpOverlay);
 
-        // bloquear scroll
         document.documentElement.style.overflow = 'hidden';
         document.body.style.overflow = 'hidden';
     }
@@ -71,7 +94,6 @@
 
     helpButton?.addEventListener('click', (e) => { e.preventDefault(); openHelp(); });
 
-    // recibir mensajes desde el iframe (ayuda)
     window.addEventListener('message', (ev) => {
         if (!ev?.data) return;
         const data = ev.data;
@@ -92,6 +114,5 @@
         }
     });
 
-    // Escape cierra overlay si existe
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeHelp(); });
 });

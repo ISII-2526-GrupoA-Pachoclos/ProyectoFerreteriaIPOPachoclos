@@ -1,0 +1,204 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Catálogo de Compras - Suministros Duviso</title>
+    <link rel="stylesheet" href="../css/catalogoCompras.css">
+</head>
+<body>
+    <header>
+        <div class="logo" role="button" tabindex="0" id="logo-link">
+            <div class="logo-circle">
+                <img src="../images/logo-duviso.jpg" alt="Logo Duviso">
+            </div>
+            <div class="tagline">Suministros Duviso - Donde tus ideas se ponen manos a la obra</div>
+        </div>
+
+        <div class="header-actions">
+            <button class="btn-header">🛒 Comprar Herramientas</button>
+            <button class="btn-header">🔧 Reparar Herramientas</button>
+            <button class="btn-header">💰 Crear Ofertas</button>
+            <button class="btn-header btn-help">⚙️ Ayuda</button>
+            <button class="btn-header btn-account">👤 Mi cuenta</button>
+            <div class="cart-icon" role="button" tabindex="0">🛒</div>
+        </div>
+    </header>
+
+    <div class="catalog-container">
+        <aside class="filters-sidebar">
+            <div class="filters-header">
+                <h2>Filtros</h2>
+                <button class="btn-toggle-filters" aria-label="Toggle filters">☰</button>
+            </div>
+
+            <div class="filter-group">
+                <button class="filter-pill active">Herramientas Básicas ✕</button>
+                <button class="filter-pill active">Productos nuevos ✕</button>
+                <button class="filter-pill">Productos saneados</button>
+                <button class="filter-pill">Materiales de construcción</button>
+                <button class="filter-pill">Calzado de seguridad</button>
+            </div>
+
+            <div class="price-range">
+                <h3>Rango de precio</h3>
+                <div class="price-inputs">
+                    <input type="number" placeholder="0" min="0" id="price-min">
+                    <span>-</span>
+                    <input type="number" placeholder="100€" max="100" id="price-max">
+                </div>
+                <input type="range" min="0" max="100" value="50" class="price-slider">
+            </div>
+
+            <div class="search-filters">
+                <input type="text" placeholder="Buscar filtros..." class="filter-search">
+                <button class="btn-search-filter">🔍</button>
+            </div>
+        </aside>
+
+        <main class="catalog-main">
+            <div class="catalog-controls">
+                <button class="btn-control active">⬇️ LO MÁS NUEVO</button>
+                <button class="btn-control">Precio ascendente</button>
+                <button class="btn-control">Precio descendente</button>
+                <button class="btn-control">Mejor valorado</button>
+            </div>
+
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="../images/destornilladores.jpg" alt="Juego Destornilladores">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Juego Destornilladores</h3>
+                        <div class="product-prices">
+                            <span class="price-old">28,95 €</span>
+                            <span class="price-current">26,05 €</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="../images/martillo.jpg" alt="Martillo Bellota">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Martillo Bellota</h3>
+                        <div class="product-prices">
+                            <span class="price-old">12,95 €</span>
+                            <span class="price-current">12,17 €</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="../images/llave-inglesa.jpg" alt="Alicates">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Alicates</h3>
+                        <div class="product-prices">
+                            <span class="price-old">14,93 €</span>
+                            <span class="price-current">12,39 €</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="../images/llave-inglesa.jpg" alt="Llave Inglesa">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Llave Inglesa</h3>
+                        <div class="product-prices">
+                            <span class="price-old">28,95 €</span>
+                            <span class="price-current">23,16 €</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="../images/cutter.jpg" alt="Cutter Profesional">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Cutter Profesional</h3>
+                        <div class="product-prices">
+                            <span class="price-old">3,49 €</span>
+                            <span class="price-current">2,72 €</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="../images/llave-inglesa.jpg" alt="Juego de Llaves Allen">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Juego de Llaves Allen</h3>
+                        <div class="product-prices">
+                            <span class="price-old">10,49 €</span>
+                            <span class="price-current">9,12 €</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column social-column">
+                <div class="social-icons">
+                    <a href="https://x.com/sanchezcastejon" target="_blank" class="social-icon">
+                        <img src="../images/x.png" alt="Twitter/X">
+                    </a>
+                    <a href="https://instagram.com/javierjimenezh" target="_blank" class="social-icon">
+                        <img src="../images/instagram.png" alt="Instagram">
+                    </a>
+                    <a href="https://www.youtube.com/channel/UCaY_-ksFSQtTGk0y1HA_3YQ" target="_blank" class="social-icon">
+                        <img src="../images/youtube.png" alt="YouTube">
+                    </a>
+                    <a href="https://www.linkedin.com/in/francisco-parre%C3%B1o-torres-21a0651a/" target="_blank" class="social-icon">
+                        <img src="../images/linkedin.png" alt="LinkedIn">
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <h3>Sobre Ferretería Duviso</h3>
+                <ul>
+                    <li><a href="#">Quienes somos</a></li>
+                    <li><a href="#">Condiciones generales</a></li>
+                    <li><a href="#">Política de privacidad</a></li>
+                    <li><a href="#">Aviso legal</a></li>
+                    <li><a href="#">Política de cookies</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Compra con Confianza</h3>
+                <ul>
+                    <li><a href="#">¿Cómo hacer un pedido?</a></li>
+                    <li><a href="#">Envíos y entregas</a></li>
+                    <li><a href="#">Formas de pago</a></li>
+                    <li><a href="#">Garantía compra segura</a></li>
+                    <li><a href="#">Devoluciones y reembolso</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Atención al cliente</h3>
+                <ul>
+                    <li><a href="#">Seguimiento del pedido</a></li>
+                    <li><a href="#">Contáctanos</a></li>
+                    <li><a href="#">Ayuda</a></li>
+                    <li><a href="#">Proceso de devolución</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/catalogoCompras.js" defer></script>
+</body>
+</html>
