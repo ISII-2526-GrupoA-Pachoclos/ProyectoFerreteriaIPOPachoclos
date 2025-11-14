@@ -26,6 +26,81 @@
         });
     }
 
+    // Navegación entre botones de acción del header
+    const actionBtns = document.querySelectorAll('.btn-action');
+    actionBtns.forEach(btn => {
+        const text = btn.textContent.trim().toLowerCase();
+        if (text.includes('crear ofertas')) {
+            btn.addEventListener('click', () => {
+                window.location.href = 'crearOfertas.html';
+            });
+        } else if (text.includes('comprar herramientas')) {
+            // Ya estamos en catálogo, no hacer nada o recargar
+            btn.addEventListener('click', () => {
+                window.location.reload();
+            });
+        } else {
+            btn.addEventListener('click', () => {
+                console.log('Acción seleccionada:', text);
+            });
+        }
+    });
+
+    // Placeholder carrito
+    document.querySelector('.cart-icon')?.addEventListener('click', () => {
+        alert('Carrito: funcionalidad no implementada.');
+    });
+
+    // Abrir Mi Cuenta (overlay con iframe) - ELIMINADO EL ALERT
+    const accountBtn = document.querySelector('.btn-account');
+    let accountOverlay = null;
+
+    function openAccount() {
+        if (accountOverlay) return;
+        accountOverlay = document.createElement('div');
+        Object.assign(accountOverlay.style, {
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex',
+            alignItems: 'center', justifyContent: 'center', zIndex: 9999
+        });
+        const panel = document.createElement('div');
+        Object.assign(panel.style, {
+            width: '94%', maxWidth: '600px', height: 'auto', maxHeight: '90vh', background: '#fff',
+            borderRadius: '10px', overflow: 'auto', position: 'relative', boxShadow: '0 20px 60px rgba(0,0,0,0.35)'
+        });
+        const closeBtn = document.createElement('button');
+        closeBtn.innerHTML = '✕';
+        Object.assign(closeBtn.style, {
+            position: 'absolute', top: '12px', right: '12px', zIndex: 2, width: '42px', height: '42px',
+            borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,0.7)', color: '#fff', cursor: 'pointer', fontSize: '18px'
+        });
+        closeBtn.addEventListener('click', closeAccount);
+        const iframe = document.createElement('iframe');
+        iframe.src = 'miCuenta.html';
+        iframe.title = 'Mi Cuenta Duviso';
+        iframe.style.width = '100%';
+        iframe.style.height = '600px';
+        iframe.style.border = 'none';
+        panel.appendChild(closeBtn);
+        panel.appendChild(iframe);
+        accountOverlay.appendChild(panel);
+        document.body.appendChild(accountOverlay);
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeAccount() {
+        if (!accountOverlay) return;
+        accountOverlay.remove();
+        accountOverlay = null;
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+    }
+
+    accountBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        openAccount();
+    });
+
     // Abrir ayuda (overlay con iframe)
     const helpBtn = document.querySelector('.btn-help');
     let helpOverlay = null;
@@ -76,56 +151,6 @@
         openHelp();
     });
 
-    // Abrir Mi Cuenta (overlay con iframe)
-    const accountBtn = document.querySelector('.btn-account');
-    let accountOverlay = null;
-
-    function openAccount() {
-        if (accountOverlay) return;
-        accountOverlay = document.createElement('div');
-        Object.assign(accountOverlay.style, {
-            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex',
-            alignItems: 'center', justifyContent: 'center', zIndex: 9999
-        });
-        const panel = document.createElement('div');
-        Object.assign(panel.style, {
-            width: '94%', maxWidth: '600px', height: 'auto', maxHeight: '90vh', background: '#fff',
-            borderRadius: '10px', overflow: 'auto', position: 'relative', boxShadow: '0 20px 60px rgba(0,0,0,0.35)'
-        });
-        const closeBtn = document.createElement('button');
-        closeBtn.innerHTML = '✕';
-        Object.assign(closeBtn.style, {
-            position: 'absolute', top: '12px', right: '12px', zIndex: 2, width: '42px', height: '42px',
-            borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,0.7)', color: '#fff', cursor: 'pointer', fontSize: '18px'
-        });
-        closeBtn.addEventListener('click', closeAccount);
-        const iframe = document.createElement('iframe');
-        iframe.src = 'miCuenta.html';
-        iframe.title = 'Mi Cuenta Duviso';
-        iframe.style.width = '100%';
-        iframe.style.height = '600px';
-        iframe.style.border = 'none';
-        panel.appendChild(closeBtn);
-        panel.appendChild(iframe);
-        accountOverlay.appendChild(panel);
-        document.body.appendChild(accountOverlay);
-        document.documentElement.style.overflow = 'hidden';
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeAccount() {
-        if (!accountOverlay) return;
-        accountOverlay.remove();
-        accountOverlay = null;
-        document.documentElement.style.overflow = '';
-        document.body.style.overflow = '';
-    }
-
-    accountBtn?.addEventListener('click', (e) => {
-        e.preventDefault();
-        openAccount();
-    });
-
     window.addEventListener('message', (ev) => {
         if (!ev?.data) return;
         const data = ev.data;
@@ -151,7 +176,10 @@
     });
 
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeHelp();
+        if (e.key === 'Escape') {
+            closeHelp();
+            closeAccount();
+        }
     });
 
     // Filtros pills toggle

@@ -8,18 +8,22 @@
 </head>
 <body>
     <header>
-        <div class="logo" role="button" tabindex="0" id="logo-link">
-            <div class="logo-circle">
-                <img src="../images/logo-duviso.jpg" alt="Logo Duviso">
+        <div class="header-left">
+            <div class="logo" role="button" tabindex="0" id="logo-link">
+                <div class="logo-circle">
+                    <img src="../images/logo-duviso.jpg" alt="Logo Duviso">
+                </div>
             </div>
-            <div class="tagline">Suministros Duviso - Donde tus ideas se ponen manos a la obra</div>
+            <div class="action-buttons-header">
+                <button class="btn-action active">🛒 Comprar Herramientas</button>
+                <button class="btn-action">🔧 Reparar Herramientas</button>
+                <button class="btn-action" id="btn-crear-ofertas">💰 Crear Ofertas</button>
+            </div>
         </div>
 
         <div class="header-actions">
-            <button class="btn-header">🛒 Comprar Herramientas</button>
-            <button class="btn-header">🔧 Reparar Herramientas</button>
-            <button class="btn-header">💰 Crear Ofertas</button>
             <button class="btn-header btn-help">⚙️ Ayuda</button>
+            <button class="btn-header">🌐 Idioma</button>
             <button class="btn-header btn-account">👤 Mi cuenta</button>
             <div class="cart-icon" role="button" tabindex="0">🛒</div>
         </div>
@@ -47,7 +51,7 @@
                     <span>-</span>
                     <input type="number" placeholder="100€" max="100" id="price-max">
                 </div>
-                <input type="range" min="0" max="100" value="50" class="price-slider">
+                <input type="range" min="0" max="100" value="100" class="price-slider">
             </div>
 
             <div class="search-filters">
@@ -65,83 +69,7 @@
             </div>
 
             <div class="products-grid">
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="../images/destornilladores.jpg" alt="Juego Destornilladores">
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-name">Juego Destornilladores</h3>
-                        <div class="product-prices">
-                            <span class="price-old">28,95 €</span>
-                            <span class="price-current">26,05 €</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="../images/martillo.jpg" alt="Martillo Bellota">
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-name">Martillo Bellota</h3>
-                        <div class="product-prices">
-                            <span class="price-old">12,95 €</span>
-                            <span class="price-current">12,17 €</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="../images/llave-inglesa.jpg" alt="Alicates">
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-name">Alicates</h3>
-                        <div class="product-prices">
-                            <span class="price-old">14,93 €</span>
-                            <span class="price-current">12,39 €</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="../images/llave-inglesa.jpg" alt="Llave Inglesa">
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-name">Llave Inglesa</h3>
-                        <div class="product-prices">
-                            <span class="price-old">28,95 €</span>
-                            <span class="price-current">23,16 €</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="../images/cutter.jpg" alt="Cutter Profesional">
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-name">Cutter Profesional</h3>
-                        <div class="product-prices">
-                            <span class="price-old">3,49 €</span>
-                            <span class="price-current">2,72 €</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="product-card">
-                    <div class="product-image">
-                        <img src="../images/llave-inglesa.jpg" alt="Juego de Llaves Allen">
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-name">Juego de Llaves Allen</h3>
-                        <div class="product-prices">
-                            <span class="price-old">10,49 €</span>
-                            <span class="price-current">9,12 €</span>
-                        </div>
-                    </div>
-                </div>
+                <!-- Los productos se renderizan dinámicamente desde JS -->
             </div>
         </main>
     </div>

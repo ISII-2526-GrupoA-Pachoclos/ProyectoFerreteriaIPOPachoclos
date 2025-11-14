@@ -1,6 +1,5 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
     // Navegación: logo siempre a index.html
-    /*
     const logo = document.querySelector('.logo');
     if (logo) {
         logo.style.cursor = 'pointer';
@@ -8,7 +7,6 @@
             window.location.href = 'index.html';
         });
     }
-    */
 
     // Búsqueda básica
     const searchInput = document.querySelector('.search-bar input');
@@ -25,13 +23,17 @@
     // Placeholder carrito
     document.querySelector('.cart-icon')?.addEventListener('click', () => alert('Carrito: funcionalidad no implementada.'));
 
-    // Navegación: Comprar Herramientas -> catalogoCompras
+    // Navegación entre interfaces
     const actionBtns = document.querySelectorAll('.action-btn');
     actionBtns.forEach(btn => {
-        const text = btn.textContent.trim();
-        if (text.toLowerCase().includes('comprar herramientas')) {
+        const text = btn.textContent.trim().toLowerCase();
+        if (text.includes('comprar herramientas')) {
             btn.addEventListener('click', () => {
                 window.location.href = 'html/catalogoCompras.html';
+            });
+        } else if (text.includes('crear ofertas')) {
+            btn.addEventListener('click', () => {
+                window.location.href = 'html/crearOfertas.html';
             });
         } else {
             btn.addEventListener('click', () => {
@@ -74,7 +76,6 @@
         iframe.style.width = '100%';
         iframe.style.height = '600px';
         iframe.style.border = 'none';
-        iframe.style.display = 'block';
 
         panel.appendChild(closeBtn);
         panel.appendChild(iframe);
