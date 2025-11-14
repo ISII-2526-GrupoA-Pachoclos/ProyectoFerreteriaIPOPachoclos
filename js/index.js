@@ -1,5 +1,6 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
     // Navegación: logo siempre a index.html
+    /*
     const logo = document.querySelector('.logo');
     if (logo) {
         logo.style.cursor = 'pointer';
@@ -7,6 +8,7 @@
             window.location.href = 'index.html';
         });
     }
+    */
 
     // Búsqueda básica
     const searchInput = document.querySelector('.search-bar input');
@@ -20,9 +22,8 @@
         searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') searchBtn.click(); });
     }
 
-    // Placeholders
+    // Placeholder carrito
     document.querySelector('.cart-icon')?.addEventListener('click', () => alert('Carrito: funcionalidad no implementada.'));
-    document.querySelector('.btn-account')?.addEventListener('click', () => alert('Mi cuenta: funcionalidad no implementada.'));
 
     // Navegación: Comprar Herramientas -> catalogoCompras
     const actionBtns = document.querySelectorAll('.action-btn');
@@ -38,6 +39,61 @@
             });
         }
     });
+
+    // Abrir Mi Cuenta en overlay flotante
+    const accountButton = document.querySelector('.btn-account');
+    let accountOverlay = null;
+
+    function openAccount() {
+        if (accountOverlay) return;
+        accountOverlay = document.createElement('div');
+        accountOverlay.id = 'account-overlay';
+        Object.assign(accountOverlay.style, {
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999
+        });
+
+        const panel = document.createElement('div');
+        Object.assign(panel.style, {
+            width: '94%', maxWidth: '600px', height: 'auto', maxHeight: '90vh', background: '#fff',
+            borderRadius: '10px', overflow: 'auto', position: 'relative', boxShadow: '0 20px 60px rgba(0,0,0,0.35)'
+        });
+
+        const closeBtn = document.createElement('button');
+        closeBtn.innerHTML = '✕';
+        Object.assign(closeBtn.style, {
+            position: 'absolute', top: '12px', right: '12px', zIndex: 2,
+            width: '42px', height: '42px', borderRadius: '50%', border: 'none',
+            background: 'rgba(0,0,0,0.7)', color: '#fff', cursor: 'pointer', fontSize: '18px'
+        });
+        closeBtn.addEventListener('click', closeAccount);
+
+        const iframe = document.createElement('iframe');
+        iframe.src = 'html/miCuenta.html';
+        iframe.title = 'Mi Cuenta Duviso';
+        iframe.style.width = '100%';
+        iframe.style.height = '600px';
+        iframe.style.border = 'none';
+        iframe.style.display = 'block';
+
+        panel.appendChild(closeBtn);
+        panel.appendChild(iframe);
+        accountOverlay.appendChild(panel);
+        document.body.appendChild(accountOverlay);
+
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeAccount() {
+        if (!accountOverlay) return;
+        accountOverlay.remove();
+        accountOverlay = null;
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+    }
+
+    accountButton?.addEventListener('click', (e) => { e.preventDefault(); openAccount(); });
 
     // Abrir ayuda en overlay flotante
     const helpButton = document.querySelector('.btn-help');
@@ -101,6 +157,10 @@
             closeHelp();
             return;
         }
+        if (data.type === 'close-account') {
+            closeAccount();
+            return;
+        }
         if (data.type === 'toggle-mode') {
             const { mode, enabled } = data;
             if (mode && typeof enabled === 'boolean') {
@@ -114,5 +174,10 @@
         }
     });
 
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeHelp(); });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeHelp();
+            closeAccount();
+        }
+    });
 });

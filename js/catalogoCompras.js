@@ -26,14 +26,6 @@
         });
     }
 
-    // Placeholder carrito y cuenta
-    document.querySelector('.cart-icon')?.addEventListener('click', () => {
-        alert('Carrito: funcionalidad no implementada.');
-    });
-    document.querySelector('.btn-account')?.addEventListener('click', () => {
-        alert('Mi cuenta: funcionalidad no implementada.');
-    });
-
     // Abrir ayuda (overlay con iframe)
     const helpBtn = document.querySelector('.btn-help');
     let helpOverlay = null;
@@ -84,11 +76,65 @@
         openHelp();
     });
 
+    // Abrir Mi Cuenta (overlay con iframe)
+    const accountBtn = document.querySelector('.btn-account');
+    let accountOverlay = null;
+
+    function openAccount() {
+        if (accountOverlay) return;
+        accountOverlay = document.createElement('div');
+        Object.assign(accountOverlay.style, {
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex',
+            alignItems: 'center', justifyContent: 'center', zIndex: 9999
+        });
+        const panel = document.createElement('div');
+        Object.assign(panel.style, {
+            width: '94%', maxWidth: '600px', height: 'auto', maxHeight: '90vh', background: '#fff',
+            borderRadius: '10px', overflow: 'auto', position: 'relative', boxShadow: '0 20px 60px rgba(0,0,0,0.35)'
+        });
+        const closeBtn = document.createElement('button');
+        closeBtn.innerHTML = '✕';
+        Object.assign(closeBtn.style, {
+            position: 'absolute', top: '12px', right: '12px', zIndex: 2, width: '42px', height: '42px',
+            borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,0.7)', color: '#fff', cursor: 'pointer', fontSize: '18px'
+        });
+        closeBtn.addEventListener('click', closeAccount);
+        const iframe = document.createElement('iframe');
+        iframe.src = 'miCuenta.html';
+        iframe.title = 'Mi Cuenta Duviso';
+        iframe.style.width = '100%';
+        iframe.style.height = '600px';
+        iframe.style.border = 'none';
+        panel.appendChild(closeBtn);
+        panel.appendChild(iframe);
+        accountOverlay.appendChild(panel);
+        document.body.appendChild(accountOverlay);
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeAccount() {
+        if (!accountOverlay) return;
+        accountOverlay.remove();
+        accountOverlay = null;
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+    }
+
+    accountBtn?.addEventListener('click', (e) => {
+        e.preventDefault();
+        openAccount();
+    });
+
     window.addEventListener('message', (ev) => {
         if (!ev?.data) return;
         const data = ev.data;
         if (data.type === 'close-help') {
             closeHelp();
+            return;
+        }
+        if (data.type === 'close-account') {
+            closeAccount();
             return;
         }
         if (data.type === 'toggle-mode') {

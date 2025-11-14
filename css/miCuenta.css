@@ -1,0 +1,257 @@
+:root {
+    --primary: #5a5aff;
+    --accent: #ff8c42;
+    --bg: #f3f0ff;
+    --text: #222;
+    --border: #d0d0d0;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0
+}
+
+html, body {
+    height: 100%;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+    overflow: hidden
+}
+
+body {
+    color: var(--text);
+    background: transparent
+}
+
+.account-main {
+    padding: 20px 16px;
+    min-height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+    max-height: 100vh;
+}
+
+.account-container {
+    width: 100%;
+    max-width: 480px;
+    background: var(--bg);
+    border-radius: 16px;
+    padding: 32px 28px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    position: relative;
+    margin: auto;
+}
+
+.panel-icon {
+    width: 48px;
+    height: 48px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin: 0 auto 12px;
+}
+
+h1 {
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 6px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #555;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+.account-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+    .form-group label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #333;
+    }
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    transition: border-color 0.2s;
+}
+
+    .input-wrapper:focus-within {
+        border-color: var(--primary);
+    }
+
+.input-icon {
+    font-size: 14px;
+    margin-right: 6px;
+    color: #999;
+}
+
+.input-wrapper input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 13px;
+    background: transparent;
+}
+
+.btn-clear {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #999;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .btn-clear:hover {
+        color: #333;
+    }
+
+.form-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.link-forgot {
+    color: var(--primary);
+    font-size: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    text-align: left;
+}
+
+    .link-forgot:hover {
+        text-decoration: underline;
+    }
+
+.btn-submit {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 11px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background 0.2s;
+}
+
+    .btn-submit:hover {
+        background: #4a4aee;
+    }
+
+.switch-panel {
+    text-align: center;
+    font-size: 12px;
+    margin-top: 16px;
+    color: #555;
+}
+
+    .switch-panel a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+        .switch-panel a:hover {
+            text-decoration: underline;
+        }
+
+.hidden {
+    display: none !important;
+}
+
+/* Confirmation message */
+.confirmation-message {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+}
+
+.confirmation-icon {
+    width: 72px;
+    height: 72px;
+    background: #4caf50;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42px;
+    font-weight: 700;
+}
+
+.confirmation-message h2 {
+    font-size: 20px;
+    color: #333;
+}
+
+.confirmation-message p {
+    color: #555;
+    font-size: 13px;
+    max-width: 340px;
+}
+
+.btn-confirm {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 11px 28px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+    .btn-confirm:hover {
+        background: #4a4aee;
+    }
+
+@media(max-width:560px) {
+    .account-container {
+        padding: 24px 18px;
+    }
+
+    h1 {
+        font-size: 19px;
+    }
+
+    .account-main {
+        padding: 12px 10px;
+    }
+}
