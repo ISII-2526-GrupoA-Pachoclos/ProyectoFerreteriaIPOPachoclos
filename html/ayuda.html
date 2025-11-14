@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ayuda — Ferretería Duviso</title>
+    <link rel="stylesheet" href="../css/ayuda.css">
+</head>
+<body>
+    <main class="help-main" role="main" aria-labelledby="help-title">
+        <div class="container">
+            <h1 id="help-title">Ajustes de accesibilidad</h1>
+
+            <section class="help-section">
+                <h2>Texto adaptado (dislexia)</h2>
+                <p>Al activar este modo se muestra todo el texto adaptado para mejorar la comprensión de este para personas con dislexia.</p>
+                <div class="controls">
+                    <button id="toggle-dislexia" class="pill">Activar modo dislexia</button>
+                </div>
+            </section>
+
+            <section class="help-section">
+                <h2>Modo daltonismo</h2>
+                <p>Al activar este modo se activará el modo daltonismo en nuestra página web para aquellas personas que tienen dificultades con la visualización de los colores.</p>
+                <div class="controls">
+                    <button id="protanopia" class="pill">Activar modo daltonismo (protanopía)</button>
+                    <button id="tritanopia" class="pill">Activar modo daltonismo (tritanopía)</button>
+                </div>
+            </section>
+
+            <div class="help-actions" role="group" aria-label="Acciones de accesibilidad">
+                <div class="left"></div>
+                <div class="right">
+                    <button id="reset" class="pill outline">Volver a configuración original</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/ayuda.js" defer></script>
+</body>
+</html>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ferretería Duviso - Donde tus ideas se ponen manos a la obra</title>
-    <link rel="stylesheet" href="index.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Suministros Duviso - Donde tus ideas se ponen manos a la obra</title>
+    <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
     <header>
@@ -17,12 +17,12 @@
 
         <div class="search-bar">
             <input type="text" placeholder="¿Qué producto buscas?">
-            <button>🔍</button>
+            <button aria-label="Buscar">🔍</button>
         </div>
 
         <div class="header-actions">
             <button class="btn-header">🌐 Idioma</button>
-            <button class="btn-header">⚙️ Ayuda</button>
+            <button class="btn-header btn-help">⚙️ Ayuda</button>
             <button class="btn-header btn-account">👤 Mi cuenta</button>
             <div class="cart-icon" role="button" tabindex="0">🛒</div>
         </div>
@@ -35,7 +35,6 @@
     </div>
 
     <section class="hero">
-        <h1>Prepara tu casa<br>para el otoño</h1>
     </section>
 
     <section class="products-section">
@@ -78,15 +77,7 @@
 
     <footer>
         <div class="footer-content">
-            <div class="footer-section">
-                <h3>Sobre Ferretería Duviso</h3>
-                <ul>
-                    <li><a href="#">Quienes somos</a></li>
-                    <li><a href="#">Condiciones generales</a></li>
-                    <li><a href="#">Política de privacidad</a></li>
-                    <li><a href="#">Aviso legal</a></li>
-                    <li><a href="#">Política de cookies</a></li>
-                </ul>
+            <div class="footer-column social-column">
                 <div class="social-icons">
                     <a href="https://x.com/sanchezcastejon" target="_blank" class="social-icon">
                         <img src="images/x.png" alt="Twitter/X">
@@ -103,7 +94,18 @@
                 </div>
             </div>
 
-            <div class="footer-section">
+            <div class="footer-column">
+                <h3>Sobre Ferretería Duviso</h3>
+                <ul>
+                    <li><a href="#">Quienes somos</a></li>
+                    <li><a href="#">Condiciones generales</a></li>
+                    <li><a href="#">Política de privacidad</a></li>
+                    <li><a href="#">Aviso legal</a></li>
+                    <li><a href="#">Política de cookies</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
                 <h3>Compra con Confianza</h3>
                 <ul>
                     <li><a href="#">¿Cómo hacer un pedido?</a></li>
@@ -114,7 +116,7 @@
                 </ul>
             </div>
 
-            <div class="footer-section">
+            <div class="footer-column">
                 <h3>Atención al cliente</h3>
                 <ul>
                     <li><a href="#">Seguimiento del pedido</a></li>
@@ -126,6 +128,6 @@
         </div>
     </footer>
 
-    <script src="index.js"></script>
+    <script src="js/index.js"></script>
 </body>
 </html>
