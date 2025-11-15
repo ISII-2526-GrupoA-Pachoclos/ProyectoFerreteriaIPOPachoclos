@@ -144,17 +144,88 @@
         openHelp();
     });
 
+    // Abrir idioma (overlay con iframe)
+    const languageBtn = document.querySelectorAll('.btn-header');
+    let languageOverlay = null;
+
+    function openLanguage() {
+        if (languageOverlay) return;
+        languageOverlay = document.createElement('div');
+        Object.assign(languageOverlay.style, {
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex',
+            alignItems: 'center', justifyContent: 'center', zIndex: 9999
+        });
+        const panel = document.createElement('div');
+        Object.assign(panel.style, {
+            width: '94%', maxWidth: '600px', height: 'auto', maxHeight: '90vh', background: '#fff',
+            borderRadius: '10px', overflow: 'auto', position: 'relative', boxShadow: '0 20px 60px rgba(0,0,0,0.35)'
+        });
+        const closeBtn = document.createElement('button');
+        closeBtn.innerHTML = '✕';
+        Object.assign(closeBtn.style, {
+            position: 'absolute', top: '12px', right: '12px', zIndex: 2, width: '42px', height: '42px',
+            borderRadius: '50%', border: 'none', background: 'rgba(0,0,0,0.7)', color: '#fff', cursor: 'pointer', fontSize: '18px'
+        });
+        closeBtn.addEventListener('click', closeLanguage);
+        const iframe = document.createElement('iframe');
+        iframe.src = 'idioma.html';
+        iframe.title = 'Idioma Duviso';
+        iframe.style.width = '100%';
+        iframe.style.height = '400px';
+        iframe.style.border = 'none';
+        panel.appendChild(closeBtn);
+        panel.appendChild(iframe);
+        languageOverlay.appendChild(panel);
+        document.body.appendChild(languageOverlay);
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLanguage() {
+        if (!languageOverlay) return;
+        languageOverlay.remove();
+        languageOverlay = null;
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+    }
+
+    // Buscar el botón de idioma (no es .btn-help ni .btn-account)
+    languageBtn.forEach(btn => {
+        const text = btn.textContent.trim().toLowerCase();
+        if (text.includes('idioma') || text.includes('🌐')) {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                openLanguage();
+            });
+        }
+    });
+
     window.addEventListener('message', (ev) => {
         if (!ev?.data) return;
         const data = ev.data;
-        if (data.type === 'close-help') closeHelp();
-        if (data.type === 'close-account') closeAccount();
+        if (data.type === 'close-help') {
+            closeHelp();
+            return;
+        }
+        if (data.type === 'close-account') {
+            closeAccount();
+            return;
+        }
+        if (data.type === 'close-language') {
+            closeLanguage();
+            return;
+        }
+        if (data.type === 'language-changed') {
+            console.log('Idioma cambiado a:', data.language);
+            return;
+        }
         if (data.type === 'toggle-mode') {
             const { mode, enabled } = data;
             if (mode && typeof enabled === 'boolean') {
                 if (enabled) document.documentElement.classList.add(mode);
                 else document.documentElement.classList.remove(mode);
             }
+            return;
         }
         if (data.type === 'reset-modes') {
             document.documentElement.classList.remove('dyslexia', 'protanopia', 'tritanopia');
@@ -165,6 +236,7 @@
         if (e.key === 'Escape') {
             closeHelp();
             closeAccount();
+            closeLanguage();
         }
     });
 
