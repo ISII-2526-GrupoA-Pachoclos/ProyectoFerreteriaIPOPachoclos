@@ -1,21 +1,27 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
-    // Base de datos de productos con ofertas - AÑADIDO FABRICANTE
+    // Base de datos de productos para reparación
     const productsData = [
-        { code: '00001', name: 'Juego Destornilladores', manufacturer: 'Leroy Merlin', image: '../images/destornilladores.jpg', priceOriginal: 28.95, discount: 10 },
-        { code: '00002', name: 'Martillo Bellota', manufacturer: '3M', image: '../images/martillo.jpg', priceOriginal: 12.95, discount: 6 },
-        { code: '00003', name: 'Alicates', manufacturer: '3M', image: '../images/alicates.jpg', priceOriginal: 14.93, discount: 17 },
-        { code: '00004', name: 'Llave Inglesa', manufacturer: 'Cadena88', image: '../images/llave-inglesa.jpg', priceOriginal: 28.95, discount: 20 },
-        { code: '00005', name: 'Cutter Profesional', manufacturer: 'Cadena88', image: '../images/cutter.jpg', priceOriginal: 3.49, discount: 22 },
-        { code: '00006', name: 'Juego de Llaves Allen', manufacturer: 'Leroy Merlin', image: '../images/llaves.jpg', priceOriginal: 10.49, discount: 13 }
+        { code: '00001', name: 'Juego Destornilladores', image: '../images/destornilladores.jpg', repairPrice: 5.45, days: '1 a 3 días' },
+        { code: '00002', name: 'Martillo Bellota', image: '../images/martillo.jpg', repairPrice: 9.75, days: '1 a 5 días' },
+        { code: '00003', name: 'Alicates', image: '../images/alicates.jpg', repairPrice: 11.89, days: '1 a 3 días' },
+        { code: '00004', name: 'Llave Inglesa', image: '../images/llave-inglesa.jpg', repairPrice: 14.37, days: '1 a 3 días' },
+        { code: '00005', name: 'Cutter Profesional', image: '../images/cutter.jpg', repairPrice: 2.95, days: '1 a 3 días' },
+        { code: '00006', name: 'Juego de Llaves Allen', image: '../images/llaves.jpg', repairPrice: 8.69, days: '1 a 3 días' }
     ];
 
     let filteredProducts = [...productsData];
 
-    // Navegación: logo → index
+    // Navegación al hacer clic en el logo
     const logo = document.getElementById('logo-link');
     if (logo) {
         logo.addEventListener('click', () => {
             window.location.href = '../index.html';
+        });
+        logo.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                window.location.href = '../index.html';
+            }
         });
     }
 
@@ -23,16 +29,16 @@
     const actionBtns = document.querySelectorAll('.btn-action');
     actionBtns.forEach(btn => {
         const text = btn.textContent.trim().toLowerCase();
-        if (text.includes('comprar herramientas')) {
+        if (text.includes('crear ofertas')) {
+            btn.addEventListener('click', () => {
+                window.location.href = 'crearOfertas.html';
+            });
+        } else if (text.includes('comprar herramientas')) {
             btn.addEventListener('click', () => {
                 window.location.href = 'catalogoCompras.html';
             });
         } else if (text.includes('reparar herramientas')) {
-            btn.addEventListener('click', () => {
-                window.location.href = 'repararHerramientas.html';
-            });
-        } else if (text.includes('crear ofertas')) {
-            // Ya estamos en crear ofertas, no hacer nada o recargar
+            // Ya estamos en reparación, no hacer nada o recargar
             btn.addEventListener('click', () => {
                 window.location.reload();
             });
@@ -94,7 +100,7 @@
         openAccount();
     });
 
-    // Abrir Ayuda (overlay con iframe)
+    // Abrir ayuda (overlay con iframe)
     const helpBtn = document.querySelector('.btn-help');
     let helpOverlay = null;
 
@@ -147,14 +153,21 @@
     window.addEventListener('message', (ev) => {
         if (!ev?.data) return;
         const data = ev.data;
-        if (data.type === 'close-help') closeHelp();
-        if (data.type === 'close-account') closeAccount();
+        if (data.type === 'close-help') {
+            closeHelp();
+            return;
+        }
+        if (data.type === 'close-account') {
+            closeAccount();
+            return;
+        }
         if (data.type === 'toggle-mode') {
             const { mode, enabled } = data;
             if (mode && typeof enabled === 'boolean') {
                 if (enabled) document.documentElement.classList.add(mode);
                 else document.documentElement.classList.remove(mode);
             }
+            return;
         }
         if (data.type === 'reset-modes') {
             document.documentElement.classList.remove('dyslexia', 'protanopia', 'tritanopia');
@@ -168,95 +181,118 @@
         }
     });
 
-    // Renderizar tabla de ofertas - AÑADIDA COLUMNA FABRICANTE
-    function renderOffers(products) {
-        const tbody = document.getElementById('offers-tbody');
-        if (!tbody) return;
+    // Filtros pills toggle
+    document.querySelectorAll('.filter-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+            pill.classList.toggle('active');
+        });
+    });
 
-        tbody.innerHTML = '';
+    // Renderizar productos
+    function renderProducts(products) {
+        const grid = document.querySelector('.products-grid');
+        if (!grid) return;
+
+        grid.innerHTML = '';
 
         products.forEach(product => {
-            const priceFinal = product.priceOriginal * (1 - product.discount / 100);
-            const row = document.createElement('div');
-            row.className = 'table-row';
-            row.innerHTML = `
-        <div class="col-code">${product.code}</div>
-        <div class="col-image"><img src="${product.image}" alt="${product.name}"></div>
-        <div class="col-product">${product.name}</div>
-        <div class="col-manufacturer">${product.manufacturer}</div>
-        <div class="col-price">${product.priceOriginal.toFixed(2)}€</div>
-        <div class="col-discount">${product.discount}%</div>
-        <div class="col-final">${priceFinal.toFixed(2)}€</div>
-        <div class="col-action">
-          <button class="btn-goto" data-code="${product.code}">›</button>
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+        <div class="product-image">
+          <img src="${product.image}" alt="${product.name}">
+        </div>
+        <div class="product-info">
+          <h3 class="product-name">${product.name}</h3>
+          <div class="product-repair-price">${product.repairPrice.toFixed(2)} €</div>
+          <div class="product-days">${product.days}</div>
         </div>
       `;
-            tbody.appendChild(row);
-        });
 
-        // Botones ">" → ir a catalogoCompras
-        document.querySelectorAll('.btn-goto').forEach(btn => {
-            btn.addEventListener('click', () => {
-                window.location.href = 'catalogoCompras.html';
+            // Al hacer clic, ir a la página de información del producto
+            card.addEventListener('click', () => {
+                window.location.href = `infoReparacion.html?code=${product.code}`;
             });
+
+            grid.appendChild(card);
         });
 
         if (products.length === 0) {
-            tbody.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#999">No se encontraron productos.</div>';
+            grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:#999; padding:40px;">No se encontraron productos.</p>';
         }
     }
 
-    // Búsqueda y filtrado
-    function filterProducts() {
-        const searchCode = document.getElementById('search-code')?.value.toLowerCase() || '';
-        const searchName = document.getElementById('search-name')?.value.toLowerCase() || '';
-        const searchManufacturer = document.getElementById('search-manufacturer')?.value.toLowerCase() || '';
-
-        filteredProducts = productsData.filter(p => {
-            const matchCode = !searchCode || p.code.toLowerCase().includes(searchCode);
-            const matchName = !searchName || p.name.toLowerCase().includes(searchName);
-            const matchManufacturer = !searchManufacturer || p.manufacturer.toLowerCase().includes(searchManufacturer);
-            return matchCode && matchName && matchManufacturer;
+    // Filtrar por rango de precio
+    function filterByPriceRange(products, min, max) {
+        if (min === null && max === null) return products;
+        return products.filter(p => {
+            const price = p.repairPrice;
+            const meetsMin = min === null || price >= min;
+            const meetsMax = max === null || price <= max;
+            return meetsMin && meetsMax;
         });
-
-        sortProducts();
-        renderOffers(filteredProducts);
     }
 
-    // Ordenamiento
-    function sortProducts() {
-        const sortBy = document.getElementById('sort-by')?.value || '';
-        switch (sortBy) {
-            case 'name':
-                filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
-                break;
-            case 'price-asc':
-                filteredProducts.sort((a, b) => a.priceOriginal - b.priceOriginal);
-                break;
-            case 'price-desc':
-                filteredProducts.sort((a, b) => b.priceOriginal - a.priceOriginal);
-                break;
-            case 'discount-desc':
-                filteredProducts.sort((a, b) => b.discount - a.discount);
-                break;
-            case 'discount-asc':
-                filteredProducts.sort((a, b) => a.discount - b.discount);
-                break;
-            default:
-            // mantener orden original
+    // Filtrar por nombre
+    function filterByName(products, searchName) {
+        if (!searchName) return products;
+        return products.filter(p => p.name.toLowerCase().includes(searchName.toLowerCase()));
+    }
+
+    // Filtrar por código
+    function filterByCode(products, searchCode) {
+        if (!searchCode) return products;
+        return products.filter(p => p.code.toLowerCase().includes(searchCode.toLowerCase()));
+    }
+
+    // Actualizar vista de productos
+    function updateProductsView() {
+        const priceMin = parseFloat(document.getElementById('price-min')?.value) || null;
+        const priceMax = parseFloat(document.getElementById('price-max')?.value) || null;
+        const searchName = document.getElementById('search-name')?.value || '';
+        const searchCode = document.getElementById('search-code')?.value || '';
+
+        // Aplicar filtros
+        let filtered = [...productsData];
+        filtered = filterByPriceRange(filtered, priceMin, priceMax);
+        filtered = filterByName(filtered, searchName);
+        filtered = filterByCode(filtered, searchCode);
+
+        filteredProducts = filtered;
+        renderProducts(filteredProducts);
+    }
+
+    // Inputs de rango de precio
+    const priceMinInput = document.getElementById('price-min');
+    const priceMaxInput = document.getElementById('price-max');
+    const priceSlider = document.querySelector('.price-slider');
+
+    function handlePriceChange() {
+        updateProductsView();
+    }
+
+    priceMinInput?.addEventListener('input', handlePriceChange);
+    priceMaxInput?.addEventListener('input', handlePriceChange);
+
+    // Slider actualiza el input max
+    priceSlider?.addEventListener('input', (e) => {
+        if (priceMaxInput) {
+            priceMaxInput.value = e.target.value;
+            handlePriceChange();
         }
-    }
-
-    // Event listeners de búsqueda
-    document.getElementById('search-code')?.addEventListener('input', filterProducts);
-    document.getElementById('search-name')?.addEventListener('input', filterProducts);
-    document.getElementById('search-manufacturer')?.addEventListener('input', filterProducts);
-    document.getElementById('sort-by')?.addEventListener('change', filterProducts);
-
-    document.querySelectorAll('.btn-search, .btn-sort').forEach(btn => {
-        btn.addEventListener('click', filterProducts);
     });
 
-    // Render inicial
-    renderOffers(filteredProducts);
+    // Búsqueda por nombre
+    document.getElementById('search-name')?.addEventListener('input', updateProductsView);
+
+    // Búsqueda por código
+    document.getElementById('search-code')?.addEventListener('input', updateProductsView);
+
+    // Botones de búsqueda
+    document.querySelectorAll('.btn-search-filter').forEach(btn => {
+        btn.addEventListener('click', updateProductsView);
+    });
+
+    // Renderizado inicial
+    updateProductsView();
 });

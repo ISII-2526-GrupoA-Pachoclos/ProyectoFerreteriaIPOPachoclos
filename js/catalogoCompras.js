@@ -39,6 +39,10 @@
             btn.addEventListener('click', () => {
                 window.location.reload();
             });
+        } else if (text.includes('reparar herramientas')) {
+            btn.addEventListener('click', () => {
+                window.location.href = 'repararHerramientas.html';
+            });
         } else {
             btn.addEventListener('click', () => {
                 console.log('Acción seleccionada:', text);
@@ -51,7 +55,7 @@
         alert('Carrito: funcionalidad no implementada.');
     });
 
-    // Abrir Mi Cuenta (overlay con iframe) - ELIMINADO EL ALERT
+    // Abrir Mi Cuenta (overlay con iframe)
     const accountBtn = document.querySelector('.btn-account');
     let accountOverlay = null;
 

@@ -31,6 +31,10 @@
             btn.addEventListener('click', () => {
                 window.location.href = 'html/catalogoCompras.html';
             });
+        } else if (text.includes('reparar herramientas')) {
+            btn.addEventListener('click', () => {
+                window.location.href = 'html/repararHerramientas.html';
+            });
         } else if (text.includes('crear ofertas')) {
             btn.addEventListener('click', () => {
                 window.location.href = 'html/crearOfertas.html';
