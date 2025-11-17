@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Carrito - Suministros Duviso</title>
+    <link rel="stylesheet" href="../css/carrito.css">
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <div class="logo" role="button" tabindex="0" id="logo-link">
+                <div class="logo-circle">
+                    <img src="../images/logo-duviso.jpg" alt="Logo Duviso">
+                </div>
+            </div>
+            <div class="action-buttons-header">
+                <button class="btn-action" id="btn-comprar">🛒 Comprar Herramientas</button>
+                <button class="btn-action" id="btn-reparar">🔧 Reparar Herramientas</button>
+                <button class="btn-action" id="btn-ofertas">💰 Crear Ofertas</button>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <button class="btn-header btn-help">⚙️ Ayuda</button>
+            <button class="btn-header btn-language">🌐 Idioma</button>
+            <button class="btn-header btn-account">👤 Mi cuenta</button>
+            <div class="cart-icon active" role="button" tabindex="0">🛒</div>
+        </div>
+    </header>
+
+    <main class="cart-main">
+        <div class="cart-container">
+            <h1>Carrito</h1>
+
+            <div class="cart-items" id="cart-items">
+                <!-- Los productos se añadirán dinámicamente desde JS -->
+                <div class="cart-empty">
+                    <div class="empty-icon">🛒</div>
+                    <h2>Tu carrito está vacío</h2>
+                    <p>Añade productos para empezar tu compra</p>
+                </div>
+            </div>
+
+            <div class="cart-footer" id="cart-footer">
+                <button class="btn-checkout" id="btn-checkout" disabled>
+                    🛒 Finalizar compra
+                </button>
+                <div class="cart-total">
+                    <span class="total-label">Total</span>
+                    <span class="total-amount" id="total-amount">0,00 €</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column social-column">
+                <div class="social-icons">
+                    <a href="https://x.com/sanchezcastejon" target="_blank" class="social-icon">
+                        <img src="../images/x.png" alt="Twitter/X">
+                    </a>
+                    <a href="https://instagram.com/javierjimenezh" target="_blank" class="social-icon">
+                        <img src="../images/instagram.png" alt="Instagram">
+                    </a>
+                    <a href="https://www.youtube.com/channel/UCaY_-ksFSQtTGk0y1HA_3YQ" target="_blank" class="social-icon">
+                        <img src="../images/youtube.png" alt="YouTube">
+                    </a>
+                    <a href="https://www.linkedin.com/in/francisco-parre%C3%B1o-torres-21a0651a/" target="_blank" class="social-icon">
+                        <img src="../images/linkedin.png" alt="LinkedIn">
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <h3>Sobre Ferretería Duviso</h3>
+                <ul>
+                    <li><a href="#">Quienes somos</a></li>
+                    <li><a href="#">Condiciones generales</a></li>
+                    <li><a href="#">Política de privacidad</a></li>
+                    <li><a href="#">Aviso legal</a></li>
+                    <li><a href="#">Política de cookies</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Compra con Confianza</h3>
+                <ul>
+                    <li><a href="#">¿Cómo hacer un pedido?</a></li>
+                    <li><a href="#">Envíos y entregas</a></li>
+                    <li><a href="#">Formas de pago</a></li>
+                    <li><a href="#">Garantía compra segura</a></li>
+                    <li><a href="#">Devoluciones y reembolso</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Atención al cliente</h3>
+                <ul>
+                    <li><a href="#">Seguimiento del pedido</a></li>
+                    <li><a href="#">Contáctanos</a></li>
+                    <li><a href="#">Ayuda</a></li>
+                    <li><a href="#">Proceso de devolución</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/carrito.js" defer></script>
+</body>
+</html>

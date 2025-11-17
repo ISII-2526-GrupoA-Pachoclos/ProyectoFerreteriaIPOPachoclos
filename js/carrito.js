@@ -1,216 +1,6 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
-    // Base de datos de productos para reparación
-    const productsData = {
-        '00001': {
-            name: 'Juego Destornilladores',
-            image: '../images/destornilladores.jpg',
-            price: 5.45,
-            days: '1-3 días',
-            description: [
-                {
-                    title: 'Sustitución de la Herramienta (Opción Recomendada):',
-                    items: [
-                        'Si la punta (plana, Phillips, Torx) está muy redondeada, doblada o mellada, se desecha el destornillador y se reemplaza por uno nuevo.'
-                    ]
-                }
-            ]
-        },
-        '00002': {
-            name: 'Martillo Bellota',
-            image: '../images/martillo.jpg',
-            price: 9.75,
-            days: '1-5 días',
-            description: [
-                {
-                    title: 'Reparación del Mango:',
-                    items: [
-                        'Sustitución del mango de madera si está astillado o roto.',
-                        'Refuerzo de la unión entre cabeza y mango.'
-                    ]
-                },
-                {
-                    title: 'Rectificado de la Cabeza:',
-                    items: [
-                        'Pulido de la superficie de golpeo si presenta deformaciones o astillas metálicas.'
-                    ]
-                }
-            ]
-        },
-        '00003': {
-            name: 'Alicates',
-            image: '../images/alicates.jpg',
-            price: 11.89,
-            days: '1-3 días',
-            description: [
-                {
-                    title: 'Ajuste del Mecanismo:',
-                    items: [
-                        'Lubricación y ajuste del tornillo central para mejorar el movimiento.',
-                        'Alineación de las mordazas si están desalineadas.'
-                    ]
-                },
-                {
-                    title: 'Afilado de Filos:',
-                    items: [
-                        'Reafilado de las cuchillas de corte si están desgastadas.'
-                    ]
-                }
-            ]
-        },
-        '00004': {
-            name: 'Llave Inglesa',
-            image: '../images/llave-inglesa.jpg',
-            price: 14.37,
-            days: '1-3 días',
-            description: [
-                {
-                    title: 'Reparación del Mecanismo de Ajuste:',
-                    items: [
-                        'Limpieza y lubricación del tornillo sin fin.',
-                        'Sustitución de piezas desgastadas si es necesario.'
-                    ]
-                },
-                {
-                    title: 'Calibración:',
-                    items: [
-                        'Verificación y ajuste de la mordaza móvil para asegurar un agarre firme.'
-                    ]
-                }
-            ]
-        },
-        '00005': {
-            name: 'Cutter Profesional',
-            image: '../images/cutter.jpg',
-            price: 2.95,
-            days: '1-3 días',
-            description: [
-                {
-                    title: 'Sustitución de Cuchilla:',
-                    items: [
-                        'Reemplazo de la cuchilla desafilada o rota por una nueva.',
-                        'Ajuste del mecanismo de bloqueo de la cuchilla.'
-                    ]
-                }
-            ]
-        },
-        '00006': {
-            name: 'Juego de Llaves Allen',
-            image: '../images/llaves.jpg',
-            price: 8.69,
-            days: '1-3 días',
-            description: [
-                {
-                    title: 'Reemplazo de Llaves Dañadas:',
-                    items: [
-                        'Identificación de llaves con puntas redondeadas o rotas.',
-                        'Sustitución individual de las llaves afectadas.'
-                    ]
-                },
-                {
-                    title: 'Limpieza y Mantenimiento:',
-                    items: [
-                        'Eliminación de óxido y suciedad del juego completo.'
-                    ]
-                }
-            ]
-        }
-    };
-
-    // Obtener el código del producto desde la URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const productCode = urlParams.get('code') || '00001';
-
-    // Cargar datos del producto
-    const product = productsData[productCode] || productsData['00001'];
-
-    // Actualizar la interfaz con los datos del producto
-    document.getElementById('product-name').textContent = product.name;
-    document.getElementById('product-price').textContent = `${product.price.toFixed(2)} €`;
-    document.getElementById('product-image').src = product.image;
-    document.getElementById('product-image').alt = product.name;
-    document.getElementById('estimated-time').textContent = `Tiempo de envío (${product.days})`;
-
-    // Renderizar descripción detallada
-    const repairDetailsList = document.getElementById('repair-details');
-    repairDetailsList.innerHTML = '';
-
-    product.description.forEach(section => {
-        const li = document.createElement('li');
-        li.innerHTML = `<strong>${section.title}</strong>`;
-
-        if (section.items && section.items.length > 0) {
-            const subList = document.createElement('ul');
-            section.items.forEach(item => {
-                const subLi = document.createElement('li');
-                subLi.textContent = item;
-                subList.appendChild(subLi);
-            });
-            li.appendChild(subList);
-        }
-
-        repairDetailsList.appendChild(li);
-    });
-
-    // Agregar el tiempo estimado al final
-    const timeLi = document.createElement('li');
-    timeLi.innerHTML = `<strong>Tiempo estimado:</strong> <span>Tiempo de envío (${product.days})</span>.`;
-    repairDetailsList.appendChild(timeLi);
-
-    // Control de cantidad
-    let quantity = 0;
-    const quantityInput = document.getElementById('quantity-input');
-    const btnDecrease = document.getElementById('btn-decrease');
-    const btnIncrease = document.getElementById('btn-increase');
-
-    function updateQuantity(newQuantity) {
-        quantity = Math.max(0, newQuantity);
-        quantityInput.value = quantity;
-    }
-
-    btnDecrease.addEventListener('click', () => {
-        updateQuantity(quantity - 1);
-    });
-
-    btnIncrease.addEventListener('click', () => {
-        updateQuantity(quantity + 1);
-    });
-
-    // Añadir al carrito
-    document.getElementById('btn-add-cart').addEventListener('click', () => {
-        if (quantity === 0) {
-            alert('Por favor, selecciona una cantidad mayor a 0');
-            return;
-        }
-
-        // Cargar carrito existente
-        let cart = JSON.parse(localStorage.getItem('duvisoCart')) || [];
-
-        // Buscar si el producto ya existe en el carrito
-        const existingItemIndex = cart.findIndex(item =>
-            item.code === productCode && item.type === 'repair'
-        );
-
-        if (existingItemIndex >= 0) {
-            // Si existe, actualizar cantidad
-            cart[existingItemIndex].quantity += quantity;
-        } else {
-            // Si no existe, agregar nuevo item
-            cart.push({
-                code: productCode,
-                name: product.name,
-                image: product.image,
-                price: product.price,
-                quantity: quantity,
-                type: 'repair'
-            });
-        }
-
-        // Guardar en localStorage
-        localStorage.setItem('duvisoCart', JSON.stringify(cart));
-
-        // Redirigir al carrito
-        window.location.href = 'carrito.html';
-    });
+    // Cargar carrito desde localStorage
+    let cart = JSON.parse(localStorage.getItem('duvisoCart')) || [];
 
     // Navegación al hacer clic en el logo
     const logo = document.getElementById('logo-link');
@@ -245,9 +35,9 @@
         }
     });
 
-    // Placeholder carrito
+    // El icono del carrito no hace nada en esta página (ya estamos en el carrito)
     document.querySelector('.cart-icon')?.addEventListener('click', () => {
-        window.location.href = 'carrito.html';
+        // Ya estamos en el carrito, no hacer nada
     });
 
     // Abrir Mi Cuenta (overlay con iframe)
@@ -395,7 +185,7 @@
         document.body.style.overflow = '';
     }
 
-    // Buscar el botón de idioma (no es .btn-help ni .btn-account)
+    // Buscar el botón de idioma
     languageBtn.forEach(btn => {
         const text = btn.textContent.trim().toLowerCase();
         if (text.includes('idioma') || text.includes('🌐')) {
@@ -445,4 +235,132 @@
             closeLanguage();
         }
     });
+
+    // Renderizar carrito
+    function renderCart() {
+        const cartItemsContainer = document.getElementById('cart-items');
+        const totalAmountElement = document.getElementById('total-amount');
+        const btnCheckout = document.getElementById('btn-checkout');
+
+        if (!cartItemsContainer) return;
+
+        // Si el carrito está vacío
+        if (cart.length === 0) {
+            cartItemsContainer.innerHTML = `
+                <div class="cart-empty">
+                    <div class="empty-icon">🛒</div>
+                    <h2>Tu carrito está vacío</h2>
+                    <p>Añade productos para empezar tu compra</p>
+                </div>
+            `;
+            totalAmountElement.textContent = '0,00 €';
+            btnCheckout.disabled = true;
+            return;
+        }
+
+        // Renderizar items del carrito
+        cartItemsContainer.innerHTML = '';
+        let total = 0;
+
+        cart.forEach((item, index) => {
+            const itemTotal = item.price * item.quantity;
+            total += itemTotal;
+
+            const cartItem = document.createElement('div');
+            cartItem.className = `cart-item ${item.type === 'repair' ? 'repair' : ''}`;
+            cartItem.setAttribute('data-index', index);
+
+            if (item.type === 'repair') {
+                // Item de reparación
+                cartItem.innerHTML = `
+                    <div class="item-image">
+                        <img src="${item.image}" alt="${item.name}">
+                    </div>
+                    <div class="item-info">
+                        <h3 class="item-name">${item.name}</h3>
+                    </div>
+                    <div class="item-pricing single">
+                        <span class="price-repair">${item.price.toFixed(2)} €</span>
+                    </div>
+                    <div class="item-quantity repair-quantity">
+                        <span class="quantity-label">Cantidad a reparar:</span>
+                        <span class="quantity-value">${item.quantity}</span>
+                    </div>
+                    <div class="item-total">${itemTotal.toFixed(2)} €</div>
+                    <button class="btn-trash" title="Eliminar del carrito">🗑️</button>
+                `;
+            } else {
+                // Item de compra
+                const badgeText = item.badge || '';
+                const badgeClass = badgeText.toLowerCase().includes('seminuevo') ? 'seminew' : 'new';
+                const hasDiscount = item.priceOld && item.priceOld > item.price;
+
+                cartItem.innerHTML = `
+                    <div class="item-image">
+                        <img src="${item.image}" alt="${item.name}">
+                    </div>
+                    <div class="item-info">
+                        <h3 class="item-name">${item.name}</h3>
+                        ${badgeText ? `<span class="item-badge ${badgeClass}">${badgeText}</span>` : ''}
+                    </div>
+                    <div class="item-pricing">
+                        ${hasDiscount ? `
+                            <span class="price-old">${item.priceOld.toFixed(2)} €</span>
+                            <span class="discount-badge">-${item.discount || ''}%</span>
+                        ` : ''}
+                        <span class="price-current">${item.price.toFixed(2)} €</span>
+                    </div>
+                    <div class="item-quantity">
+                        <span class="quantity-label">Cantidad:</span>
+                        <span class="quantity-value">${item.quantity}</span>
+                    </div>
+                    <div class="item-total">${itemTotal.toFixed(2)} €</div>
+                    <button class="btn-trash" title="Eliminar del carrito">🗑️</button>
+                `;
+            }
+
+            cartItemsContainer.appendChild(cartItem);
+        });
+
+        // Añadir listeners a las papelera
+        cartItemsContainer.querySelectorAll('.btn-trash').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const itemEl = e.target.closest('.cart-item');
+                if (!itemEl) return;
+                const idx = parseInt(itemEl.getAttribute('data-index'), 10);
+                if (Number.isInteger(idx) && idx >= 0 && idx < cart.length) {
+                    // Eliminar item
+                    cart.splice(idx, 1);
+                    // Guardar cambios
+                    localStorage.setItem('duvisoCart', JSON.stringify(cart));
+                    // Re-renderizar
+                    renderCart();
+                }
+            });
+        });
+
+        // Actualizar total
+        totalAmountElement.textContent = `${total.toFixed(2)} €`;
+        btnCheckout.disabled = false;
+    }
+
+    // Botón finalizar compra
+    document.getElementById('btn-checkout')?.addEventListener('click', () => {
+        if (cart.length === 0) return;
+
+        alert(`Procesando compra de ${cart.length} productos por un total de ${calculateTotal().toFixed(2)} €`);
+
+        // Vaciar carrito después de la compra
+        cart = [];
+        localStorage.setItem('duvisoCart', JSON.stringify(cart));
+        renderCart();
+    });
+
+    // Calcular total
+    function calculateTotal() {
+        return cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    }
+
+    // Renderizar carrito al cargar la página
+    renderCart();
 });

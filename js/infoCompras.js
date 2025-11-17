@@ -144,7 +144,38 @@
             alert('Por favor, selecciona una cantidad mayor a 0');
             return;
         }
-        alert(`Se ha añadido ${quantity} x ${product.name} al carrito por un total de ${(product.priceCurrent * quantity).toFixed(2)} €`);
+
+        // Cargar carrito existente
+        let cart = JSON.parse(localStorage.getItem('duvisoCart')) || [];
+
+        // Buscar si el producto ya existe en el carrito
+        const existingItemIndex = cart.findIndex(item =>
+            item.code === productCode && item.type === 'purchase'
+        );
+
+        if (existingItemIndex >= 0) {
+            // Si existe, actualizar cantidad
+            cart[existingItemIndex].quantity += quantity;
+        } else {
+            // Si no existe, agregar nuevo item
+            cart.push({
+                code: productCode,
+                name: product.name,
+                image: product.image,
+                price: product.priceCurrent,
+                priceOld: product.priceOld,
+                discount: product.discount,
+                badge: product.badge,
+                quantity: quantity,
+                type: 'purchase'
+            });
+        }
+
+        // Guardar en localStorage
+        localStorage.setItem('duvisoCart', JSON.stringify(cart));
+
+        // Redirigir al carrito
+        window.location.href = 'carrito.html';
     });
 
     // Navegación al hacer clic en el logo
@@ -182,7 +213,7 @@
 
     // Placeholder carrito
     document.querySelector('.cart-icon')?.addEventListener('click', () => {
-        alert('Carrito: funcionalidad no implementada.');
+        window.location.href = 'carrito.html';
     });
 
     // Abrir Mi Cuenta (overlay con iframe)

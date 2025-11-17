@@ -21,7 +21,9 @@
     }
 
     // Placeholder carrito
-    document.querySelector('.cart-icon')?.addEventListener('click', () => alert('Carrito: funcionalidad no implementada.'));
+    document.querySelector('.cart-icon')?.addEventListener('click', () => {
+        window.location.href = 'html/carrito.html';
+    });
 
     // Navegación entre interfaces
     const actionBtns = document.querySelectorAll('.action-btn');

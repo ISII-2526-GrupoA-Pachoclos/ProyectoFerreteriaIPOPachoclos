@@ -41,7 +41,7 @@
 
     // Placeholder carrito
     document.querySelector('.cart-icon')?.addEventListener('click', () => {
-        alert('Carrito: funcionalidad no implementada.');
+        window.location.href = 'carrito.html';
     });
 
     // Abrir Mi Cuenta (overlay con iframe)
