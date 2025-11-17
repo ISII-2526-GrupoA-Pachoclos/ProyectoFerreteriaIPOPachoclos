@@ -46,6 +46,31 @@
         }
     });
 
+    // Hacer clickeables las tarjetas de productos
+    const productCards = document.querySelectorAll('.product-card');
+    productCards.forEach(card => {
+        // Agregar cursor pointer
+        card.style.cursor = 'pointer';
+        
+        // Agregar evento click
+        card.addEventListener('click', () => {
+            const productCode = card.getAttribute('data-code');
+            if (productCode) {
+                window.location.href = `html/infoCompras.html?code=${productCode}`;
+            }
+        });
+
+        // Agregar efecto hover
+        card.addEventListener('mouseenter', () => {
+            card.style.transform = 'translateY(-5px)';
+            card.style.transition = 'transform 0.3s ease';
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'translateY(0)';
+        });
+    });
+
     // Abrir Mi Cuenta en overlay flotante
     const accountButton = document.querySelector('.btn-account');
     let accountOverlay = null;

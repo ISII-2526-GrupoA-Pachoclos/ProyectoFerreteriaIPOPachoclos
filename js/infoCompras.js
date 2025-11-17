@@ -1,16 +1,151 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
-    // Base de datos de productos
-    const productsData = [
-        { code: '00001', name: 'Juego Destornilladores', image: '../images/destornilladores.jpg', priceOld: 28.95, priceCurrent: 26.05 },
-        { code: '00002', name: 'Martillo Bellota', image: '../images/martillo.jpg', priceOld: 12.95, priceCurrent: 12.17 },
-        { code: '00003', name: 'Alicates', image: '../images/alicates.jpg', priceOld: 14.93, priceCurrent: 12.39 },
-        { code: '00004', name: 'Llave Inglesa', image: '../images/llave-inglesa.jpg', priceOld: 28.95, priceCurrent: 23.16 },
-        { code: '00005', name: 'Cutter Profesional', image: '../images/cutter.jpg', priceOld: 3.49, priceCurrent: 2.72 },
-        { code: '00006', name: 'Juego de Llaves Allen', image: '../images/llaves.jpg', priceOld: 10.49, priceCurrent: 9.12 }
-    ];
+    // Base de datos de productos para compra
+    const productsData = {
+        '00001': {
+            name: 'Juego Destornilladores',
+            image: '../images/destornilladores.jpg',
+            priceOld: 28.95,
+            priceCurrent: 26.05,
+            discount: 10,
+            badge: 'Producto nuevo',
+            description: [
+                'Vástago aislado fabricado en cromo-vanadio',
+                'Punta plana endurecida, templada y lacada en negro para mayor precisión',
+                'Mango ergonómico y engomado bicolor para mayor comodidad y rendimiento',
+                'Mango fabricado en dos materiales diferentes para mayor adherencia y control',
+                'Certificado por vde y protección eléctrica hasta 1.000 v ca; resistente hasta 10.000 v'
+            ]
+        },
+        '00002': {
+            name: 'Martillo Bellota',
+            image: '../images/martillo.jpg',
+            priceOld: 12.95,
+            priceCurrent: 12.17,
+            discount: 6,
+            badge: 'Producto seminuevo',
+            description: [
+                'Cabeza forjada en acero de alta calidad',
+                'Mango de madera de nogal, resistente y duradero',
+                'Peso equilibrado para mayor precisión en el golpe',
+                'Acabado pulido y cromado',
+                'Ideal para trabajos de carpintería y construcción'
+            ]
+        },
+        '00003': {
+            name: 'Alicates',
+            image: '../images/alicates.jpg',
+            priceOld: 14.93,
+            priceCurrent: 12.39,
+            discount: 17,
+            badge: 'Producto nuevo',
+            description: [
+                'Fabricados en acero al cromo-vanadio',
+                'Mangos ergonómicos con recubrimiento antideslizante',
+                'Mordazas dentadas para mejor agarre',
+                'Cuchillas de corte endurecidas',
+                'Articulación reforzada para mayor durabilidad'
+            ]
+        },
+        '00004': {
+            name: 'Llave Inglesa',
+            image: '../images/llave-inglesa.jpg',
+            priceOld: 28.95,
+            priceCurrent: 23.16,
+            discount: 20,
+            badge: 'Producto nuevo',
+            description: [
+                'Fabricada en acero al cromo-vanadio forjado',
+                'Mecanismo de ajuste suave y preciso',
+                'Mordazas endurecidas con acabado cromado',
+                'Mango ergonómico con superficie antideslizante',
+                'Apertura máxima de hasta 30mm'
+            ]
+        },
+        '00005': {
+            name: 'Cutter Profesional',
+            image: '../images/cutter.jpg',
+            priceOld: 3.49,
+            priceCurrent: 2.72,
+            discount: 22,
+            badge: 'Producto seminuevo',
+            description: [
+                'Cuerpo metálico resistente',
+                'Cuchilla de acero inoxidable de alta calidad',
+                'Sistema de bloqueo de seguridad',
+                'Cuchilla retráctil con múltiples posiciones',
+                'Incluye 3 cuchillas de repuesto'
+            ]
+        },
+        '00006': {
+            name: 'Juego de Llaves Allen',
+            image: '../images/llaves.jpg',
+            priceOld: 10.49,
+            priceCurrent: 9.12,
+            discount: 13,
+            badge: 'Producto seminuevo',
+            description: [
+                'Set de 9 llaves hexagonales',
+                'Acero al cromo-vanadio endurecido',
+                'Medidas: 1.5mm a 10mm',
+                'Acabado cromado anticorrosión',
+                'Estuche organizador incluido'
+            ]
+        }
+    };
 
-    let filteredProducts = [...productsData];
-    let currentSort = 'newest'; // 'newest', 'price-asc', 'price-desc', 'rating'
+    // Obtener el código del producto desde la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const productCode = urlParams.get('code') || '00001';
+
+    // Cargar datos del producto
+    const product = productsData[productCode] || productsData['00001'];
+
+    // Actualizar la interfaz con los datos del producto
+    document.getElementById('product-name').textContent = product.name;
+    document.getElementById('price-old').textContent = `${product.priceOld.toFixed(2)} €`;
+    document.getElementById('discount-badge').textContent = `-${product.discount}%`;
+    document.getElementById('product-price').textContent = `${product.priceCurrent.toFixed(2)} €`;
+    document.getElementById('product-image').src = product.image;
+    document.getElementById('product-image').alt = product.name;
+    document.getElementById('product-badge').textContent = product.badge;
+
+    // Renderizar descripción del producto
+    const productDetailsList = document.getElementById('product-details');
+    productDetailsList.innerHTML = '';
+
+    product.description.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        productDetailsList.appendChild(li);
+    });
+
+    // Control de cantidad
+    let quantity = 0;
+    const quantityInput = document.getElementById('quantity-input');
+    const btnDecrease = document.getElementById('btn-decrease');
+    const btnIncrease = document.getElementById('btn-increase');
+
+    function updateQuantity(newQuantity) {
+        quantity = Math.max(0, newQuantity);
+        quantityInput.value = quantity;
+    }
+
+    btnDecrease.addEventListener('click', () => {
+        updateQuantity(quantity - 1);
+    });
+
+    btnIncrease.addEventListener('click', () => {
+        updateQuantity(quantity + 1);
+    });
+
+    // Añadir al carrito
+    document.getElementById('btn-add-cart').addEventListener('click', () => {
+        if (quantity === 0) {
+            alert('Por favor, selecciona una cantidad mayor a 0');
+            return;
+        }
+        alert(`Se ha añadido ${quantity} x ${product.name} al carrito por un total de ${(product.priceCurrent * quantity).toFixed(2)} €`);
+    });
 
     // Navegación al hacer clic en el logo
     const logo = document.getElementById('logo-link');
@@ -35,17 +170,12 @@
                 window.location.href = 'crearOfertas.html';
             });
         } else if (text.includes('comprar herramientas')) {
-            // Ya estamos en catálogo, no hacer nada o recargar
             btn.addEventListener('click', () => {
-                window.location.reload();
+                window.location.href = 'catalogoCompras.html';
             });
         } else if (text.includes('reparar herramientas')) {
             btn.addEventListener('click', () => {
                 window.location.href = 'repararHerramientas.html';
-            });
-        } else {
-            btn.addEventListener('click', () => {
-                console.log('Acción seleccionada:', text);
             });
         }
     });
@@ -250,146 +380,4 @@
             closeLanguage();
         }
     });
-
-    // Filtros pills toggle
-    document.querySelectorAll('.filter-pill').forEach(pill => {
-        pill.addEventListener('click', () => {
-            pill.classList.toggle('active');
-        });
-    });
-
-    // Renderizar productos
-    function renderProducts(products) {
-        const grid = document.querySelector('.products-grid');
-        if (!grid) return;
-
-        grid.innerHTML = '';
-
-        products.forEach(product => {
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            card.style.cursor = 'pointer';
-            card.innerHTML = `
-        <div class="product-image">
-          <img src="${product.image}" alt="${product.name}">
-        </div>
-        <div class="product-info">
-          <h3 class="product-name">${product.name}</h3>
-          <div class="product-prices">
-            <span class="price-old">${product.priceOld.toFixed(2)} €</span>
-            <span class="price-current">${product.priceCurrent.toFixed(2)} €</span>
-          </div>
-        </div>
-      `;
-
-            // Al hacer clic en la tarjeta, ir a la página de información del producto
-            card.addEventListener('click', () => {
-                window.location.href = `infoCompras.html?code=${product.code}`;
-            });
-
-            // Efecto hover para indicar que es clickeable
-            card.addEventListener('mouseenter', () => {
-                card.style.transform = 'translateY(-5px)';
-                card.style.transition = 'transform 0.3s ease';
-            });
-
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'translateY(0)';
-            });
-
-            grid.appendChild(card);
-        });
-
-        if (products.length === 0) {
-            grid.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:#999; padding:40px;">No se encontraron productos en este rango de precio.</p>';
-        }
-    }
-
-    // Ordenar productos
-    function sortProducts(products, sortType) {
-        const sorted = [...products];
-        switch (sortType) {
-            case 'price-asc':
-                return sorted.sort((a, b) => a.priceCurrent - b.priceCurrent);
-            case 'price-desc':
-                return sorted.sort((a, b) => b.priceCurrent - a.priceCurrent);
-            case 'newest':
-            case 'rating':
-            default:
-                return sorted; // mantener orden original
-        }
-    }
-
-    // Filtrar por rango de precio
-    function filterByPriceRange(products, min, max) {
-        if (min === null && max === null) return products;
-        return products.filter(p => {
-            const price = p.priceCurrent;
-            const meetsMin = min === null || price >= min;
-            const meetsMax = max === null || price <= max;
-            return meetsMin && meetsMax;
-        });
-    }
-
-    // Actualizar vista de productos
-    function updateProductsView() {
-        const priceMin = parseFloat(document.getElementById('price-min')?.value) || null;
-        const priceMax = parseFloat(document.getElementById('price-max')?.value) || null;
-
-        // Filtrar por precio
-        let filtered = filterByPriceRange(productsData, priceMin, priceMax);
-
-        // Ordenar
-        filtered = sortProducts(filtered, currentSort);
-
-        filteredProducts = filtered;
-        renderProducts(filteredProducts);
-    }
-
-    // Botones de control de ordenamiento
-    const btnControls = document.querySelectorAll('.btn-control');
-    btnControls.forEach((btn, index) => {
-        btn.addEventListener('click', () => {
-            // Remover active de todos
-            btnControls.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            // Determinar tipo de ordenamiento según el texto del botón
-            const text = btn.textContent.trim().toLowerCase();
-            if (text.includes('más nuevo')) {
-                currentSort = 'newest';
-            } else if (text.includes('ascendente')) {
-                currentSort = 'price-asc';
-            } else if (text.includes('descendente')) {
-                currentSort = 'price-desc';
-            } else if (text.includes('valorado')) {
-                currentSort = 'rating';
-            }
-
-            updateProductsView();
-        });
-    });
-
-    // Inputs de rango de precio
-    const priceMinInput = document.getElementById('price-min');
-    const priceMaxInput = document.getElementById('price-max');
-    const priceSlider = document.querySelector('.price-slider');
-
-    function handlePriceChange() {
-        updateProductsView();
-    }
-
-    priceMinInput?.addEventListener('input', handlePriceChange);
-    priceMaxInput?.addEventListener('input', handlePriceChange);
-
-    // Slider actualiza el input max
-    priceSlider?.addEventListener('input', (e) => {
-        if (priceMaxInput) {
-            priceMaxInput.value = e.target.value;
-            handlePriceChange();
-        }
-    });
-
-    // Renderizado inicial
-    updateProductsView();
 });
