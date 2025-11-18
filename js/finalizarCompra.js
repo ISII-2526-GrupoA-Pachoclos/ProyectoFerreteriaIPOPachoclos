@@ -1,7 +1,4 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
-    // Cargar carrito desde localStorage
-    let cart = JSON.parse(localStorage.getItem('duvisoCart')) || [];
-
     // Navegación al hacer clic en el logo
     const logo = document.getElementById('logo-link');
     if (logo) {
@@ -35,9 +32,9 @@
         }
     });
 
-    // El icono del carrito no hace nada en esta página (ya estamos en el carrito)
+    // Carrito
     document.querySelector('.cart-icon')?.addEventListener('click', () => {
-        // Ya estamos en el carrito, no hacer nada
+        window.location.href = 'carrito.html';
     });
 
     // Abrir Mi Cuenta (overlay con iframe)
@@ -236,126 +233,130 @@
         }
     });
 
-    // Renderizar carrito
-    function renderCart() {
-        const cartItemsContainer = document.getElementById('cart-items');
-        const totalAmountElement = document.getElementById('total-amount');
-        const btnCheckout = document.getElementById('btn-checkout');
+    // Funcionalidad de métodos de pago
+    const paymentRadios = document.querySelectorAll('input[name="payment"]');
+    const cardDetails = document.getElementById('card-details');
+    const paypalDetails = document.getElementById('paypal-details');
 
-        if (!cartItemsContainer) return;
+    paymentRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            // Ocultar todos los detalles
+            cardDetails?.classList.add('hidden');
+            paypalDetails?.classList.add('hidden');
 
-        // Si el carrito está vacío
-        if (cart.length === 0) {
-            cartItemsContainer.innerHTML = `
-                <div class="cart-empty">
-                    <div class="empty-icon">🛒</div>
-                    <h2>Tu carrito está vacío</h2>
-                    <p>Añade productos para empezar tu compra</p>
-                </div>
-            `;
-            totalAmountElement.textContent = '0,00 €';
-            btnCheckout.disabled = true;
+            // Mostrar el detalle correspondiente
+            if (radio.value === 'card') {
+                cardDetails?.classList.remove('hidden');
+            } else if (radio.value === 'paypal') {
+                paypalDetails?.classList.remove('hidden');
+            }
+        });
+    });
+
+    // Funcionalidad de dirección de envío
+    const shippingRadios = document.querySelectorAll('input[name="shipping"]');
+    const otherAddress = document.getElementById('other-address');
+    const lockerDetails = document.getElementById('locker-details');
+
+    shippingRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            // Ocultar todos los detalles
+            otherAddress?.classList.add('hidden');
+            lockerDetails?.classList.add('hidden');
+
+            // Mostrar el detalle correspondiente
+            if (radio.value === 'other') {
+                otherAddress?.classList.remove('hidden');
+            } else if (radio.value === 'locker') {
+                lockerDetails?.classList.remove('hidden');
+            }
+        });
+    });
+
+    // Botones clear en inputs
+    document.querySelectorAll('.btn-clear').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const input = btn.previousElementSibling;
+            if (input && input.tagName === 'INPUT') {
+                input.value = '';
+                input.focus();
+            }
+        });
+    });
+
+    // Formateo automático de número de tarjeta
+    const cardNumberInput = document.querySelector('input[placeholder*="XXXX XXXX"]');
+    if (cardNumberInput) {
+        cardNumberInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\s/g, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+        });
+    }
+
+    // Formateo automático de fecha de caducidad
+    const expiryInput = document.querySelector('input[placeholder="MM/AA"]');
+    if (expiryInput) {
+        expiryInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2, 4);
+            }
+            e.target.value = value;
+        });
+    }
+
+    // Botón confirmar datos
+    document.getElementById('btn-confirm')?.addEventListener('click', () => {
+        const selectedPayment = document.querySelector('input[name="payment"]:checked')?.value;
+        const selectedShipping = document.querySelector('input[name="shipping"]:checked')?.value;
+
+        if (!selectedPayment || !selectedShipping) {
+            alert('Por favor, selecciona un método de pago y una dirección de envío');
             return;
         }
 
-        // Renderizar items del carrito
-        cartItemsContainer.innerHTML = '';
-        let total = 0;
+        // Validar campos según el método seleccionado
+        if (selectedPayment === 'card') {
+            const cardNumber = document.querySelector('input[placeholder*="XXXX XXXX"]')?.value;
+            const expiry = document.querySelector('input[placeholder="MM/AA"]')?.value;
+            const cvv = document.querySelector('input[placeholder="XXX"]')?.value;
 
-        cart.forEach((item, index) => {
-            const itemTotal = item.price * item.quantity;
-            total += itemTotal;
-
-            const cartItem = document.createElement('div');
-            cartItem.className = `cart-item ${item.type === 'repair' ? 'repair' : ''}`;
-            cartItem.setAttribute('data-index', index);
-
-            if (item.type === 'repair') {
-                // Item de reparación
-                cartItem.innerHTML = `
-                    <div class="item-image">
-                        <img src="${item.image}" alt="${item.name}">
-                    </div>
-                    <div class="item-info">
-                        <h3 class="item-name">${item.name}</h3>
-                    </div>
-                    <div class="item-pricing single">
-                        <span class="price-repair">${item.price.toFixed(2)} €</span>
-                    </div>
-                    <div class="item-quantity repair-quantity">
-                        <span class="quantity-label">Cantidad a reparar:</span>
-                        <span class="quantity-value">${item.quantity}</span>
-                    </div>
-                    <div class="item-total">${itemTotal.toFixed(2)} €</div>
-                    <button class="btn-trash" title="Eliminar del carrito">🗑️</button>
-                `;
-            } else {
-                // Item de compra
-                const badgeText = item.badge || '';
-                const badgeClass = badgeText.toLowerCase().includes('seminuevo') ? 'seminew' : 'new';
-                const hasDiscount = item.priceOld && item.priceOld > item.price;
-
-                cartItem.innerHTML = `
-                    <div class="item-image">
-                        <img src="${item.image}" alt="${item.name}">
-                    </div>
-                    <div class="item-info">
-                        <h3 class="item-name">${item.name}</h3>
-                        ${badgeText ? `<span class="item-badge ${badgeClass}">${badgeText}</span>` : ''}
-                    </div>
-                    <div class="item-pricing">
-                        ${hasDiscount ? `
-                            <span class="price-old">${item.priceOld.toFixed(2)} €</span>
-                            <span class="discount-badge">-${item.discount || ''}%</span>
-                        ` : ''}
-                        <span class="price-current">${item.price.toFixed(2)} €</span>
-                    </div>
-                    <div class="item-quantity">
-                        <span class="quantity-label">Cantidad:</span>
-                        <span class="quantity-value">${item.quantity}</span>
-                    </div>
-                    <div class="item-total">${itemTotal.toFixed(2)} €</div>
-                    <button class="btn-trash" title="Eliminar del carrito">🗑️</button>
-                `;
+            if (!cardNumber || !expiry || !cvv) {
+                alert('Por favor, completa todos los datos de la tarjeta');
+                return;
             }
+        } else if (selectedPayment === 'paypal') {
+            const email = document.querySelector('#paypal-details input[type="email"]')?.value;
+            if (!email) {
+                alert('Por favor, introduce tu correo de PayPal');
+                return;
+            }
+        }
 
-            cartItemsContainer.appendChild(cartItem);
-        });
+        if (selectedShipping === 'other') {
+            const address = document.querySelector('#other-address input')?.value;
+            if (!address) {
+                alert('Por favor, introduce la dirección de envío');
+                return;
+            }
+        } else if (selectedShipping === 'locker') {
+            const locker = document.querySelector('#locker-details input')?.value;
+            if (!locker) {
+                alert('Por favor, selecciona un punto de recogida');
+                return;
+            }
+        }
 
-        // Añadir listeners a las papelera
-        cartItemsContainer.querySelectorAll('.btn-trash').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const itemEl = e.target.closest('.cart-item');
-                if (!itemEl) return;
-                const idx = parseInt(itemEl.getAttribute('data-index'), 10);
-                if (Number.isInteger(idx) && idx >= 0 && idx < cart.length) {
-                    // Eliminar item
-                    cart.splice(idx, 1);
-                    // Guardar cambios
-                    localStorage.setItem('duvisoCart', JSON.stringify(cart));
-                    // Re-renderizar
-                    renderCart();
-                }
-            });
-        });
+        // Si todo está correcto
+        alert('¡Pedido confirmado! Gracias por tu compra.');
 
-        // Actualizar total
-        totalAmountElement.textContent = `${total.toFixed(2)} €`;
-        btnCheckout.disabled = false;
-    }
+        // Limpiar carrito
+        localStorage.removeItem('duvisoCart');
 
-    // Botón finalizar compra
-    document.getElementById('btn-checkout')?.addEventListener('click', () => {
-        if (cart.length === 0) return;
-        // Navegar a la página de finalizar compra
-        window.location.href = 'finalizarCompra.html';
+        // Redirigir al catálogo
+        setTimeout(() => {
+            window.location.href = 'catalogoCompras.html';
+        }, 1000);
     });
-
-    // Calcular total
-    function calculateTotal() {
-        return cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    }
-
-    // Renderizar carrito al cargar la página
-    renderCart();
 });

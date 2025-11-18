@@ -1,0 +1,221 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Finalizar Compra - Suministros Duviso</title>
+    <link rel="stylesheet" href="../css/finalizarCompra.css">
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <div class="logo" role="button" tabindex="0" id="logo-link">
+                <div class="logo-circle">
+                    <img src="../images/logo-duviso.jpg" alt="Logo Duviso">
+                </div>
+            </div>
+            <div class="action-buttons-header">
+                <button class="btn-action">🛒 Comprar Herramientas</button>
+                <button class="btn-action">🔧 Reparar Herramientas</button>
+                <button class="btn-action">💰 Crear Ofertas</button>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <button class="btn-header btn-help">⚙️ Ayuda</button>
+            <button class="btn-header btn-language">🌐 Idioma</button>
+            <button class="btn-header btn-account">👤 Mi cuenta</button>
+            <div class="cart-icon" role="button" tabindex="0">🛒</div>
+        </div>
+    </header>
+
+    <main class="checkout-main">
+        <div class="checkout-container">
+            <div class="checkout-section">
+                <h2>Método de pago</h2>
+
+                <div class="payment-options">
+                    <!-- Tarjeta -->
+                    <div class="payment-option">
+                        <input type="radio" id="payment-card" name="payment" value="card" checked>
+                        <label for="payment-card">
+                            <span class="radio-custom"></span>
+                            <span class="payment-label">Tarjeta</span>
+                        </label>
+
+                        <div class="payment-details" id="card-details">
+                            <div class="form-group">
+                                <label>Número de tarjeta</label>
+                                <div class="input-wrapper">
+                                    <input type="text" placeholder="XXXX XXXX XXXX XXXX" maxlength="19">
+                                    <button type="button" class="btn-clear">✕</button>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Fecha caducidad</label>
+                                    <div class="input-wrapper">
+                                        <input type="text" placeholder="MM/AA" maxlength="5">
+                                        <button type="button" class="btn-clear">✕</button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>CVV</label>
+                                    <div class="input-wrapper">
+                                        <input type="text" placeholder="XXX" maxlength="3">
+                                        <button type="button" class="btn-clear">✕</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Efectivo -->
+                    <div class="payment-option">
+                        <input type="radio" id="payment-cash" name="payment" value="cash">
+                        <label for="payment-cash">
+                            <span class="radio-custom"></span>
+                            <span class="payment-label">Efectivo</span>
+                        </label>
+                    </div>
+
+                    <!-- Paypal -->
+                    <div class="payment-option">
+                        <input type="radio" id="payment-paypal" name="payment" value="paypal">
+                        <label for="payment-paypal">
+                            <span class="radio-custom"></span>
+                            <span class="payment-label">Paypal</span>
+                        </label>
+
+                        <div class="payment-details hidden" id="paypal-details">
+                            <div class="form-group">
+                                <label>Correo electrónico</label>
+                                <div class="input-wrapper">
+                                    <input type="email" placeholder="usuario@paypal.com">
+                                    <button type="button" class="btn-clear">✕</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="checkout-section">
+                <h2>Dirección de envío</h2>
+
+                <div class="shipping-options">
+                    <!-- Dirección predeterminada -->
+                    <div class="shipping-option">
+                        <input type="radio" id="shipping-default" name="shipping" value="default" checked>
+                        <label for="shipping-default">
+                            <span class="radio-custom"></span>
+                            <span class="shipping-label">Dirección predeterminada</span>
+                        </label>
+                    </div>
+
+                    <!-- Otra dirección -->
+                    <div class="shipping-option">
+                        <input type="radio" id="shipping-other" name="shipping" value="other">
+                        <label for="shipping-other">
+                            <span class="radio-custom"></span>
+                            <span class="shipping-label">Otra dirección</span>
+                        </label>
+
+                        <div class="shipping-details hidden" id="other-address">
+                            <div class="form-group">
+                                <label>Introduzca la dirección de envío</label>
+                                <div class="input-wrapper">
+                                    <input type="text" placeholder="Calle, número, ciudad, código postal">
+                                    <button type="button" class="btn-clear">✕</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Punto de recogida -->
+                    <div class="shipping-option">
+                        <input type="radio" id="shipping-locker" name="shipping" value="locker">
+                        <label for="shipping-locker">
+                            <span class="radio-custom"></span>
+                            <span class="shipping-label">Punto de recogida (Locker)</span>
+                        </label>
+
+                        <div class="shipping-details hidden" id="locker-details">
+                            <div class="form-group">
+                                <label>Busca tu Locker</label>
+                                <div class="input-wrapper">
+                                    <span class="input-icon">🔍</span>
+                                    <input type="text" placeholder="Buscar punto de recogida">
+                                    <button type="button" class="btn-clear">✕</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="checkout-actions">
+                <button class="btn-confirm" id="btn-confirm">
+                    ✓ Confirmar datos
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column social-column">
+                <div class="social-icons">
+                    <a href="https://x.com/sanchezcastejon" target="_blank" class="social-icon">
+                        <img src="../images/x.png" alt="Twitter/X">
+                    </a>
+                    <a href="https://instagram.com/javierjimenezh" target="_blank" class="social-icon">
+                        <img src="../images/instagram.png" alt="Instagram">
+                    </a>
+                    <a href="https://www.youtube.com/channel/UCaY_-ksFSQtTGk0y1HA_3YQ" target="_blank" class="social-icon">
+                        <img src="../images/youtube.png" alt="YouTube">
+                    </a>
+                    <a href="https://www.linkedin.com/in/francisco-parre%C3%B1o-torres-21a0651a/" target="_blank" class="social-icon">
+                        <img src="../images/linkedin.png" alt="LinkedIn">
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <h3>Sobre Ferretería Duviso</h3>
+                <ul>
+                    <li><a href="#">Quienes somos</a></li>
+                    <li><a href="#">Condiciones generales</a></li>
+                    <li><a href="#">Política de privacidad</a></li>
+                    <li><a href="#">Aviso legal</a></li>
+                    <li><a href="#">Política de cookies</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Compra con Confianza</h3>
+                <ul>
+                    <li><a href="#">¿Cómo hacer un pedido?</a></li>
+                    <li><a href="#">Envíos y entregas</a></li>
+                    <li><a href="#">Formas de pago</a></li>
+                    <li><a href="#">Garantía compra segura</a></li>
+                    <li><a href="#">Devoluciones y reembolso</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Atención al cliente</h3>
+                <ul>
+                    <li><a href="#">Seguimiento del pedido</a></li>
+                    <li><a href="#">Contáctanos</a></li>
+                    <li><a href="#">Ayuda</a></li>
+                    <li><a href="#">Proceso de devolución</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/finalizarCompra.js" defer></script>
+</body>
+</html>
