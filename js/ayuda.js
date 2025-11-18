@@ -19,12 +19,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     btnProt?.addEventListener('click', () => {
         const enabled = !(btnProt.dataset.enabled === 'true');
-        // desactivar tritanopia visualmente en el iframe (no estrictamente necesario)
-        btnProt.dataset.enabled = enabled ? 'true' : 'false';
-        btnProt.textContent = enabled ? 'Desactivar modo protanopia' : 'Activar modo daltonismo (protanopía)';
-        // asegurar exclusividad: si activas protanopía desactiva tritanopía
-        postToParent({ type: 'toggle-mode', mode: 'protanopia', enabled });
-        if (enabled) postToParent({ type: 'toggle-mode', mode: 'tritanopia', enabled: false });
+
+        if (enabled) {
+            // Al activar protanopía, redirigir a la versión protanopía
+            // Usamos "../" para subir un nivel desde html/ayuda.html
+            window.top.location.href = '../htmlDaltonismo/indexProtanopia.html';
+        } else {
+            // Al desactivar, volver a la versión original
+            window.top.location.href = '../index.html';
+        }
     });
 
     btnTri?.addEventListener('click', () => {
@@ -36,11 +39,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     btnReset?.addEventListener('click', () => {
-        // reset UI
-        if (btnDislexia) { btnDislexia.dataset.enabled = 'false'; btnDislexia.textContent = 'Activar modo dislexia'; }
-        if (btnProt) { btnProt.dataset.enabled = 'false'; btnProt.textContent = 'Activar modo daltonismo (protanopía)'; }
-        if (btnTri) { btnTri.dataset.enabled = 'false'; btnTri.textContent = 'Activar modo daltonismo (tritanopía)'; }
+        // Resetear todos los modos y volver a la versión original del index
+        if (btnDislexia) {
+            btnDislexia.dataset.enabled = 'false';
+            btnDislexia.textContent = 'Activar modo dislexia';
+        }
+        if (btnProt) {
+            btnProt.dataset.enabled = 'false';
+            btnProt.textContent = 'Activar modo daltonismo (protanopía)';
+        }
+        if (btnTri) {
+            btnTri.dataset.enabled = 'false';
+            btnTri.textContent = 'Activar modo daltonismo (tritanopía)';
+        }
+
+        // Enviar mensaje de reset
         postToParent({ type: 'reset-modes' });
+
+        // Redirigir a la versión original del index
+        window.top.location.href = '../index.html';
     });
 
     // Escape: si estamos dentro de iframe, pedir al padre cerrar el overlay
