@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ayuda — Ferretería Duviso (Modo Protanopía)</title>
+    <link rel="stylesheet" href="../cssDaltonismo/ayudaProtanopia.css">
+</head>
+<body>
+    <main class="help-main" role="main" aria-labelledby="help-title">
+        <div class="container">
+            <h1 id="help-title">Ajustes de accesibilidad</h1>
+            <p class="mode-active">🟢 Modo Protanopía Activo</p>
+
+            <section class="help-section">
+                <h2>Texto adaptado (dislexia)</h2>
+                <p>Al activar este modo se muestra todo el texto adaptado para mejorar la comprensión de este para personas con dislexia.</p>
+                <div class="controls">
+                    <button id="toggle-dislexia" class="pill">Activar modo dislexia</button>
+                </div>
+            </section>
+
+            <section class="help-section">
+                <h2>Modo daltonismo</h2>
+                <p>Actualmente tienes activado el modo <strong>Protanopía</strong>. Puedes cambiar a Tritanopía si lo deseas.</p>
+                <div class="controls">
+                    <button id="tritanopia" class="pill">Cambiar a modo tritanopía</button>
+                </div>
+            </section>
+
+            <div class="help-actions" role="group" aria-label="Acciones de accesibilidad">
+                <div class="left"></div>
+                <div class="right">
+                    <button id="reset" class="pill outline">Volver a configuración original</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../jsDaltonismo/ayudaProtanopia.js" defer></script>
+</body>
+</html>
