@@ -25,6 +25,91 @@
         window.location.href = 'html/carrito.html';
     });
 
+    // Función para mostrar popup de error de administrador
+    let errorAdminOverlay = null;
+
+    function showAdminErrorPopup() {
+        if (errorAdminOverlay) return;
+
+        errorAdminOverlay = document.createElement('div');
+        Object.assign(errorAdminOverlay.style, {
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999
+        });
+
+        const panel = document.createElement('div');
+        Object.assign(panel.style, {
+            width: '90%',
+            maxWidth: '450px',
+            background: '#fff',
+            borderRadius: '10px',
+            padding: '30px',
+            position: 'relative',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.35)',
+            textAlign: 'center'
+        });
+
+        const icon = document.createElement('div');
+        icon.innerHTML = '🚫';
+        icon.style.fontSize = '60px';
+        icon.style.marginBottom = '15px';
+
+        const messageText = document.createElement('p');
+        messageText.textContent = 'Error. Usted no está registrado en nuestro sistema como Administrador.';
+        Object.assign(messageText.style, {
+            fontSize: '16px',
+            color: '#333',
+            marginBottom: '20px',
+            lineHeight: '1.5',
+            fontWeight: '500'
+        });
+
+        const closeBtn = document.createElement('button');
+        closeBtn.textContent = 'Aceptar';
+        Object.assign(closeBtn.style, {
+            padding: '10px 30px',
+            background: '#dc3545',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '5px',
+            fontSize: '16px',
+            cursor: 'pointer',
+            fontWeight: 'bold'
+        });
+
+        closeBtn.addEventListener('mouseover', () => {
+            closeBtn.style.background = '#c82333';
+        });
+
+        closeBtn.addEventListener('mouseout', () => {
+            closeBtn.style.background = '#dc3545';
+        });
+
+        closeBtn.addEventListener('click', closeAdminErrorPopup);
+
+        panel.appendChild(icon);
+        panel.appendChild(messageText);
+        panel.appendChild(closeBtn);
+        errorAdminOverlay.appendChild(panel);
+        document.body.appendChild(errorAdminOverlay);
+
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeAdminErrorPopup() {
+        if (!errorAdminOverlay) return;
+        errorAdminOverlay.remove();
+        errorAdminOverlay = null;
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+    }
+
     // Navegación entre interfaces
     const actionBtns = document.querySelectorAll('.action-btn');
     actionBtns.forEach(btn => {
@@ -39,7 +124,16 @@
             });
         } else if (text.includes('crear ofertas')) {
             btn.addEventListener('click', () => {
-                window.location.href = 'html/crearOfertas.html';
+                // 50% de probabilidad de mostrar error de administrador
+                const isAdmin = Math.random() < 0.5;
+
+                if (isAdmin) {
+                    // Usuario es administrador, puede acceder
+                    window.location.href = 'html/crearOfertas.html';
+                } else {
+                    // Usuario no es administrador, mostrar error
+                    showAdminErrorPopup();
+                }
             });
         } else {
             btn.addEventListener('click', () => {
@@ -53,7 +147,7 @@
     productCards.forEach(card => {
         // Agregar cursor pointer
         card.style.cursor = 'pointer';
-        
+
         // Agregar evento click
         card.addEventListener('click', () => {
             const productCode = card.getAttribute('data-code');
@@ -279,6 +373,7 @@
             closeHelp();
             closeAccount();
             closeLanguage();
+            closeAdminErrorPopup();
         }
     });
 });
