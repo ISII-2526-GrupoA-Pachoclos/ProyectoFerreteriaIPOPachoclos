@@ -20,26 +20,26 @@
         searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') searchBtn.click(); });
     }
 
-    // Placeholder carrito
+    // Placeholder carrito - VERSIÓN PROTANOPIA
     document.querySelector('.cart-icon')?.addEventListener('click', () => {
-        window.location.href = '../html/carrito.html';
+        window.location.href = '../htmlDaltonismo/carritoProtanopia.html';
     });
 
-    // Navegación entre interfaces
+    // Navegación entre interfaces - VERSIONES PROTANOPIA
     const actionBtns = document.querySelectorAll('.action-btn');
     actionBtns.forEach(btn => {
         const text = btn.textContent.trim().toLowerCase();
         if (text.includes('comprar herramientas')) {
             btn.addEventListener('click', () => {
-                window.location.href = '../html/catalogoCompras.html';
+                window.location.href = '../htmlDaltonismo/catalogoComprasProtanopia.html';
             });
         } else if (text.includes('reparar herramientas')) {
             btn.addEventListener('click', () => {
-                window.location.href = '../html/repararHerramientas.html';
+                window.location.href = '../htmlDaltonismo/repararHerramientasProtanopia.html';
             });
         } else if (text.includes('crear ofertas')) {
             btn.addEventListener('click', () => {
-                window.location.href = '../html/crearOfertas.html';
+                window.location.href = '../htmlDaltonismo/crearOfertasProtanopia.html';
             });
         } else {
             btn.addEventListener('click', () => {
@@ -48,15 +48,15 @@
         }
     });
 
-    // Hacer clickeables las tarjetas de productos
+    // Hacer clickeables las tarjetas de productos - VERSIÓN PROTANOPIA
     const productCards = document.querySelectorAll('.product-card');
     productCards.forEach(card => {
         card.style.cursor = 'pointer';
-        
+
         card.addEventListener('click', () => {
             const productCode = card.getAttribute('data-code');
             if (productCode) {
-                window.location.href = `../html/infoCompras.html?code=${productCode}`;
+                window.location.href = `../htmlDaltonismo/infoComprasProtanopia.html?code=${productCode}`;
             }
         });
 
@@ -70,7 +70,7 @@
         });
     });
 
-    // Abrir Mi Cuenta en overlay flotante
+    // Abrir Mi Cuenta en overlay flotante - VERSIÓN PROTANOPIA
     const accountButton = document.querySelector('.btn-account');
     let accountOverlay = null;
 
@@ -99,8 +99,8 @@
         closeBtn.addEventListener('click', closeAccount);
 
         const iframe = document.createElement('iframe');
-        iframe.src = '../html/miCuenta.html';
-        iframe.title = 'Mi Cuenta Duviso';
+        iframe.src = '../htmlDaltonismo/miCuentaProtanopia.html';
+        iframe.title = 'Mi Cuenta Duviso (Protanopia)';
         iframe.style.width = '100%';
         iframe.style.height = '600px';
         iframe.style.border = 'none';
@@ -124,7 +124,7 @@
 
     accountButton?.addEventListener('click', (e) => { e.preventDefault(); openAccount(); });
 
-    // Abrir ayuda en overlay flotante - VERSIÓN PROTANOPÍA
+    // Abrir ayuda en overlay flotante - VERSIÓN PROTANOPIA
     const helpButton = document.querySelector('.btn-help');
     let helpOverlay = null;
 
@@ -153,9 +153,8 @@
         closeBtn.addEventListener('click', closeHelp);
 
         const iframe = document.createElement('iframe');
-        // IMPORTANTE: Cargar la versión de ayuda para protanopía
         iframe.src = '../htmlDaltonismo/ayudaProtanopia.html';
-        iframe.title = 'Ayuda Duviso (Protanopía)';
+        iframe.title = 'Ayuda Duviso (Protanopia)';
         iframe.style.width = '100%';
         iframe.style.height = '100%';
         iframe.style.border = 'none';
@@ -180,7 +179,7 @@
 
     helpButton?.addEventListener('click', (e) => { e.preventDefault(); openHelp(); });
 
-    // Abrir idioma en overlay flotante
+    // Abrir idioma en overlay flotante - VERSIÓN PROTANOPIA
     const languageButton = document.querySelector('.btn-header');
     let languageOverlay = null;
 
@@ -209,8 +208,8 @@
         closeBtn.addEventListener('click', closeLanguage);
 
         const iframe = document.createElement('iframe');
-        iframe.src = '../html/idioma.html';
-        iframe.title = 'Idioma Duviso';
+        iframe.src = '../htmlDaltonismo/idiomaProtanopia.html';
+        iframe.title = 'Idioma Duviso (Protanopia)';
         iframe.style.width = '100%';
         iframe.style.height = '400px';
         iframe.style.border = 'none';
@@ -239,7 +238,7 @@
         });
     }
 
-    // Escuchar mensajes desde ayudaProtanopia.html
+    // Escuchar mensajes desde overlays
     window.addEventListener('message', (ev) => {
         if (!ev?.data) return;
         const data = ev.data;
@@ -247,7 +246,7 @@
             closeHelp();
             return;
         }
-        if (data.type === 'close-account') {
+        if (data.type === 'close-account' || data.type === 'close-account-protanopia') {
             closeAccount();
             return;
         }
