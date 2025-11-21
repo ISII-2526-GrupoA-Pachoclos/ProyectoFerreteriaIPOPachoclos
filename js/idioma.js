@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Función para actualizar la interfaz según el idioma
     function updateUI() {
         const lang = translations[currentLanguage];
-        
+
         languageTitle.textContent = lang.title;
         currentLangDisplay.textContent = lang.currentValue;
         btnChangeLanguage.textContent = lang.buttonText;
@@ -44,23 +44,16 @@ document.addEventListener('DOMContentLoaded', () => {
     btnChangeLanguage.addEventListener('click', () => {
         // Alternar entre español e inglés
         currentLanguage = currentLanguage === 'es' ? 'en' : 'es';
-        
+
         // Guardar en localStorage
         localStorage.setItem('appLanguage', currentLanguage);
-        
-        // Actualizar la interfaz
-        updateUI();
 
-        // Notificar a la ventana padre si está en iframe
-        try {
-            if (window !== window.parent) {
-                window.parent.postMessage({ 
-                    type: 'language-changed', 
-                    language: currentLanguage 
-                }, '*');
-            }
-        } catch (err) {
-            console.log('No se pudo notificar al padre:', err);
+        // Si cambia a inglés, redirigir a index-en.html
+        if (currentLanguage === 'en') {
+            window.top.location.href = './indexen.html';
+        } else {
+            // Si vuelve a español, redirigir a index.html
+            window.top.location.href = '../index.html';
         }
     });
 
