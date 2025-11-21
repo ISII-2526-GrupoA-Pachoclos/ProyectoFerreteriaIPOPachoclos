@@ -138,10 +138,56 @@
         updateQuantity(quantity + 1);
     });
 
+    // Función para mostrar el popup de error de cantidad
+    let errorOverlay = null;
+
+    function showQuantityError() {
+        if (errorOverlay) return;
+
+        errorOverlay = document.createElement('div');
+        errorOverlay.className = 'overlay';
+
+        const errorPanel = document.createElement('div');
+        errorPanel.className = 'error-panel';
+
+        const errorIcon = document.createElement('div');
+        errorIcon.className = 'error-icon';
+        errorIcon.textContent = '⚠️';
+
+        const errorMessage = document.createElement('p');
+        errorMessage.className = 'error-message';
+        errorMessage.textContent = 'Por favor, selecciona una cantidad mayor a 0';
+
+        const closeButton = document.createElement('button');
+        closeButton.className = 'btn-close';
+        closeButton.textContent = 'Aceptar';
+        closeButton.addEventListener('click', closeQuantityError);
+
+        errorPanel.appendChild(errorIcon);
+        errorPanel.appendChild(errorMessage);
+        errorPanel.appendChild(closeButton);
+        errorOverlay.appendChild(errorPanel);
+        document.body.appendChild(errorOverlay);
+
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+
+        // Auto-focus en el botón
+        closeButton.focus();
+    }
+
+    function closeQuantityError() {
+        if (!errorOverlay) return;
+        errorOverlay.remove();
+        errorOverlay = null;
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+    }
+
     // Añadir al carrito
     document.getElementById('btn-add-cart').addEventListener('click', () => {
         if (quantity === 0) {
-            alert('Por favor, selecciona una cantidad mayor a 0');
+            showQuantityError();
             return;
         }
 
@@ -409,6 +455,7 @@
             closeHelp();
             closeAccount();
             closeLanguage();
+            closeQuantityError();
         }
     });
 });
