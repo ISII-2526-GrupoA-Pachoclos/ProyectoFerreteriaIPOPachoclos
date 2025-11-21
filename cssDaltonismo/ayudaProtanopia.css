@@ -1,0 +1,200 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+}
+
+body {
+    background: #f9f9f9;
+    color: #222;
+    line-height: 1.6;
+}
+
+/* Main container */
+.help-main {
+    padding: 40px 20px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.container {
+    background: #fff;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* Título principal */
+h1 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #222;
+}
+
+/* Indicador de modo activo - Cambiado a amarillo verdoso */
+.mode-active {
+    display: inline-block;
+    background: #C8C800;  /* Amarillo verdoso para protanopía */
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+/* Secciones */
+.help-section {
+    margin-bottom: 40px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.help-section:last-of-type {
+    border-bottom: none;
+}
+
+.help-section h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #222;
+}
+
+.help-section p {
+    font-size: 15px;
+    color: #555;
+    margin-bottom: 20px;
+    line-height: 1.7;
+}
+
+.help-section strong {
+    color: #C8C800;  /* Amarillo verdoso para protanopía */
+    font-weight: 700;
+}
+
+/* Controles */
+.controls {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Botones pill */
+.pill {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 25px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #C8C800;  /* Amarillo verdoso para protanopía */
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(200, 200, 0, 0.2);
+}
+
+.pill:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(200, 200, 0, 0.3);
+    background: #B8B800;
+}
+
+.pill:active {
+    transform: translateY(0);
+}
+
+.pill.outline {
+    background: transparent;
+    border: 2px solid #C8C800;  /* Amarillo verdoso para protanopía */
+    color: #C8C800;
+    box-shadow: none;
+}
+
+.pill.outline:hover {
+    background: #C8C800;
+    color: #fff;
+}
+
+/* Acciones del footer */
+.help-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.help-actions .left {
+    flex: 1;
+}
+
+.help-actions .right {
+    display: flex;
+    gap: 12px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 24px;
+    }
+
+    h1 {
+        font-size: 26px;
+    }
+
+    .help-section h2 {
+        font-size: 20px;
+    }
+
+    .help-actions {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+
+    .help-actions .right {
+        width: 100%;
+    }
+
+    .pill {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .help-main {
+        padding: 20px 12px;
+    }
+
+    .container {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    .mode-active {
+        font-size: 13px;
+        padding: 6px 16px;
+    }
+
+    .controls {
+        flex-direction: column;
+    }
+
+    .pill {
+        width: 100%;
+    }
+}
