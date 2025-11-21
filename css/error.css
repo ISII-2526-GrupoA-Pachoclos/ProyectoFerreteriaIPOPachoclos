@@ -1,0 +1,85 @@
+/* Overlay */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Error Panel */
+.error-panel {
+    background: #fff;
+    border-radius: 12px;
+    padding: 40px 32px;
+    max-width: 450px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-30px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Error Icon */
+.error-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+}
+
+/* Error Message */
+.error-message {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 28px;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+/* Close Button */
+.btn-close {
+    background: #ff4444;
+    color: #fff;
+    border: none;
+    padding: 12px 32px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(255, 68, 68, 0.3);
+}
+
+    .btn-close:hover {
+        background: #ff2222;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(255, 68, 68, 0.4);
+    }
+
+    .btn-close:active {
+        transform: translateY(0);
+        box-shadow: 0 4px 12px rgba(255, 68, 68, 0.3);
+    }
