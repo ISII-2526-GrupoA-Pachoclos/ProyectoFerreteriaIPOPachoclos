@@ -254,9 +254,13 @@
                 </div>
             `;
             totalAmountElement.textContent = '0,00 €';
-            btnCheckout.disabled = true;
+            // NO deshabilitar el botón, solo cambiar su apariencia
+            btnCheckout.classList.add('disabled');
             return;
         }
+
+        // Cuando hay productos, quitar la clase disabled
+        btnCheckout.classList.remove('disabled');
 
         // Renderizar items del carrito
         cartItemsContainer.innerHTML = '';
