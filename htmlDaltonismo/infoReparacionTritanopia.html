@@ -1,0 +1,126 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Información del Producto — Ferretería Duviso (Modo Tritanopía)</title>
+    <link rel="stylesheet" href="../cssDaltonismo/infoReparacionTritanopia.css">
+    <link rel="stylesheet" href="../css/error.css">
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <div class="logo" role="button" tabindex="0" id="logo-link">
+                <div class="logo-circle">
+                    <img src="../images/logo-duviso.jpg" alt="Logo Duviso">
+                </div>
+            </div>
+            <div class="action-buttons-header">
+                <button class="btn-action">🛒 Comprar Herramientas</button>
+                <button class="btn-action active">🔧 Reparar Herramientas</button>
+                <button class="btn-action">💰 Crear Ofertas</button>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <button class="btn-header btn-help">⚙️ Ayuda</button>
+            <button class="btn-header">🌐 Idioma</button>
+            <button class="btn-header btn-account">👤 Mi cuenta</button>
+            <div class="cart-icon" role="button" tabindex="0">🛒</div>
+        </div>
+    </header>
+
+    <div class="product-detail-container">
+        <div class="product-image-section">
+            <img id="product-image" src="../images/destornilladores.jpg" alt="Producto">
+        </div>
+
+        <div class="product-info-section">
+            <h1 id="product-name">Juego Destornilladores</h1>
+
+            <div class="product-price" id="product-price">5,45 €</div>
+
+            <div class="product-description">
+                <h2>Acerca de la reparación este producto:</h2>
+                <ul id="repair-details">
+                    <li>
+                        <strong>Sustitución de la Herramienta (Opción Recomendada):</strong>
+                        <ul>
+                            <li>Si la punta (plana, Phillips, Torx) está muy redondeada, doblada o mellada, se desecha el destornillador y se reemplaza por uno nuevo.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Tiempo estimado:</strong> <span id="estimated-time">Tiempo de envío (1-3 días)</span>.</li>
+                </ul>
+            </div>
+
+            <div class="quantity-section">
+                <h3>Cantidad</h3>
+                <div class="quantity-controls">
+                    <button class="btn-quantity" id="btn-decrease">−</button>
+                    <input type="number" id="quantity-input" value="0" min="0" readonly>
+                    <button class="btn-quantity" id="btn-increase">+</button>
+                </div>
+            </div>
+
+            <button class="btn-add-to-cart" id="btn-add-cart">
+                🛒 Añadir al carrito
+            </button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column social-column">
+                <div class="social-icons">
+                    <a href="https://x.com/sanchezcastejon" target="_blank" class="social-icon">
+                        <img src="../images/x.png" alt="Twitter/X">
+                    </a>
+                    <a href="https://instagram.com/javierjimenezh" target="_blank" class="social-icon">
+                        <img src="../images/instagram.png" alt="Instagram">
+                    </a>
+                    <a href="https://www.youtube.com/channel/UCaY_-ksFSQtTGk0y1HA_3YQ" target="_blank" class="social-icon">
+                        <img src="../images/youtube.png" alt="YouTube">
+                    </a>
+                    <a href="https://www.linkedin.com/in/francisco-parre%C3%B1o-torres-21a0651a/" target="_blank" class="social-icon">
+                        <img src="../images/linkedin.png" alt="LinkedIn">
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <h3>Sobre Ferretería Duviso</h3>
+                <ul>
+                    <li><a href="#">Quienes somos</a></li>
+                    <li><a href="#">Condiciones generales</a></li>
+                    <li><a href="#">Política de privacidad</a></li>
+                    <li><a href="#">Aviso legal</a></li>
+                    <li><a href="#">Política de cookies</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Compra con Confianza</h3>
+                <ul>
+                    <li><a href="#">¿Cómo hacer un pedido?</a></li>
+                    <li><a href="#">Envíos y entregas</a></li>
+                    <li><a href="#">Formas de pago</a></li>
+                    <li><a href="#">Garantía compra segura</a></li>
+                    <li><a href="#">Devoluciones y reembolso</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Atención al cliente</h3>
+                <ul>
+                    <li><a href="#">Seguimiento del pedido</a></li>
+                    <li><a href="#">Contáctanos</a></li>
+                    <li><a href="#">Ayuda</a></li>
+                    <li><a href="#">Proceso de devolución</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../jsDaltonismo/infoReparacionTritanopia.js" defer></script>
+</body>
+</html>

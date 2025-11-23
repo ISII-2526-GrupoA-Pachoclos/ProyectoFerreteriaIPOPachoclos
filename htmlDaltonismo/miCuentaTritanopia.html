@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mi Cuenta (Tritanopía) — Ferretería Duviso</title>
+  <link rel="stylesheet" href="../cssDaltonismo/miCuentaTritanopia.css">
+</head>
+<body>
+  <main class="account-main" role="main">
+    <div class="account-container">
+      <!-- Panel de Login (visible por defecto) -->
+      <div class="panel-login" id="panel-login">
+        <div class="panel-icon">👤</div>
+        <h1>¡Te damos la bienvenida!</h1>
+        <p class="subtitle">Inicia sesión con tus credenciales</p>
+
+        <form id="form-login" class="account-form">
+          <div class="form-group">
+            <label>Correo electrónico *</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🔍</span>
+              <input type="email" placeholder="usuario@gmail.com" required>
+              <button type="button" class="btn-clear">✕</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Contraseña *</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🔍</span>
+              <input type="password" placeholder="**********" required>
+              <button type="button" class="btn-clear">✕</button>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <a href="#" class="link-forgot">🔑 ¿Has olvidado la contraseña?</a>
+            <button type="submit" class="btn-submit">👤 Inicia sesión</button>
+          </div>
+        </form>
+
+        <p class="switch-panel">
+          ¿No tienes cuenta? <a href="#" id="switch-to-register">Regístrate aquí</a>
+        </p>
+      </div>
+
+      <!-- Panel de Registro (oculto inicialmente) -->
+      <div class="panel-register hidden" id="panel-register">
+        <div class="panel-icon">👤</div>
+        <h1>Créate una nueva cuenta</h1>
+
+        <form id="form-register" class="account-form">
+          <div class="form-group">
+            <label>Nombre y Apellidos *</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🔍</span>
+              <input type="text" placeholder="Pedro Sánchez Pérez-Castejón" required>
+              <button type="button" class="btn-clear">✕</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Fecha de Nacimiento *</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🔍</span>
+              <input type="text" placeholder="DD/MM/YYYY" required>
+              <button type="button" class="btn-clear">✕</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>DNI/NIE *</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🔍</span>
+              <input type="text" placeholder="XXXXXXXX-X" required>
+              <button type="button" class="btn-clear">✕</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Dirección *</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🔍</span>
+              <input type="text" placeholder="Calle Hellín S/N, Albacete, Albacete, 02002" required>
+              <button type="button" class="btn-clear">✕</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Correo electrónico *</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🔍</span>
+              <input type="email" placeholder="usuario@gmail.com" required>
+              <button type="button" class="btn-clear">✕</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Contraseña *</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🔍</span>
+              <input type="password" placeholder="**********" required>
+              <button type="button" class="btn-clear">✕</button>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-submit">👤 Regístrate</button>
+          </div>
+        </form>
+
+        <p class="switch-panel">
+          ¿Ya tienes cuenta? <a href="#" id="switch-to-login">Inicia sesión aquí</a>
+        </p>
+      </div>
+
+      <!-- Mensaje de Confirmación (oculto inicialmente) -->
+      <div class="confirmation-message hidden" id="confirmation-message">
+        <div class="confirmation-icon">✓</div>
+        <h2 id="confirmation-title">¡Inicio de sesión exitoso!</h2>
+        <p id="confirmation-text">Has iniciado sesión correctamente en tu cuenta de Ferretería Duviso.</p>
+        <button id="btn-back-to-home" class="btn-confirm">Volver al inicio</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="../jsDaltonismo/miCuentaTritanopia.js" defer></script>
+</body>
+</html>
