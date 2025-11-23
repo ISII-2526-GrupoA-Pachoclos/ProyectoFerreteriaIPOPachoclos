@@ -32,10 +32,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     btnTri?.addEventListener('click', () => {
         const enabled = !(btnTri.dataset.enabled === 'true');
-        btnTri.dataset.enabled = enabled ? 'true' : 'false';
-        btnTri.textContent = enabled ? 'Desactivar modo tritanopia' : 'Activar modo daltonismo (tritanopía)';
-        postToParent({ type: 'toggle-mode', mode: 'tritanopia', enabled });
-        if (enabled) postToParent({ type: 'toggle-mode', mode: 'protanopia', enabled: false });
+
+        if (enabled) {
+            // Al activar tritanopía, redirigir a la versión tritanopía
+            window.top.location.href = '../htmlDaltonismo/indexTritanopia.html';
+        } else {
+            // Al desactivar, volver a la versión original
+            window.top.location.href = '../index.html';
+        }
     });
 
     btnReset?.addEventListener('click', () => {

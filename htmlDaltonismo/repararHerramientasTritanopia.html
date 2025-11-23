@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Reparación de Herramientas (Tritanopía) - Suministros Duviso</title>
+    <link rel="stylesheet" href="../cssDaltonismo/repararHerramientasTritanopia.css">
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <div class="logo" role="button" tabindex="0" id="logo-link">
+                <div class="logo-circle">
+                    <img src="../imagesDaltonismo/logoTritanopia.png" alt="Logo Duviso">
+                </div>
+            </div>
+            <div class="action-buttons-header">
+                <button class="btn-action">🛒 Comprar Herramientas</button>
+                <button class="btn-action active">🔧 Reparar Herramientas</button>
+                <button class="btn-action">💰 Crear Ofertas</button>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <button class="btn-header">🌐 Idioma</button>
+            <button class="btn-header btn-help">⚙️ Ayuda</button>
+            <button class="btn-header btn-account">👤 Mi cuenta</button>
+            <div class="cart-icon" role="button" tabindex="0">🛒</div>
+        </div>
+    </header>
+
+    <div class="catalog-container">
+        <aside class="filters-sidebar">
+            <div class="filters-header">
+                <h2>Filtros</h2>
+                <button class="btn-toggle-filters" aria-label="Toggle filters">☰</button>
+            </div>
+
+            <div class="filter-group">
+                <button class="filter-pill active">Herramientas Básicas ✕</button>
+                <button class="filter-pill">Materiales de construcción</button>
+                <button class="filter-pill">Calzado de seguridad</button>
+            </div>
+
+            <div class="price-range">
+                <h3>Rango de precio</h3>
+                <div class="price-inputs">
+                    <input type="number" placeholder="0" min="0" id="price-min">
+                    <span>-</span>
+                    <input type="number" placeholder="100€" max="100" id="price-max">
+                </div>
+                <input type="range" min="0" max="100" value="100" class="price-slider">
+            </div>
+
+            <div class="search-filters">
+                <input type="text" placeholder="Buscar por nombre..." class="filter-search" id="search-name">
+                <button class="btn-search-filter">🔍</button>
+            </div>
+
+            <div class="search-filters">
+                <input type="text" placeholder="Buscar por código..." class="filter-search" id="search-code">
+                <button class="btn-search-filter">🔍</button>
+            </div>
+
+            <div class="search-filters">
+                <input type="text" placeholder="Selecciona fabricante..." class="filter-search" id="search-manufacturer">
+                <button class="btn-search-filter">🔍</button>
+            </div>
+        </aside>
+
+        <main class="catalog-main">
+            <div class="products-grid">
+                <!-- Los productos se renderizan dinámicamente desde JS -->
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column social-column">
+                <div class="social-icons">
+                    <a href="https://x.com/sanchezcastejon" target="_blank" class="social-icon">
+                        <img src="../images/x.png" alt="Twitter/X">
+                    </a>
+                    <a href="https://instagram.com/javierjimenezh" target="_blank" class="social-icon">
+                        <img src="../images/instagram.png" alt="Instagram">
+                    </a>
+                    <a href="https://www.youtube.com/channel/UCaY_-ksFSQtTGk0y1HA_3YQ" target="_blank" class="social-icon">
+                        <img src="../images/youtube.png" alt="YouTube">
+                    </a>
+                    <a href="https://www.linkedin.com/in/francisco-parre%C3%B1o-torres-21a0651a/" target="_blank" class="social-icon">
+                        <img src="../images/linkedin.png" alt="LinkedIn">
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <h3>Sobre Ferretería Duviso</h3>
+                <ul>
+                    <li><a href="#">Quienes somos</a></li>
+                    <li><a href="#">Condiciones generales</a></li>
+                    <li><a href="#">Política de privacidad</a></li>
+                    <li><a href="#">Aviso legal</a></li>
+                    <li><a href="#">Política de cookies</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Compra con Confianza</h3>
+                <ul>
+                    <li><a href="#">¿Cómo hacer un pedido?</a></li>
+                    <li><a href="#">Envíos y entregas</a></li>
+                    <li><a href="#">Formas de pago</a></li>
+                    <li><a href="#">Garantía compra segura</a></li>
+                    <li><a href="#">Devoluciones y reembolso</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Atención al cliente</h3>
+                <ul>
+                    <li><a href="#">Seguimiento del pedido</a></li>
+                    <li><a href="#">Contáctanos</a></li>
+                    <li><a href="#">Ayuda</a></li>
+                    <li><a href="#">Proceso de devolución</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../jsDaltonismo/repararHerramientasTritanopia.js" defer></script>
+</body>
+</html>
