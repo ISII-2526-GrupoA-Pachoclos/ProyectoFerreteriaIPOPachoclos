@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+锘縟ocument.addEventListener('DOMContentLoaded', () => {
   const panelLogin = document.getElementById('panel-login');
   const panelRegister = document.getElementById('panel-register');
   const confirmationMessage = document.getElementById('confirmation-message');
@@ -11,7 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const formRegister = document.getElementById('form-register');
   const btnBackToHome = document.getElementById('btn-back-to-home');
 
-  // Funci髇 para mostrar error en un campo
+  // Variables para controlar los overlays de error
+  let errorLoginOverlay = null;
+  let errorRegisterOverlay = null;
+
+  // Funci贸n para mostrar error en un campo
   function showError(inputId, message) {
     const errorElement = document.getElementById(`${inputId}-error`);
     const inputWrapper = document.getElementById(inputId)?.closest('.input-wrapper');
@@ -23,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Funci髇 para limpiar error de un campo
+  // Funci贸n para limpiar error de un campo
   function clearError(inputId) {
     const errorElement = document.getElementById(`${inputId}-error`);
     const inputWrapper = document.getElementById(inputId)?.closest('.input-wrapper');
@@ -35,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Funci髇 para limpiar todos los errores
+  // Funci贸n para limpiar todos los errores
   function clearAllErrors() {
     document.querySelectorAll('.field-error').forEach(error => {
       error.textContent = '';
@@ -46,30 +50,176 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Funci贸n para mostrar popup de error de usuario no registrado (Login)
+  function showErrorLoginPopup() {
+    if (errorLoginOverlay) return;
+
+    errorLoginOverlay = document.createElement('div');
+    Object.assign(errorLoginOverlay.style, {
+      position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex',
+      alignItems: 'center', justifyContent: 'center', zIndex: 10000,
+      animation: 'fadeIn 0.2s ease-in-out'
+    });
+
+    const panel = document.createElement('div');
+    Object.assign(panel.style, {
+      width: '90%', maxWidth: '450px', background: '#fff',
+      borderRadius: '12px', padding: '40px 32px', position: 'relative',
+      boxShadow: '0 20px 60px rgba(0,0,0,0.4)', textAlign: 'center',
+      animation: 'slideIn 0.3s ease-out'
+    });
+
+    const icon = document.createElement('div');
+    icon.innerHTML = '馃毇';
+    icon.style.fontSize = '64px';
+    icon.style.marginBottom = '20px';
+
+    const messageText = document.createElement('p');
+    messageText.textContent = 'Usted no est谩 registrado en nuestro sistema.';
+    Object.assign(messageText.style, {
+      fontSize: '18px', color: '#333', marginBottom: '28px',
+      lineHeight: '1.5', fontWeight: '500'
+    });
+
+    const closeBtn = document.createElement('button');
+    closeBtn.textContent = 'Aceptar';
+    Object.assign(closeBtn.style, {
+      padding: '12px 32px', background: '#ff4444', color: '#fff',
+      border: 'none', borderRadius: '25px', fontSize: '16px',
+      fontWeight: '700', cursor: 'pointer', transition: 'all 0.2s',
+      boxShadow: '0 4px 12px rgba(255, 68, 68, 0.3)'
+    });
+
+    closeBtn.addEventListener('mouseover', () => {
+      closeBtn.style.background = '#ff2222';
+      closeBtn.style.transform = 'translateY(-2px)';
+      closeBtn.style.boxShadow = '0 6px 16px rgba(255, 68, 68, 0.4)';
+    });
+
+    closeBtn.addEventListener('mouseout', () => {
+      closeBtn.style.background = '#ff4444';
+      closeBtn.style.transform = 'translateY(0)';
+      closeBtn.style.boxShadow = '0 4px 12px rgba(255, 68, 68, 0.3)';
+    });
+
+    closeBtn.addEventListener('click', closeErrorLoginPopup);
+
+    panel.appendChild(icon);
+    panel.appendChild(messageText);
+    panel.appendChild(closeBtn);
+    errorLoginOverlay.appendChild(panel);
+    document.body.appendChild(errorLoginOverlay);
+
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+  }
+
+  // Funci贸n para cerrar popup de error de usuario no registrado (Login)
+  function closeErrorLoginPopup() {
+    if (!errorLoginOverlay) return;
+    errorLoginOverlay.remove();
+    errorLoginOverlay = null;
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+  }
+
+  // Funci贸n para mostrar popup de error de usuario ya registrado (Registro)
+  function showErrorRegisterPopup() {
+    if (errorRegisterOverlay) return;
+
+    errorRegisterOverlay = document.createElement('div');
+    Object.assign(errorRegisterOverlay.style, {
+      position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex',
+      alignItems: 'center', justifyContent: 'center', zIndex: 10000,
+      animation: 'fadeIn 0.2s ease-in-out'
+    });
+
+    const panel = document.createElement('div');
+    Object.assign(panel.style, {
+      width: '90%', maxWidth: '450px', background: '#fff',
+      borderRadius: '12px', padding: '40px 32px', position: 'relative',
+      boxShadow: '0 20px 60px rgba(0,0,0,0.4)', textAlign: 'center',
+      animation: 'slideIn 0.3s ease-out'
+    });
+
+    const icon = document.createElement('div');
+    icon.innerHTML = '鈿狅笍';
+    icon.style.fontSize = '64px';
+    icon.style.marginBottom = '20px';
+
+    const messageText = document.createElement('p');
+    messageText.textContent = 'Este usuario ya est谩 registrado en nuestro sistema. Por favor, inicia sesi贸n o utiliza un correo electr贸nico diferente.';
+    Object.assign(messageText.style, {
+      fontSize: '18px', color: '#333', marginBottom: '28px',
+      lineHeight: '1.5', fontWeight: '500'
+    });
+
+    const closeBtn = document.createElement('button');
+    closeBtn.textContent = 'Aceptar';
+    Object.assign(closeBtn.style, {
+      padding: '12px 32px', background: '#ff8c42', color: '#fff',
+      border: 'none', borderRadius: '25px', fontSize: '16px',
+      fontWeight: '700', cursor: 'pointer', transition: 'all 0.2s',
+      boxShadow: '0 4px 12px rgba(255, 140, 66, 0.3)'
+    });
+
+    closeBtn.addEventListener('mouseover', () => {
+      closeBtn.style.background = '#ff7722';
+      closeBtn.style.transform = 'translateY(-2px)';
+      closeBtn.style.boxShadow = '0 6px 16px rgba(255, 140, 66, 0.4)';
+    });
+
+    closeBtn.addEventListener('mouseout', () => {
+      closeBtn.style.background = '#ff8c42';
+      closeBtn.style.transform = 'translateY(0)';
+      closeBtn.style.boxShadow = '0 4px 12px rgba(255, 140, 66, 0.3)';
+    });
+
+    closeBtn.addEventListener('click', closeErrorRegisterPopup);
+
+    panel.appendChild(icon);
+    panel.appendChild(messageText);
+    panel.appendChild(closeBtn);
+    errorRegisterOverlay.appendChild(panel);
+    document.body.appendChild(errorRegisterOverlay);
+
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+  }
+
+  // Funci贸n para cerrar popup de error de usuario ya registrado (Registro)
+  function closeErrorRegisterPopup() {
+    if (!errorRegisterOverlay) return;
+    errorRegisterOverlay.remove();
+    errorRegisterOverlay = null;
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+  }
+
   // Validar email
   function validateEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   }
 
-  // Validar contrase馻
+  // Validar contrase帽a
   function validatePassword(password) {
-    // Contrase馻: 8-20 caracteres, al menos una letra y un n鷐ero
+    // Contrase帽a: 8-20 caracteres, al menos una letra y un n煤mero
     if (password.length < 8) {
-      return { valid: false, message: 'La contrase馻 debe tener al menos 8 caracteres.' };
+      return { valid: false, message: 'La contrase帽a debe tener al menos 8 caracteres.' };
     }
     if (password.length > 20) {
-      return { valid: false, message: 'La contrase馻 no puede tener m醩 de 20 caracteres.' };
+      return { valid: false, message: 'La contrase帽a no puede tener m谩s de 20 caracteres.' };
     }
     if (!/[a-zA-Z]/.test(password)) {
-      return { valid: false, message: 'La contrase馻 debe contener al menos una letra.' };
+      return { valid: false, message: 'La contrase帽a debe contener al menos una letra.' };
     }
     if (!/[0-9]/.test(password)) {
-      return { valid: false, message: 'La contrase馻 debe contener al menos un n鷐ero.' };
+      return { valid: false, message: 'La contrase帽a debe contener al menos un n煤mero.' };
     }
     // Caracteres no permitidos
     if (/[<>'"\\]/.test(password)) {
-      return { valid: false, message: 'La contrase馻 contiene caracteres no permitidos: < > \' " \\' };
+      return { valid: false, message: 'La contrase帽a contiene caracteres no permitidos: < > \' " \\' };
     }
     return { valid: true };
   }
@@ -80,9 +230,9 @@ document.addEventListener('DOMContentLoaded', () => {
       return { valid: false, message: 'El nombre debe tener al menos 3 caracteres.' };
     }
     if (name.trim().length > 100) {
-      return { valid: false, message: 'El nombre no puede tener m醩 de 100 caracteres.' };
+      return { valid: false, message: 'El nombre no puede tener m谩s de 100 caracteres.' };
     }
-    if (!/^[a-zA-Z衢眢赏于裱\s\-]+$/.test(name)) {
+    if (!/^[a-zA-Z谩茅铆贸煤脕脡脥脫脷帽脩\s\-]+$/.test(name)) {
       return { valid: false, message: 'El nombre solo puede contener letras, espacios y guiones.' };
     }
     return { valid: true };
@@ -107,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const daysInMonth = new Date(year, month, 0).getDate();
     if (day < 1 || day > daysInMonth) {
-      return { valid: false, message: `El d韆 debe estar entre 01 y ${daysInMonth} para el mes ${month}.` };
+      return { valid: false, message: `El d铆a debe estar entre 01 y ${daysInMonth} para el mes ${month}.` };
     }
 
     const date = new Date(year, month - 1, day);
@@ -119,11 +269,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const age = today.getFullYear() - year;
     if (age < 18) {
-      return { valid: false, message: 'Debes ser mayor de 18 a駉s para registrarte.' };
+      return { valid: false, message: 'Debes ser mayor de 18 a帽os para registrarte.' };
     }
 
     if (age > 120) {
-      return { valid: false, message: 'La fecha de nacimiento no es v醠ida.' };
+      return { valid: false, message: 'La fecha de nacimiento no es v谩lida.' };
     }
 
     return { valid: true };
@@ -133,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function validateDNI(dni) {
     dni = dni.toUpperCase().replace(/\s/g, '');
     
-    // Formato: 8 d韌itos + letra
+    // Formato: 8 d铆gitos + letra
     const dniRegex = /^[0-9]{8}[A-Z]$/;
     const nieRegex = /^[XYZ][0-9]{7}[A-Z]$/;
     
@@ -146,7 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let number;
 
     if (nieRegex.test(dni)) {
-      // Convertir NIE a n鷐ero
+      // Convertir NIE a n煤mero
       const niePrefix = { 'X': 0, 'Y': 1, 'Z': 2 };
       number = niePrefix[dni.charAt(0)] + dni.substr(1, 7);
     } else {
@@ -157,19 +307,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const providedLetter = dni.charAt(dni.length - 1);
 
     if (calculatedLetter !== providedLetter) {
-      return { valid: false, message: `La letra del DNI/NIE no es correcta. Deber韆 ser ${calculatedLetter}.` };
+      return { valid: false, message: `La letra del DNI/NIE no es correcta. Deber铆a ser ${calculatedLetter}.` };
     }
 
     return { valid: true };
   }
 
-  // Validar direcci髇
+  // Validar direcci贸n
   function validateAddress(address) {
     if (address.trim().length < 10) {
-      return { valid: false, message: 'La direcci髇 debe tener al menos 10 caracteres.' };
+      return { valid: false, message: 'La direcci贸n debe tener al menos 10 caracteres.' };
     }
     if (address.trim().length > 200) {
-      return { valid: false, message: 'La direcci髇 no puede tener m醩 de 200 caracteres.' };
+      return { valid: false, message: 'La direcci贸n no puede tener m谩s de 200 caracteres.' };
     }
     return { valid: true };
   }
@@ -191,7 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Formatear DNI mientras se escribe (convertir a may鷖culas)
+  // Formatear DNI mientras se escribe (convertir a may煤sculas)
   const dniInput = document.getElementById('register-dni');
   if (dniInput) {
     dniInput.addEventListener('input', (e) => {
@@ -199,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Validaci髇 en tiempo real para login
+  // Validaci贸n en tiempo real para login
   const loginEmail = document.getElementById('login-email');
   const loginPassword = document.getElementById('login-password');
 
@@ -208,7 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
     clearError('login-email');
     
     if (value && !validateEmail(value)) {
-      showError('login-email', 'Incluye un signo "@" en la direcci髇 de correo electr髇ico. La direcci髇 "' + value + '" no incluye el signo "@".');
+      showError('login-email', 'Incluye un signo "@" en la direcci贸n de correo electr贸nico. La direcci贸n "' + value + '" no incluye el signo "@".');
     }
   });
 
@@ -224,7 +374,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Validaci髇 en tiempo real para registro
+  // Validaci贸n en tiempo real para registro
   const registerName = document.getElementById('register-name');
   const registerBirthdate = document.getElementById('register-birthdate');
   const registerDni = document.getElementById('register-dni');
@@ -285,7 +435,7 @@ document.addEventListener('DOMContentLoaded', () => {
     clearError('register-email');
     
     if (value && !validateEmail(value)) {
-      showError('register-email', 'Incluye un signo "@" en la direcci髇 de correo electr髇ico. La direcci髇 "' + value + '" no incluye el signo "@".');
+      showError('register-email', 'Incluye un signo "@" en la direcci贸n de correo electr贸nico. La direcci贸n "' + value + '" no incluye el signo "@".');
     }
   });
 
@@ -343,7 +493,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Submit Login
+  // Submit Login con simulaci贸n de base de datos (50% probabilidad de error)
   formLogin?.addEventListener('submit', (e) => {
     e.preventDefault();
     clearAllErrors();
@@ -354,16 +504,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Validar email
     if (!email) {
-      showError('login-email', 'El correo electr髇ico es obligatorio.');
+      showError('login-email', 'El correo electr贸nico es obligatorio.');
       hasErrors = true;
     } else if (!validateEmail(email)) {
-      showError('login-email', 'Incluye un signo "@" en la direcci髇 de correo electr髇ico. La direcci髇 "' + email + '" no incluye el signo "@".');
+      showError('login-email', 'Incluye un signo "@" en la direcci贸n de correo electr贸nico. La direcci贸n "' + email + '" no incluye el signo "@".');
       hasErrors = true;
     }
 
-    // Validar contrase馻
+    // Validar contrase帽a
     if (!password) {
-      showError('login-password', 'La contrase馻 es obligatoria.');
+      showError('login-password', 'La contrase帽a es obligatoria.');
       hasErrors = true;
     } else {
       const validation = validatePassword(password);
@@ -373,12 +523,22 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    // Si no hay errores de validaci贸n, simular verificaci贸n en base de datos
     if (!hasErrors) {
-      showConfirmation('nicio de sesi髇 exitoso!', 'Has iniciado sesi髇 correctamente en tu cuenta de Ferreter韆 Duviso.');
+      // Generar n煤mero aleatorio (0 o 1) para simular 50% de probabilidad
+      const isRegistered = Math.random() < 0.5;
+
+      if (isRegistered) {
+        // Usuario encontrado en la "base de datos"
+        showConfirmation('隆Inicio de sesi贸n exitoso!', 'Has iniciado sesi贸n correctamente en tu cuenta de Ferreter铆a Duviso.');
+      } else {
+        // Usuario no encontrado en la "base de datos"
+        showErrorLoginPopup();
+      }
     }
   });
 
-  // Submit Register
+  // Submit Register con simulaci贸n de base de datos (50% probabilidad de usuario ya registrado)
   formRegister?.addEventListener('submit', (e) => {
     e.preventDefault();
     clearAllErrors();
@@ -424,10 +584,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Validar direcci髇
+    // Validar direcci贸n
     const address = registerAddress.value.trim();
     if (!address) {
-      showError('register-address', 'La direcci髇 es obligatoria.');
+      showError('register-address', 'La direcci贸n es obligatoria.');
       hasErrors = true;
     } else {
       const validation = validateAddress(address);
@@ -440,17 +600,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Validar email
     const email = registerEmail.value.trim();
     if (!email) {
-      showError('register-email', 'El correo electr髇ico es obligatorio.');
+      showError('register-email', 'El correo electr贸nico es obligatorio.');
       hasErrors = true;
     } else if (!validateEmail(email)) {
-      showError('register-email', 'Incluye un signo "@" en la direcci髇 de correo electr髇ico. La direcci髇 "' + email + '" no incluye el signo "@".');
+      showError('register-email', 'Incluye un signo "@" en la direcci贸n de correo electr贸nico. La direcci贸n "' + email + '" no incluye el signo "@".');
       hasErrors = true;
     }
 
-    // Validar contrase馻
+    // Validar contrase帽a
     const password = registerPassword.value;
     if (!password) {
-      showError('register-password', 'La contrase馻 es obligatoria.');
+      showError('register-password', 'La contrase帽a es obligatoria.');
       hasErrors = true;
     } else {
       const validation = validatePassword(password);
@@ -460,8 +620,18 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    // Si no hay errores de validaci贸n, simular verificaci贸n en base de datos
     if (!hasErrors) {
-      showConfirmation('egistro completado!', 'Tu cuenta ha sido creada correctamente. Bienvenido a Ferreter韆 Duviso.');
+      // Generar n煤mero aleatorio para simular 50% de probabilidad de usuario ya registrado
+      const isAlreadyRegistered = Math.random() < 0.5;
+
+      if (isAlreadyRegistered) {
+        // Usuario ya existe en la "base de datos"
+        showErrorRegisterPopup();
+      } else {
+        // Usuario no existe, proceder con el registro
+        showConfirmation('隆Registro completado!', 'Tu cuenta ha sido creada correctamente. Bienvenido a Ferreter铆a Duviso.');
+      }
     }
   });
 
@@ -489,11 +659,22 @@ document.addEventListener('DOMContentLoaded', () => {
   // Escape cierra overlay
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      try {
-        if (window !== window.parent) {
-          window.parent.postMessage({ type: 'close-account' }, '*');
-        }
-      } catch (err) {}
+      // Cerrar popup de error de login si est谩 abierto
+      if (errorLoginOverlay) {
+        closeErrorLoginPopup();
+      }
+      // Cerrar popup de error de registro si est谩 abierto
+      else if (errorRegisterOverlay) {
+        closeErrorRegisterPopup();
+      }
+      // Cerrar overlay de cuenta
+      else {
+        try {
+          if (window !== window.parent) {
+            window.parent.postMessage({ type: 'close-account' }, '*');
+          }
+        } catch (err) {}
+      }
     }
   });
 });
