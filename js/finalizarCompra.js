@@ -193,6 +193,79 @@
         }
     });
 
+    // Sistema de popup de error para campos obligatorios
+    let errorCamposOverlay = null;
+
+    function showErrorCamposPopup(message) {
+        if (errorCamposOverlay) return;
+
+        errorCamposOverlay = document.createElement('div');
+        Object.assign(errorCamposOverlay.style, {
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex',
+            alignItems: 'center', justifyContent: 'center', zIndex: 10000
+        });
+
+        const panel = document.createElement('div');
+        Object.assign(panel.style, {
+            width: '90%', maxWidth: '450px', background: '#fff',
+            borderRadius: '12px', padding: '40px 32px', position: 'relative',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.4)', textAlign: 'center',
+            animation: 'slideIn 0.3s ease-out'
+        });
+
+        const icon = document.createElement('div');
+        icon.innerHTML = '⚠️';
+        icon.style.fontSize = '64px';
+        icon.style.marginBottom = '20px';
+
+        const messageText = document.createElement('p');
+        messageText.textContent = message;
+        Object.assign(messageText.style, {
+            fontSize: '18px', color: '#333', marginBottom: '28px',
+            lineHeight: '1.5', fontWeight: '500'
+        });
+
+        const closeBtn = document.createElement('button');
+        closeBtn.textContent = 'Aceptar';
+        Object.assign(closeBtn.style, {
+            padding: '12px 32px', background: '#ff4444', color: '#fff',
+            border: 'none', borderRadius: '25px', fontSize: '16px',
+            fontWeight: '700', cursor: 'pointer', transition: 'all 0.2s',
+            boxShadow: '0 4px 12px rgba(255, 68, 68, 0.3)'
+        });
+
+        closeBtn.addEventListener('mouseover', () => {
+            closeBtn.style.background = '#ff2222';
+            closeBtn.style.transform = 'translateY(-2px)';
+            closeBtn.style.boxShadow = '0 6px 16px rgba(255, 68, 68, 0.4)';
+        });
+
+        closeBtn.addEventListener('mouseout', () => {
+            closeBtn.style.background = '#ff4444';
+            closeBtn.style.transform = 'translateY(0)';
+            closeBtn.style.boxShadow = '0 4px 12px rgba(255, 68, 68, 0.3)';
+        });
+
+        closeBtn.addEventListener('click', closeErrorCamposPopup);
+
+        panel.appendChild(icon);
+        panel.appendChild(messageText);
+        panel.appendChild(closeBtn);
+        errorCamposOverlay.appendChild(panel);
+        document.body.appendChild(errorCamposOverlay);
+
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeErrorCamposPopup() {
+        if (!errorCamposOverlay) return;
+        errorCamposOverlay.remove();
+        errorCamposOverlay = null;
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+    }
+
     window.addEventListener('message', (ev) => {
         if (!ev?.data) return;
         const data = ev.data;
@@ -206,6 +279,10 @@
         }
         if (data.type === 'close-language') {
             closeLanguage();
+            return;
+        }
+        if (data.type === 'close-campos-error') {
+            closeErrorCamposPopup();
             return;
         }
         if (data.type === 'language-changed') {
@@ -230,6 +307,7 @@
             closeHelp();
             closeAccount();
             closeLanguage();
+            closeErrorCamposPopup();
         }
     });
 
@@ -306,49 +384,85 @@
         });
     }
 
-    // Botón confirmar datos
+    // Botón confirmar datos con validación mejorada
     document.getElementById('btn-confirm')?.addEventListener('click', () => {
         const selectedPayment = document.querySelector('input[name="payment"]:checked')?.value;
         const selectedShipping = document.querySelector('input[name="shipping"]:checked')?.value;
 
+        // Validar selección de método de pago y envío
         if (!selectedPayment || !selectedShipping) {
-            alert('Por favor, selecciona un método de pago y una dirección de envío');
+            showErrorCamposPopup('Por favor, selecciona un método de pago y una dirección de envío.');
             return;
         }
 
-        // Validar campos según el método seleccionado
+        // Validar campos según el método de pago seleccionado
         if (selectedPayment === 'card') {
-            const cardNumber = document.querySelector('input[placeholder*="XXXX XXXX"]')?.value;
-            const expiry = document.querySelector('input[placeholder="MM/AA"]')?.value;
-            const cvv = document.querySelector('input[placeholder="XXX"]')?.value;
+            const cardNumber = document.querySelector('input[placeholder*="XXXX XXXX"]')?.value.trim();
+            const expiry = document.querySelector('input[placeholder="MM/AA"]')?.value.trim();
+            const cvv = document.querySelector('input[placeholder="XXX"]')?.value.trim();
 
             if (!cardNumber || !expiry || !cvv) {
-                alert('Por favor, completa todos los datos de la tarjeta');
+                showErrorCamposPopup('Por favor, completa todos los datos de la tarjeta: número, fecha de caducidad y CVV.');
+                return;
+            }
+
+            // Validar formato del número de tarjeta (16 dígitos)
+            const cardNumberDigits = cardNumber.replace(/\s/g, '');
+            if (cardNumberDigits.length !== 16) {
+                showErrorCamposPopup('El número de tarjeta debe contener 16 dígitos.');
+                return;
+            }
+
+            // Validar formato de fecha (MM/AA)
+            if (expiry.length !== 5 || !expiry.includes('/')) {
+                showErrorCamposPopup('La fecha de caducidad debe tener el formato MM/AA.');
+                return;
+            }
+
+            // Validar CVV (3 dígitos)
+            if (cvv.length !== 3 || !/^\d{3}$/.test(cvv)) {
+                showErrorCamposPopup('El CVV debe contener 3 dígitos.');
                 return;
             }
         } else if (selectedPayment === 'paypal') {
-            const email = document.querySelector('#paypal-details input[type="email"]')?.value;
+            const email = document.querySelector('#paypal-details input[type="email"]')?.value.trim();
+            
             if (!email) {
-                alert('Por favor, introduce tu correo de PayPal');
+                showErrorCamposPopup('Por favor, introduce tu correo electrónico de PayPal.');
+                return;
+            }
+
+            // Validar formato de email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showErrorCamposPopup('Por favor, introduce un correo electrónico válido.');
                 return;
             }
         }
 
+        // Validar campos según la dirección de envío seleccionada
         if (selectedShipping === 'other') {
-            const address = document.querySelector('#other-address input')?.value;
+            const address = document.querySelector('#other-address input')?.value.trim();
+            
             if (!address) {
-                alert('Por favor, introduce la dirección de envío');
+                showErrorCamposPopup('Por favor, introduce la dirección de envío completa.');
+                return;
+            }
+
+            if (address.length < 10) {
+                showErrorCamposPopup('Por favor, introduce una dirección de envío válida con todos los detalles.');
                 return;
             }
         } else if (selectedShipping === 'locker') {
-            const locker = document.querySelector('#locker-details input')?.value;
+            const locker = document.querySelector('#locker-details input')?.value.trim();
+            
             if (!locker) {
-                alert('Por favor, selecciona un punto de recogida');
+                showErrorCamposPopup('Por favor, selecciona un punto de recogida (Locker).');
                 return;
             }
         }
 
-        // Si todo está correcto
+        // Si todo está correcto, proceder con la compra
         alert('¡Pedido confirmado! Gracias por tu compra.');
 
         // Limpiar carrito
