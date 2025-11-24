@@ -266,6 +266,96 @@
         document.body.style.overflow = '';
     }
 
+    // Sistema de popup de confirmación de pedido
+    let confirmacionPedidoOverlay = null;
+
+    function showConfirmacionPedidoPopup() {
+        if (confirmacionPedidoOverlay) return;
+
+        confirmacionPedidoOverlay = document.createElement('div');
+        Object.assign(confirmacionPedidoOverlay.style, {
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex',
+            alignItems: 'center', justifyContent: 'center', zIndex: 10000,
+            animation: 'fadeIn 0.2s ease-in-out'
+        });
+
+        const panel = document.createElement('div');
+        Object.assign(panel.style, {
+            width: '90%', maxWidth: '450px', background: '#fff',
+            borderRadius: '12px', padding: '40px 32px', position: 'relative',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.4)', textAlign: 'center',
+            animation: 'slideIn 0.3s ease-out'
+        });
+
+        const icon = document.createElement('div');
+        icon.innerHTML = '❤︎';
+        Object.assign(icon.style, {
+            width: '72px', height: '72px', background: '#4caf50', color: '#fff',
+            borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '42px', fontWeight: '700', margin: '0 auto 20px'
+        });
+
+        const messageText = document.createElement('p');
+        messageText.textContent = '¡Pedido confirmado! Y como nos gusta decir....Suministros Duviso - Donde tus ideas se ponen manos a la obra.';
+        Object.assign(messageText.style, {
+            fontSize: '18px', color: '#333', marginBottom: '28px',
+            lineHeight: '1.5', fontWeight: '500'
+        });
+
+        const closeBtn = document.createElement('button');
+        closeBtn.textContent = 'Aceptar';
+        Object.assign(closeBtn.style, {
+            padding: '12px 32px', background: '#4caf50', color: '#fff',
+            border: 'none', borderRadius: '25px', fontSize: '16px',
+            fontWeight: '700', cursor: 'pointer', transition: 'all 0.2s',
+            boxShadow: '0 4px 12px rgba(76, 175, 80, 0.3)'
+        });
+
+        closeBtn.addEventListener('mouseover', () => {
+            closeBtn.style.background = '#45a049';
+            closeBtn.style.transform = 'translateY(-2px)';
+            closeBtn.style.boxShadow = '0 6px 16px rgba(76, 175, 80, 0.4)';
+        });
+
+        closeBtn.addEventListener('mouseout', () => {
+            closeBtn.style.background = '#4caf50';
+            closeBtn.style.transform = 'translateY(0)';
+            closeBtn.style.boxShadow = '0 4px 12px rgba(76, 175, 80, 0.3)';
+        });
+
+        closeBtn.addEventListener('click', () => {
+            closeConfirmacionPedidoPopup();
+            // Limpiar carrito
+            localStorage.removeItem('duvisoCart');
+            // Redirigir al catálogo
+            window.location.href = 'catalogoCompras.html';
+        });
+
+        panel.appendChild(icon);
+        panel.appendChild(messageText);
+        panel.appendChild(closeBtn);
+        confirmacionPedidoOverlay.appendChild(panel);
+        document.body.appendChild(confirmacionPedidoOverlay);
+
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+
+        // Auto cerrar después de 3 segundos y redirigir
+        setTimeout(() => {
+            closeConfirmacionPedidoPopup();
+            localStorage.removeItem('duvisoCart');
+            window.location.href = 'catalogoCompras.html';
+        }, 3000);
+    }
+
+    function closeConfirmacionPedidoPopup() {
+        if (!confirmacionPedidoOverlay) return;
+        confirmacionPedidoOverlay.remove();
+        confirmacionPedidoOverlay = null;
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+    }
+
     window.addEventListener('message', (ev) => {
         if (!ev?.data) return;
         const data = ev.data;
@@ -308,6 +398,7 @@
             closeAccount();
             closeLanguage();
             closeErrorCamposPopup();
+            closeConfirmacionPedidoPopup();
         }
     });
 
@@ -384,7 +475,7 @@
         });
     }
 
-    // Botón confirmar datos con validación mejorada
+    // Botón confirmar datos con validación mejorada y popup de confirmación
     document.getElementById('btn-confirm')?.addEventListener('click', () => {
         const selectedPayment = document.querySelector('input[name="payment"]:checked')?.value;
         const selectedShipping = document.querySelector('input[name="shipping"]:checked')?.value;
@@ -462,15 +553,7 @@
             }
         }
 
-        // Si todo está correcto, proceder con la compra
-        alert('¡Pedido confirmado! Gracias por tu compra.');
-
-        // Limpiar carrito
-        localStorage.removeItem('duvisoCart');
-
-        // Redirigir al catálogo
-        setTimeout(() => {
-            window.location.href = 'catalogoCompras.html';
-        }, 1000);
+        // Si todo está correcto, mostrar popup de confirmación
+        showConfirmacionPedidoPopup();
     });
 });
