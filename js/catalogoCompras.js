@@ -11,6 +11,88 @@
 
     let filteredProducts = [...productsData];
     let currentSort = 'newest'; // 'newest', 'price-asc', 'price-desc', 'rating'
+    let filterAppliedOverlay = null;
+
+    // Función para mostrar popup de filtros aplicados correctamente
+    function showFilterAppliedPopup() {
+        if (filterAppliedOverlay) return;
+
+        filterAppliedOverlay = document.createElement('div');
+        Object.assign(filterAppliedOverlay.style, {
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex',
+            alignItems: 'center', justifyContent: 'center', zIndex: 10000,
+            animation: 'fadeIn 0.2s ease-in-out'
+        });
+
+        const panel = document.createElement('div');
+        Object.assign(panel.style, {
+            width: '90%', maxWidth: '450px', background: '#fff',
+            borderRadius: '12px', padding: '40px 32px', position: 'relative',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.4)', textAlign: 'center',
+            animation: 'slideIn 0.3s ease-out'
+        });
+
+        const icon = document.createElement('div');
+        icon.innerHTML = '✓';
+        Object.assign(icon.style, {
+            width: '72px', height: '72px', background: '#4caf50', color: '#fff',
+            borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '42px', fontWeight: '700', margin: '0 auto 20px'
+        });
+
+        const messageText = document.createElement('p');
+        messageText.textContent = 'Los filtros se han aplicado correctamente.';
+        Object.assign(messageText.style, {
+            fontSize: '18px', color: '#333', marginBottom: '28px',
+            lineHeight: '1.5', fontWeight: '500'
+        });
+
+        const closeBtn = document.createElement('button');
+        closeBtn.textContent = 'Aceptar';
+        Object.assign(closeBtn.style, {
+            padding: '12px 32px', background: '#4caf50', color: '#fff',
+            border: 'none', borderRadius: '25px', fontSize: '16px',
+            fontWeight: '700', cursor: 'pointer', transition: 'all 0.2s',
+            boxShadow: '0 4px 12px rgba(76, 175, 80, 0.3)'
+        });
+
+        closeBtn.addEventListener('mouseover', () => {
+            closeBtn.style.background = '#45a049';
+            closeBtn.style.transform = 'translateY(-2px)';
+            closeBtn.style.boxShadow = '0 6px 16px rgba(76, 175, 80, 0.4)';
+        });
+
+        closeBtn.addEventListener('mouseout', () => {
+            closeBtn.style.background = '#4caf50';
+            closeBtn.style.transform = 'translateY(0)';
+            closeBtn.style.boxShadow = '0 4px 12px rgba(76, 175, 80, 0.3)';
+        });
+
+        closeBtn.addEventListener('click', closeFilterAppliedPopup);
+
+        panel.appendChild(icon);
+        panel.appendChild(messageText);
+        panel.appendChild(closeBtn);
+        filterAppliedOverlay.appendChild(panel);
+        document.body.appendChild(filterAppliedOverlay);
+
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+
+        // Auto cerrar después de 2 segundos
+        setTimeout(() => {
+            closeFilterAppliedPopup();
+        }, 2000);
+    }
+
+    // Función para cerrar popup de filtros aplicados
+    function closeFilterAppliedPopup() {
+        if (!filterAppliedOverlay) return;
+        filterAppliedOverlay.remove();
+        filterAppliedOverlay = null;
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+    }
 
     // Navegación al hacer clic en el logo
     const logo = document.getElementById('logo-link');
@@ -248,13 +330,15 @@
             closeHelp();
             closeAccount();
             closeLanguage();
+            closeFilterAppliedPopup();
         }
     });
 
-    // Filtros pills toggle
+    // Filtros pills toggle con popup de confirmación
     document.querySelectorAll('.filter-pill').forEach(pill => {
         pill.addEventListener('click', () => {
             pill.classList.toggle('active');
+            showFilterAppliedPopup();
         });
     });
 
@@ -332,7 +416,7 @@
     }
 
     // Actualizar vista de productos
-    function updateProductsView() {
+    function updateProductsView(showPopup = false) {
         const priceMin = parseFloat(document.getElementById('price-min')?.value) || null;
         const priceMax = parseFloat(document.getElementById('price-max')?.value) || null;
 
@@ -344,9 +428,14 @@
 
         filteredProducts = filtered;
         renderProducts(filteredProducts);
+
+        // Mostrar popup solo si se solicita explícitamente
+        if (showPopup) {
+            showFilterAppliedPopup();
+        }
     }
 
-    // Botones de control de ordenamiento
+    // Botones de control de ordenamiento CON POPUP
     const btnControls = document.querySelectorAll('.btn-control');
     btnControls.forEach((btn, index) => {
         btn.addEventListener('click', () => {
@@ -366,7 +455,8 @@
                 currentSort = 'rating';
             }
 
-            updateProductsView();
+            // MOSTRAR POPUP al ordenar
+            updateProductsView(true);
         });
     });
 
@@ -375,21 +465,34 @@
     const priceMaxInput = document.getElementById('price-max');
     const priceSlider = document.querySelector('.price-slider');
 
-    function handlePriceChange() {
-        updateProductsView();
+    function handlePriceChange(showPopup = true) {
+        updateProductsView(showPopup);
     }
 
-    priceMinInput?.addEventListener('input', handlePriceChange);
-    priceMaxInput?.addEventListener('input', handlePriceChange);
+    priceMinInput?.addEventListener('input', () => handlePriceChange(false)); // No mostrar popup mientras escribe
+    priceMaxInput?.addEventListener('input', () => handlePriceChange(false)); // No mostrar popup mientras escribe
+
+    // Mostrar popup cuando se suelta el input (blur)
+    priceMinInput?.addEventListener('blur', () => {
+        if (priceMinInput.value) handlePriceChange(true);
+    });
+
+    priceMaxInput?.addEventListener('blur', () => {
+        if (priceMaxInput.value) handlePriceChange(true);
+    });
 
     // Slider actualiza el input max
     priceSlider?.addEventListener('input', (e) => {
         if (priceMaxInput) {
             priceMaxInput.value = e.target.value;
-            handlePriceChange();
+            handlePriceChange(false);
         }
     });
 
-    // Renderizado inicial
-    updateProductsView();
+    priceSlider?.addEventListener('change', () => {
+        handlePriceChange(true); // Mostrar popup al soltar el slider
+    });
+
+    // Renderizado inicial (sin popup)
+    updateProductsView(false);
 });
