@@ -10,6 +10,88 @@
     ];
 
     let filteredProducts = [...productsData];
+    let offerAppliedOverlay = null;
+
+    // Función para mostrar popup de oferta aplicada correctamente
+    function showOfferAppliedPopup() {
+        if (offerAppliedOverlay) return;
+
+        offerAppliedOverlay = document.createElement('div');
+        Object.assign(offerAppliedOverlay.style, {
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex',
+            alignItems: 'center', justifyContent: 'center', zIndex: 10000,
+            animation: 'fadeIn 0.2s ease-in-out'
+        });
+
+        const panel = document.createElement('div');
+        Object.assign(panel.style, {
+            width: '90%', maxWidth: '450px', background: '#fff',
+            borderRadius: '12px', padding: '40px 32px', position: 'relative',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.4)', textAlign: 'center',
+            animation: 'slideIn 0.3s ease-out'
+        });
+
+        const icon = document.createElement('div');
+        icon.innerHTML = '✓';
+        Object.assign(icon.style, {
+            width: '72px', height: '72px', background: '#4caf50', color: '#fff',
+            borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '42px', fontWeight: '700', margin: '0 auto 20px'
+        });
+
+        const messageText = document.createElement('p');
+        messageText.textContent = 'La oferta se ha aplicado al producto correctamente.';
+        Object.assign(messageText.style, {
+            fontSize: '18px', color: '#333', marginBottom: '28px',
+            lineHeight: '1.5', fontWeight: '500'
+        });
+
+        const closeBtn = document.createElement('button');
+        closeBtn.textContent = 'Aceptar';
+        Object.assign(closeBtn.style, {
+            padding: '12px 32px', background: '#4caf50', color: '#fff',
+            border: 'none', borderRadius: '25px', fontSize: '16px',
+            fontWeight: '700', cursor: 'pointer', transition: 'all 0.2s',
+            boxShadow: '0 4px 12px rgba(76, 175, 80, 0.3)'
+        });
+
+        closeBtn.addEventListener('mouseover', () => {
+            closeBtn.style.background = '#45a049';
+            closeBtn.style.transform = 'translateY(-2px)';
+            closeBtn.style.boxShadow = '0 6px 16px rgba(76, 175, 80, 0.4)';
+        });
+
+        closeBtn.addEventListener('mouseout', () => {
+            closeBtn.style.background = '#4caf50';
+            closeBtn.style.transform = 'translateY(0)';
+            closeBtn.style.boxShadow = '0 4px 12px rgba(76, 175, 80, 0.3)';
+        });
+
+        closeBtn.addEventListener('click', closeOfferAppliedPopup);
+
+        panel.appendChild(icon);
+        panel.appendChild(messageText);
+        panel.appendChild(closeBtn);
+        offerAppliedOverlay.appendChild(panel);
+        document.body.appendChild(offerAppliedOverlay);
+
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+
+        // Auto cerrar después de 2 segundos
+        setTimeout(() => {
+            closeOfferAppliedPopup();
+        }, 2000);
+    }
+
+    // Función para cerrar popup de oferta aplicada
+    function closeOfferAppliedPopup() {
+        if (!offerAppliedOverlay) return;
+        offerAppliedOverlay.remove();
+        offerAppliedOverlay = null;
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+    }
 
     // Navegación: logo → index
     const logo = document.getElementById('logo-link');
@@ -237,6 +319,7 @@
             closeHelp();
             closeAccount();
             closeLanguage();
+            closeOfferAppliedPopup();
         }
     });
 
@@ -266,10 +349,15 @@
             tbody.appendChild(row);
         });
 
-        // Botones ">" → ir a catalogoCompras
+        // Botones ">" → mostrar popup de oferta aplicada y luego redirigir
         document.querySelectorAll('.btn-goto').forEach(btn => {
             btn.addEventListener('click', () => {
-                window.location.href = 'catalogoCompras.html';
+                showOfferAppliedPopup();
+                
+                // Redirigir después de 2.5 segundos (después del popup)
+                setTimeout(() => {
+                    window.location.href = 'catalogoCompras.html';
+                }, 2500);
             });
         });
 
