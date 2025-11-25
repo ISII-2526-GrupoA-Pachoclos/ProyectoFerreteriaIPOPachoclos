@@ -14,6 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const enabled = !(btnDislexia.dataset.enabled === 'true');
         btnDislexia.dataset.enabled = enabled ? 'true' : 'false';
         btnDislexia.textContent = enabled ? 'Desactivar modo dislexia' : 'Activar modo dislexia';
+        
+        if (enabled) {
+            // Al activar dislexia, redirigir a la versión con dislexia
+            window.top.location.href = '../html/infoReparacionDislexia.html';
+        }
+        
         postToParent({ type: 'toggle-mode', mode: 'dyslexia', enabled });
     });
 
