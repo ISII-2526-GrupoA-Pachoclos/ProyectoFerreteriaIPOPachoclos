@@ -1,20 +1,34 @@
-/* Reset */
+﻿/* Reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box
 }
 
+@import url('https://fonts.googleapis.com/css2?family=OpenDyslexic:wght@400;700&display=swap');
+
+
+
 html, body {
     height: 100%;
-    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif
+    font-family: 'OpenDyslexic', -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.08em;
+    line-height: 1.9;
+    background: #fff;
 }
 
 body {
-    color: #222;
-    background: #fff;
+    color: #1a1a1a;
     display: flex;
     flex-direction: column
+}
+
+/* Increase heading spacing */
+h1, h2, h3, h4, h5, h6 {
+    letter-spacing: 0.06em;
+    margin-bottom: 16px;
+    line-height: 1.4;
 }
 
 /* Header */
@@ -73,7 +87,8 @@ header {
     cursor: pointer;
     font-weight: 700;
     font-size: 13px;
-    transition: all 0.2s
+    transition: all 0.2s;
+    font-family: 'OpenDyslexic', sans-serif
 }
 
     .btn-action:hover {
@@ -100,7 +115,8 @@ header {
     cursor: pointer;
     font-weight: 700;
     font-size: 13px;
-    white-space: nowrap
+    white-space: nowrap;
+    font-family: 'OpenDyslexic', sans-serif
 }
 
     .btn-header:hover {
@@ -137,7 +153,7 @@ header {
 .product-detail-container {
     display: grid;
     grid-template-columns: 1fr 1.5fr;
-    gap: 40px;
+    gap: 50px;
     padding: 40px 60px;
     max-width: 1400px;
     margin: 0 auto;
@@ -171,17 +187,19 @@ header {
 }
 
     .product-info-section h1 {
-        font-size: 32px;
+        font-size: 38px;
         font-weight: 700;
         color: #222;
-        margin-bottom: 8px
+        margin-bottom: 16px;
+        letter-spacing: 0.06em;
     }
 
 .product-price {
-    font-size: 36px;
+    font-size: 42px;
     font-weight: 700;
-    color: #222;
-    margin-bottom: 12px
+    color: #ff8c42;
+    margin-bottom: 20px;
+    letter-spacing: 0.03em;
 }
 
 /* Product Description */
@@ -193,10 +211,14 @@ header {
 }
 
     .product-description h2 {
+        color: #222;
+        background: #e8f4f8;
+        padding: 12px 16px;
+        border-radius: 6px;
+        border-left: 6px solid #5a5aff;
         font-size: 18px;
         font-weight: 700;
         margin-bottom: 16px;
-        color: #333
     }
 
     .product-description ul {
@@ -205,10 +227,11 @@ header {
     }
 
         .product-description ul li {
-            margin-bottom: 12px;
-            line-height: 1.6;
-            color: #555;
-            font-size: 14px
+            margin-bottom: 16px;
+            line-height: 1.9;
+            color: #333;
+            font-size: 16px;
+            letter-spacing: 0.04em;
         }
 
             .product-description ul li strong {
@@ -226,21 +249,25 @@ header {
     align-items: center;
     gap: 8px;
     cursor: pointer;
-    padding: 8px;
-    border-radius: 4px;
-    transition: background 0.2s;
+    padding: 12px 16px;
+    border-radius: 6px;
+    border: 2px solid transparent;
+    transition: all 0.3s;
     user-select: none;
+    background: #f0f0f5;
 }
 
     .repair-section-header:hover {
-        background: rgba(90, 90, 255, 0.05);
+        background: rgba(90, 90, 255, 0.1);
+        border-color: #5a5aff;
     }
 
 .expand-icon {
-    font-size: 18px;
-    transition: transform 0.3s ease;
+    font-size: 22px;
     color: #5a5aff;
     display: inline-block;
+    margin-right: 8px;
+    transition: transform 0.3s ease;
 }
 
     .expand-icon.expanded {
@@ -250,7 +277,7 @@ header {
 .repair-section-content {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+    transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
     opacity: 0;
     margin-left: 20px;
 }
@@ -268,16 +295,17 @@ header {
     }
 
         .repair-section-content ul li {
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             position: relative;
             padding-left: 20px;
-            line-height: 1.6;
+            line-height: 1.8;
             color: #555;
-            font-size: 14px;
+            font-size: 15px;
+            letter-spacing: 0.03em;
         }
 
             .repair-section-content ul li::before {
-                content: "�";
+                content: "●";
                 position: absolute;
                 left: 0;
                 color: #5a5aff;
@@ -294,7 +322,8 @@ header {
     .quantity-section h3 {
         font-size: 18px;
         font-weight: 700;
-        color: #222
+        color: #222;
+        letter-spacing: 0.05em;
     }
 
 .quantity-controls {
@@ -319,7 +348,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s
+    transition: all 0.3s;
 }
 
     .btn-quantity:hover {
@@ -341,7 +370,8 @@ header {
     font-weight: 700;
     color: #222;
     background: #fff;
-    outline: none
+    outline: none;
+    font-family: 'OpenDyslexic', sans-serif;
 }
 
 /* Add to Cart Button */
@@ -360,7 +390,8 @@ header {
     gap: 10px;
     transition: all 0.3s;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    width: fit-content
+    width: fit-content;
+    font-family: 'OpenDyslexic', sans-serif;
 }
 
     .btn-add-to-cart:hover {
@@ -394,7 +425,9 @@ footer {
     font-size: 15px;
     margin-bottom: 12px;
     font-weight: 700;
-    color: #222
+    color: #222;
+    font-family: 'OpenDyslexic', sans-serif;
+    letter-spacing: 0.05em;
 }
 
 .footer-column ul {
@@ -408,7 +441,8 @@ footer {
         .footer-column ul li a {
             color: #555;
             text-decoration: none;
-            font-size: 13px
+            font-size: 13px;
+            font-family: 'OpenDyslexic', sans-serif;
         }
 
             .footer-column ul li a:hover {
