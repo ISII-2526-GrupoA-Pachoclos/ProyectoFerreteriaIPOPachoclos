@@ -335,6 +335,350 @@
         });
     }
 
+    // ========================================
+    // FUNCIONALIDAD DE VOZ (Speech Recognition & Synthesis)
+    // ========================================
+
+    // Verificar compatibilidad del navegador
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechSynthesis = window.speechSynthesis;
+    let recognition = null;
+    let isListening = false;
+    let voiceIndicator = null;
+    let recognitionTimeout = null;
+
+    // Inicializar reconocimiento de voz
+    if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.lang = 'es-ES';
+        recognition.continuous = true; // CAMBIADO: Mantener escuchando
+        recognition.interimResults = true; // CAMBIADO: Mostrar resultados mientras hablas
+        recognition.maxAlternatives = 3; // CAMBIADO: Más alternativas
+
+        // Crear indicador visual de micrófono activo
+        voiceIndicator = document.createElement('div');
+        voiceIndicator.id = 'voice-indicator';
+        Object.assign(voiceIndicator.style, {
+            position: 'fixed',
+            bottom: '30px',
+            right: '30px',
+            width: '80px',
+            height: '80px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            display: 'none',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 10px 30px rgba(102, 126, 234, 0.5)',
+            zIndex: 10000,
+            animation: 'pulse 1.5s ease-in-out infinite'
+        });
+
+        const micIcon = document.createElement('div');
+        micIcon.innerHTML = '🎤';
+        micIcon.style.fontSize = '36px';
+        voiceIndicator.appendChild(micIcon);
+
+        const voiceText = document.createElement('div');
+        voiceText.id = 'voice-text';
+        Object.assign(voiceText.style, {
+            position: 'fixed',
+            bottom: '120px',
+            right: '30px',
+            background: 'rgba(0, 0, 0, 0.85)',
+            color: '#fff',
+            padding: '15px 20px',
+            borderRadius: '10px',
+            display: 'none',
+            maxWidth: '300px',
+            fontSize: '14px',
+            zIndex: 10000,
+            fontWeight: '500',
+            textAlign: 'center'
+        });
+        voiceText.textContent = 'Escuchando...';
+
+        document.body.appendChild(voiceIndicator);
+        document.body.appendChild(voiceText);
+
+        // Agregar animación de pulso al CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0%, 100% {
+                    transform: scale(1);
+                    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+                }
+                50% {
+                    transform: scale(1.1);
+                    box-shadow: 0 10px 40px rgba(102, 126, 234, 0.8);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // Función de síntesis de voz (Text-to-Speech)
+    function speak(text) {
+        if (!SpeechSynthesis) {
+            console.warn('Síntesis de voz no soportada');
+            return;
+        }
+
+        // Cancelar cualquier síntesis en curso
+        SpeechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'es-ES';
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+
+        SpeechSynthesis.speak(utterance);
+    }
+
+    // Función para procesar comandos de voz
+    function processVoiceCommand(command) {
+        const lowerCommand = command.toLowerCase().trim();
+        console.log('Comando recibido:', lowerCommand);
+
+        // Comandos para navegar a diferentes interfaces
+        if (lowerCommand.includes('comprar') || lowerCommand.includes('catálogo') || lowerCommand.includes('catalogo') || lowerCommand.includes('compra')) {
+            speak('Navegando a comprar herramientas');
+            setTimeout(() => {
+                window.location.href = 'html/catalogoCompras.html';
+            }, 1000);
+        } else if (lowerCommand.includes('reparar') || lowerCommand.includes('repara')) {
+            speak('Navegando a reparar herramientas');
+            setTimeout(() => {
+                window.location.href = 'html/repararHerramientas.html';
+            }, 1000);
+        } else if (lowerCommand.includes('ofertas') || lowerCommand.includes('crear ofertas') || lowerCommand.includes('oferta')) {
+            speak('Navegando a crear ofertas');
+            setTimeout(() => {
+                window.location.href = 'html/crearOfertas.html';
+            }, 1000);
+        } else if (lowerCommand.includes('carrito') || lowerCommand.includes('carro') || lowerCommand.includes('cesta')) {
+            speak('Navegando al carrito de compras');
+            setTimeout(() => {
+                window.location.href = 'html/carrito.html';
+            }, 1000);
+        } else if (lowerCommand.includes('cuenta') || lowerCommand.includes('mi cuenta') || lowerCommand.includes('perfil')) {
+            speak('Abriendo tu cuenta');
+            setTimeout(() => {
+                openAccount();
+            }, 1000);
+        } else if (lowerCommand.includes('ayuda')) {
+            speak('Abriendo la ayuda');
+            setTimeout(() => {
+                openHelp();
+            }, 1000);
+        } else if (lowerCommand.includes('idioma') || lowerCommand.includes('lengua')) {
+            speak('Abriendo configuración de idioma');
+            setTimeout(() => {
+                openLanguage();
+            }, 1000);
+        } else if (lowerCommand.includes('inicio') || lowerCommand.includes('principal') || lowerCommand.includes('home')) {
+            speak('Navegando a la página principal');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        } else if (lowerCommand.includes('buscar') || lowerCommand.includes('búsqueda')) {
+            speak('Activando búsqueda');
+            setTimeout(() => {
+                searchInput?.focus();
+            }, 500);
+        } else {
+            speak('Comando no reconocido. Intenta con: comprar, reparar, ofertas, carrito, mi cuenta, ayuda o idioma');
+        }
+    }
+
+    // Función para iniciar reconocimiento de voz
+    function startVoiceRecognition() {
+        if (!recognition) {
+            alert('El reconocimiento de voz no está disponible en tu navegador. Prueba con Chrome, Edge o Safari.');
+            return;
+        }
+
+        if (isListening) {
+            stopVoiceRecognition();
+            return;
+        }
+
+        isListening = true;
+        voiceIndicator.style.display = 'flex';
+        document.getElementById('voice-text').style.display = 'block';
+        document.getElementById('voice-text').textContent = '🎤 Preparando micrófono...';
+
+        // Limpiar timeout anterior si existe
+        if (recognitionTimeout) {
+            clearTimeout(recognitionTimeout);
+        }
+
+        speak('Te escucho. Dime a dónde quieres ir.');
+
+        setTimeout(() => {
+            try {
+                recognition.start();
+                console.log('Reconocimiento de voz iniciado');
+                document.getElementById('voice-text').textContent = '🎤 ¡Habla ahora!';
+
+                // Timeout de seguridad: detener después de 10 segundos
+                recognitionTimeout = setTimeout(() => {
+                    if (isListening) {
+                        console.log('Timeout alcanzado, deteniendo reconocimiento');
+                        stopVoiceRecognition();
+                        speak('Tiempo de espera agotado');
+                    }
+                }, 10000);
+
+            } catch (error) {
+                console.error('Error al iniciar reconocimiento:', error);
+                stopVoiceRecognition();
+            }
+        }, 2000);
+    }
+
+    // Función para detener reconocimiento de voz
+    function stopVoiceRecognition() {
+        if (recognition && isListening) {
+            recognition.stop();
+        }
+        isListening = false;
+        voiceIndicator.style.display = 'none';
+        document.getElementById('voice-text').style.display = 'none';
+
+        // Limpiar timeout
+        if (recognitionTimeout) {
+            clearTimeout(recognitionTimeout);
+            recognitionTimeout = null;
+        }
+
+        console.log('Reconocimiento de voz detenido');
+    }
+
+    // Eventos del reconocimiento de voz
+    if (recognition) {
+        // NUEVO: Manejar resultados intermedios
+        recognition.onresult = (event) => {
+            let interimTranscript = '';
+            let finalTranscript = '';
+
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                const transcript = event.results[i][0].transcript;
+                if (event.results[i].isFinal) {
+                    finalTranscript += transcript;
+                } else {
+                    interimTranscript += transcript;
+                }
+            }
+
+            // Mostrar transcripción en tiempo real
+            const displayText = finalTranscript || interimTranscript;
+            if (displayText) {
+                console.log('Transcripción en tiempo real:', displayText);
+                document.getElementById('voice-text').textContent = `🎤 "${displayText}"`;
+            }
+
+            // Procesar comando final
+            if (finalTranscript) {
+                console.log('Transcripción final:', finalTranscript);
+
+                // Limpiar timeout
+                if (recognitionTimeout) {
+                    clearTimeout(recognitionTimeout);
+                }
+
+                setTimeout(() => {
+                    processVoiceCommand(finalTranscript);
+                    stopVoiceRecognition();
+                }, 300);
+            }
+        };
+
+        recognition.onerror = (event) => {
+            console.error('Error en reconocimiento de voz:', event.error);
+
+            // Limpiar timeout
+            if (recognitionTimeout) {
+                clearTimeout(recognitionTimeout);
+            }
+
+            if (event.error === 'no-speech') {
+                document.getElementById('voice-text').textContent = '⚠️ No se detectó voz';
+                speak('No se detectó ningún comando. Intenta de nuevo.');
+            } else if (event.error === 'not-allowed') {
+                alert('Permiso de micrófono denegado. Por favor, permite el acceso al micrófono en la configuración del navegador.');
+            } else if (event.error === 'aborted') {
+                console.log('Reconocimiento abortado');
+            } else {
+                document.getElementById('voice-text').textContent = '❌ Error al reconocer';
+                speak('Error al reconocer el comando');
+            }
+
+            setTimeout(() => {
+                stopVoiceRecognition();
+            }, 2000);
+        };
+
+        recognition.onend = () => {
+            console.log('Evento onend disparado');
+            if (isListening) {
+                console.log('Reconocimiento terminó inesperadamente, limpiando...');
+                stopVoiceRecognition();
+            }
+        };
+
+        // NUEVO: Evento cuando empieza a escuchar
+        recognition.onstart = () => {
+            console.log('Reconocimiento iniciado exitosamente');
+            document.getElementById('voice-text').textContent = '🎤 ¡Habla ahora!';
+        };
+
+        // NUEVO: Evento cuando detecta audio
+        recognition.onaudiostart = () => {
+            console.log('Audio detectado');
+            document.getElementById('voice-text').textContent = '🎤 Escuchando...';
+        };
+
+        recognition.onaudioend = () => {
+            console.log('Audio terminado');
+        };
+
+        recognition.onspeechstart = () => {
+            console.log('Voz detectada');
+            document.getElementById('voice-text').textContent = '🎤 Te escucho...';
+        };
+
+        recognition.onspeechend = () => {
+            console.log('Voz terminada');
+        };
+    }
+
+    // Detectar tecla V para activar reconocimiento de voz
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'v' || e.key === 'V') {
+            // Verificar que no esté escribiendo en un input
+            const activeElement = document.activeElement;
+            if (activeElement.tagName !== 'INPUT' && activeElement.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                startVoiceRecognition();
+            }
+        }
+
+        if (e.key === 'Escape') {
+            stopVoiceRecognition();
+            closeHelp();
+            closeAccount();
+            closeLanguage();
+            closeAdminErrorPopup();
+        }
+    });
+
+    // ========================================
+    // FIN FUNCIONALIDAD DE VOZ
+    // ========================================
+
     window.addEventListener('message', (ev) => {
         if (!ev?.data) return;
         const data = ev.data;
@@ -365,15 +709,6 @@
         }
         if (data.type === 'reset-modes') {
             document.documentElement.classList.remove('dyslexia', 'protanopia', 'tritanopia');
-        }
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            closeHelp();
-            closeAccount();
-            closeLanguage();
-            closeAdminErrorPopup();
         }
     });
 });
