@@ -1,0 +1,142 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Generador QR - Suministros Duviso</title>
+    <link rel="stylesheet" href="../css/generadorQR.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="header-left">
+                <div class="logo" role="button" tabindex="0" id="logo-link">
+                    <div class="logo-circle">
+                        <img src="../images/logo-duviso.jpg" alt="Logo Duviso">
+                    </div>
+                </div>
+                <h1 class="page-title">Generador de Códigos QR</h1>
+            </div>
+
+            <div class="header-actions">
+                <button class="btn-header btn-help">⚙️ Ayuda</button>
+                <button class="btn-header btn-language">🌐 Idioma</button>
+                <button class="btn-header btn-account">👤 Mi cuenta</button>
+                <div class="cart-icon" role="button" tabindex="0">🛒</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <div class="generator-card">
+            <h2>Generar QR para Productos</h2>
+            <p>Selecciona un producto para generar su código QR</p>
+
+            <div class="bulk-actions">
+                <button id="btn-download-all" class="btn-bulk btn-download-all">
+                    <span>⬇️</span> Descargar Todos los QR
+                </button>
+                <button id="btn-print-all" class="btn-bulk btn-print-all">
+                    <span>🖨️</span> Imprimir Todos
+                </button>
+            </div>
+
+            <!-- PRODUCTOS DE COMPRA -->
+            <div class="category-section">
+                <h3 class="category-header">Productos de Compra</h3>
+                <div class="products-grid" id="products-compra"></div>
+            </div>
+
+            <!-- SERVICIOS DE REPARACIÓN -->
+            <div class="category-section">
+                <h3 class="category-header">Servicios de Reparación</h3>
+                <div class="products-grid" id="products-reparacion"></div>
+            </div>
+
+            <!-- PANEL DE QR GENERADO (aparece debajo cuando se genera) -->
+            <div id="qr-display-panel" class="qr-display-panel hidden">
+                <div class="qr-panel-header">
+                    <h3>Código QR Generado</h3>
+                    <span class="qr-badge-success">Listo</span>
+                </div>
+                <div class="qr-panel-content">
+                    <div id="qr-code-display" class="qr-code-display"></div>
+                    <div class="qr-product-info">
+                        <div class="qr-info-label">Producto:</div>
+                        <div id="qr-product-name" class="qr-info-value"></div>
+                        <div class="qr-info-label">Código:</div>
+                        <div id="qr-product-code" class="qr-info-value"></div>
+                    </div>
+                </div>
+                <div class="qr-panel-actions">
+                    <button id="btn-download-current" class="btn-qr-action btn-download-qr-panel">
+                        <span>⬇️</span> Descargar
+                    </button>
+                    <button id="btn-print-current" class="btn-qr-action btn-print-qr-panel">
+                        <span>🖨️</span> Imprimir
+                    </button>
+                    <button id="btn-close-panel" class="btn-qr-action btn-close-qr-panel">
+                        <span>✕</span> Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column social-column">
+                <div class="social-icons">
+                    <a href="https://x.com/sanchezcastejon" target="_blank" class="social-icon">
+                        <img src="../images/x.png" alt="Twitter/X">
+                    </a>
+                    <a href="https://instagram.com/javierjimenezh" target="_blank" class="social-icon">
+                        <img src="../images/instagram.png" alt="Instagram">
+                    </a>
+                    <a href="https://www.youtube.com/channel/UCaY_-ksFSQtTGk0y1HA_3YQ" target="_blank" class="social-icon">
+                        <img src="../images/youtube.png" alt="YouTube">
+                    </a>
+                    <a href="https://www.linkedin.com/in/francisco-parre%C3%B1o-torres-21a0651a/" target="_blank" class="social-icon">
+                        <img src="../images/linkedin.png" alt="LinkedIn">
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <h3>Sobre Ferretería Duviso</h3>
+                <ul>
+                    <li><a href="#">Quienes somos</a></li>
+                    <li><a href="#">Condiciones generales</a></li>
+                    <li><a href="#">Política de privacidad</a></li>
+                    <li><a href="#">Aviso legal</a></li>
+                    <li><a href="#">Política de cookies</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Compra con Confianza</h3>
+                <ul>
+                    <li><a href="#">¿Cómo hacer un pedido?</a></li>
+                    <li><a href="#">Envíos y entregas</a></li>
+                    <li><a href="#">Formas de pago</a></li>
+                    <li><a href="#">Garantía compra segura</a></li>
+                    <li><a href="#">Devoluciones y reembolso</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Atención al cliente</h3>
+                <ul>
+                    <li><a href="#">Seguimiento del pedido</a></li>
+                    <li><a href="#">Contáctanos</a></li>
+                    <li><a href="#">Ayuda</a></li>
+                    <li><a href="#">Proceso de devolución</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="../js/generadorQR.js" defer></script>
+</body>
+</html>
