@@ -260,10 +260,9 @@
             const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
             try {
-                // Pedir permisos con preferencia de cámara trasera en móviles
                 const constraints = isMobile 
-                    ? { video: { facingMode: { ideal: "environment" } } } // Cámara trasera
-                    : { video: true }; // Cualquier cámara en escritorio
+                    ? { video: { facingMode: { ideal: "environment" } } }
+                    : { video: true };
 
                 await navigator.mediaDevices.getUserMedia(constraints);
             } catch (permissionError) {
@@ -275,11 +274,9 @@
             cameras = await Html5Qrcode.getCameras();
 
             if (cameras && cameras.length > 0) {
-                // En móviles, intentar usar la cámara trasera
                 let cameraId = cameras[currentCameraIndex].id;
                 
                 if (isMobile && cameras.length > 1) {
-                    // Buscar cámara trasera (environment)
                     const rearCamera = cameras.find(camera => 
                         camera.label.toLowerCase().includes('back') || 
                         camera.label.toLowerCase().includes('rear') ||
@@ -293,16 +290,24 @@
                 const config = {
                     fps: 10,
                     qrbox: isMobile 
-                        ? { width: 200, height: 200 } // Más pequeño en móviles
+                        ? { width: 250, height: 250 } // Marco de escaneo en móviles
                         : { width: 250, height: 250 },
                     aspectRatio: 1.0,
-                    // Mejoras para móviles
-                    experimentalFeatures: {
-                        useBarCodeDetectorIfSupported: true
+                    // ← AÑADIR ESTO para forzar dimensiones del video
+                    videoConstraints: {
+                        width: { ideal: isMobile ? 640 : 1280 },
+                        height: { ideal: isMobile ? 480 : 720 }
                     }
                 };
 
                 await html5QrCode.start(cameraId, config, onScanSuccess, onScanError);
+
+                // ← FORZAR que el contenedor sea visible
+                const readerElement = document.getElementById('reader');
+                if (readerElement) {
+                    readerElement.style.display = 'block';
+                    readerElement.style.minHeight = isMobile ? '300px' : '400px';
+                }
 
                 scannerStart.classList.add('hidden');
                 scannerActive.classList.remove('hidden');

@@ -1,4 +1,4 @@
-* {
+﻿* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -127,7 +127,7 @@ header {
     background: transparent;
 }
 
-/* ========== COLUMNA IZQUIERDA: ESC�NER ========== */
+/* ========== COLUMNA IZQUIERDA: ESCÁNER ========== */
 .scanner-column {
     background: #fff;
     border-radius: 12px;
@@ -217,74 +217,105 @@ header {
 
 /* ========== SCANNER ACTIVE ========== */
 .scanner-active {
-    flex: 1;
     display: flex;
     flex-direction: column;
+    gap: 20px;
+    padding: 24px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
 }
 
-    .scanner-active.hidden {
-        display: none;
-    }
+.scanner-active.hidden {
+    display: none;
+}
 
 .scanner-controls {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    gap: 16px;
 }
 
 .btn-close-scanner {
-    padding: 8px 16px;
+    padding: 10px 20px;
     background: #dc3545;
-    color: white;
+    color: #fff;
     border: none;
-    border-radius: 20px;
-    font-size: 0.9rem;
+    border-radius: 8px;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s;
 }
 
-    .btn-close-scanner:hover {
-        background: #c82333;
-    }
+.btn-close-scanner:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+}
 
 .scanner-instruction {
-    color: #ff8c42;
+    flex: 1;
+    text-align: center;
+    font-size: 16px;
     font-weight: 600;
-    font-size: 1rem;
+    color: #ff8c42;
+    margin: 0;
 }
 
-.qr-reader {
-    border-radius: 12px;
-    overflow: hidden;
-    border: 3px solid #ff8c42;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    margin-bottom: 1rem;
-}
-
+/* Botones de acción del escáner */
 .scanner-buttons {
     display: flex;
     justify-content: center;
-    gap: 1rem;
+    gap: 12px;
 }
 
 .btn-scanner-action {
-    padding: 10px 24px;
+    padding: 12px 24px;
     background: #ff8c42;
-    color: white;
+    color: #fff;
     border: none;
-    border-radius: 20px;
-    font-size: 0.95rem;
+    border-radius: 8px;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-    .btn-scanner-action:hover {
-        background: #ff7a2e;
-        transform: translateY(-2px);
-    }
+.btn-scanner-action:hover {
+    background: #e67a35;
+    transform: translateY(-2px);
+}
+
+/* Asegurar que el reader tenga dimensiones visibles */
+.qr-reader {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000;
+    position: relative;
+    min-height: 400px; /* ← IMPORTANTE: altura mínima */
+}
+
+/* Asegurar que el video de la cámara sea visible */
+#reader video {
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    border-radius: 12px;
+}
+
+/* Canvas del escáner */
+#reader canvas {
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+}
 
 /* ========== MANUAL INPUT ========== */
 .manual-input {
@@ -732,5 +763,36 @@ footer {
 
     .recent-scan-image {
         margin: 0 auto;
+    }
+
+    .qr-reader {
+        max-width: 100%;
+        min-height: 300px; /* ← Menor altura en móviles */
+    }
+
+    .scanner-active {
+        padding: 16px;
+    }
+
+    .scanner-controls {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .scanner-instruction {
+        text-align: center;
+    }
+
+    .btn-close-scanner {
+        width: 100%;
+    }
+
+    .scanner-buttons {
+        width: 100%;
+    }
+
+    .btn-scanner-action {
+        flex: 1;
+        justify-content: center;
     }
 }
