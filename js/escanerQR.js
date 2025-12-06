@@ -1,4 +1,18 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
+    // ========== VERIFICACIÓN INICIAL ==========
+    console.log('🚀 Iniciando escáner QR...');
+    console.log('📍 Protocolo:', window.location.protocol);
+    console.log('📍 URL:', window.location.href);
+    console.log('📷 MediaDevices disponible:', !!navigator.mediaDevices);
+    console.log('📚 Html5Qrcode disponible:', typeof Html5Qrcode !== 'undefined');
+
+    // Verificar si la librería está cargada
+    if (typeof Html5Qrcode === 'undefined') {
+        console.error('❌ La librería Html5Qrcode no se ha cargado. Verifica el script en el HTML.');
+        alert('Error: La librería del escáner QR no se ha cargado correctamente. Por favor, recarga la página.');
+        return;
+    }
+
     // ========== BASE DE DATOS DE PRODUCTOS ==========
     const productosDB = {
         '00001': { code: '00001', name: 'Juego Destornilladores', price: '26,05 €', priceNum: 26.05, image: '../images/destornilladores.jpg', type: 'compra' },
@@ -248,34 +262,51 @@
 
     // ========== FUNCIONES DEL ESCÁNER ==========
     async function startScanner() {
+        console.log('📷 Intentando iniciar escáner...');
+        
         try {
+            // Verificar soporte del navegador
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                showCameraError('Tu navegador no soporta acceso a la cámara. Usa Chrome, Firefox o Edge actualizado.');
+                console.error('❌ getUserMedia no soportado');
+                showCameraError('Tu navegador no soporta acceso a la cámara. Usa Chrome, Firefox o Safari actualizado.');
                 return;
             }
 
+            // Crear instancia del escáner
+            console.log('🔧 Creando instancia Html5Qrcode...');
             html5QrCode = new Html5Qrcode("reader");
+            console.log('✅ Instancia creada');
 
-            // Detectar si es móvil
+            // Detectar dispositivo móvil
             const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            console.log('📱 Dispositivo móvil:', isMobile);
+
+            // Solicitar permisos de cámara
+            console.log('🎥 Solicitando permisos de cámara...');
+            const constraints = isMobile 
+                ? { video: { facingMode: { ideal: "environment" } } } 
+                : { video: true };
 
             try {
-                const constraints = isMobile 
-                    ? { video: { facingMode: { ideal: "environment" } } }
-                    : { video: true };
-
-                await navigator.mediaDevices.getUserMedia(constraints);
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                console.log('✅ Permisos concedidos, stream obtenido:', stream);
+                // Detener el stream temporal (Html5Qrcode creará el suyo)
+                stream.getTracks().forEach(track => track.stop());
             } catch (permissionError) {
-                console.error('Error de permisos:', permissionError);
+                console.error('❌ Error de permisos:', permissionError);
                 showCameraError('Se denegó el acceso a la cámara. Por favor, permite el acceso en la configuración de tu navegador.');
                 return;
             }
 
+            // Obtener cámaras disponibles
+            console.log('📹 Obteniendo lista de cámaras...');
             cameras = await Html5Qrcode.getCameras();
+            console.log('📹 Cámaras encontradas:', cameras.length, cameras);
 
             if (cameras && cameras.length > 0) {
                 let cameraId = cameras[currentCameraIndex].id;
                 
+                // En móviles, buscar cámara trasera
                 if (isMobile && cameras.length > 1) {
                     const rearCamera = cameras.find(camera => 
                         camera.label.toLowerCase().includes('back') || 
@@ -284,40 +315,46 @@
                     );
                     if (rearCamera) {
                         cameraId = rearCamera.id;
+                        console.log('✅ Cámara trasera seleccionada:', rearCamera.label);
                     }
                 }
 
+                console.log('🎯 Usando cámara ID:', cameraId);
+
                 const config = {
                     fps: 10,
-                    qrbox: isMobile 
-                        ? { width: 250, height: 250 } // Marco de escaneo en móviles
-                        : { width: 250, height: 250 },
-                    aspectRatio: 1.0,
-                    // ← AÑADIR ESTO para forzar dimensiones del video
-                    videoConstraints: {
-                        width: { ideal: isMobile ? 640 : 1280 },
-                        height: { ideal: isMobile ? 480 : 720 }
-                    }
+                    qrbox: { width: 250, height: 250 },
+                    aspectRatio: 1.0
                 };
+
+                console.log('⚙️ Configuración:', config);
+                console.log('🚀 Iniciando escáner con html5QrCode.start()...');
 
                 await html5QrCode.start(cameraId, config, onScanSuccess, onScanError);
 
-                // ← FORZAR que el contenedor sea visible
+                console.log('✅ Escáner iniciado exitosamente');
+
+                // Forzar visibilidad del reader
                 const readerElement = document.getElementById('reader');
                 if (readerElement) {
                     readerElement.style.display = 'block';
                     readerElement.style.minHeight = isMobile ? '300px' : '400px';
+                    console.log('✅ Elemento #reader configurado');
                 }
 
                 scannerStart.classList.add('hidden');
                 scannerActive.classList.remove('hidden');
 
-                console.log('Escáner iniciado correctamente en modo:', isMobile ? 'móvil' : 'escritorio');
+                console.log('🎉 Escáner activo y visible');
             } else {
+                console.error('❌ No se encontraron cámaras');
                 showCameraError('No se encontraron cámaras disponibles en tu dispositivo.');
             }
         } catch (err) {
-            console.error('Error al iniciar escáner:', err);
+            console.error('❌ Error general al iniciar escáner:', err);
+            console.error('Nombre del error:', err.name);
+            console.error('Mensaje del error:', err.message);
+            console.error('Stack trace:', err.stack);
 
             let errorMessage = 'Error al iniciar la cámara.';
 
@@ -338,6 +375,8 @@
     }
 
     function showCameraError(message) {
+        console.error('🚨 Mostrando error de cámara:', message);
+        
         const errorOverlay = document.createElement('div');
         Object.assign(errorOverlay.style, {
             position: 'fixed',
@@ -391,6 +430,7 @@
                 <ul style="text-align: left; font-size: 0.85rem; color: #666; padding-left: 2rem;">
                     <li>Permite el acceso a la cámara cuando el navegador lo pida</li>
                     <li>Verifica que ninguna otra app esté usando la cámara</li>
+                    <li>Asegúrate de usar HTTPS (https://...)</li>
                     <li>Prueba refrescando la página o reiniciando el navegador</li>
                 </ul>
             </div>
@@ -413,13 +453,14 @@
     }
 
     async function stopScanner() {
+        console.log('⏹️ Deteniendo escáner...');
         if (html5QrCode) {
             try {
                 await html5QrCode.stop();
                 html5QrCode.clear();
-                console.log('Escáner detenido');
+                console.log('✅ Escáner detenido');
             } catch (err) {
-                console.error('Error al detener escáner:', err);
+                console.error('❌ Error al detener escáner:', err);
             }
         }
 
@@ -428,24 +469,29 @@
     }
 
     function onScanSuccess(decodedText, decodedResult) {
-        console.log('Código escaneado:', decodedText);
+        console.log('✅ Código QR escaneado exitosamente:', decodedText);
+        console.log('📊 Resultado completo:', decodedResult);
         stopScanner();
         processScannedCode(decodedText);
     }
 
     function onScanError(errorMessage) {
-        // Ignorar errores comunes de escaneo
+        // Ignorar errores comunes de escaneo (cuando no detecta QR)
+        // console.log('⚠️ Error de escaneo (normal si no hay QR):', errorMessage);
     }
 
     // ========== PROCESAR CÓDIGO ESCANEADO ==========
     function processScannedCode(code) {
+        console.log('🔍 Procesando código:', code);
         const product = productosDB[code];
 
         if (!product) {
+            console.warn('⚠️ Producto no encontrado:', code);
             showError(`El código "${code}" no existe en nuestra base de datos. Por favor, verifica e intenta de nuevo.`);
             return;
         }
 
+        console.log('✅ Producto encontrado:', product);
         currentScannedProduct = product;
 
         resultProductName.textContent = product.name;
@@ -466,7 +512,11 @@
     }
 
     // ========== BOTONES DE ACCIÓN ==========
-    btnStartScanner.addEventListener('click', startScanner);
+    btnStartScanner.addEventListener('click', () => {
+        console.log('🖱️ Botón "Iniciar Escáner" clickeado');
+        startScanner();
+    });
+    
     btnCloseScanner.addEventListener('click', stopScanner);
 
     btnSwitchCamera.addEventListener('click', async () => {
@@ -504,24 +554,19 @@
         }
     });
 
-    // ========== VER PRODUCTO - REDIRIGE SEGÚN EL TIPO ==========
     btnViewProduct.addEventListener('click', () => {
         if (currentScannedProduct) {
-            // Para productos de compra
             if (currentScannedProduct.type === 'compra') {
                 window.location.href = `infoCompras.html?code=${currentScannedProduct.code}`;
-            }
-            // Para productos de reparación - usar la misma página pero con parámetro type
-            else if (currentScannedProduct.type === 'reparacion') {
+            } else if (currentScannedProduct.type === 'reparacion') {
                 window.location.href = `infoCompras.html?code=${currentScannedProduct.code}&type=reparacion`;
             }
         }
     });
 
-    // ========== AÑADIR AL CARRITO - FUNCIONALIDAD COMPLETA ==========
     btnAddToCart.addEventListener('click', () => {
         if (currentScannedProduct) {
-            console.log('🛒 Intentando añadir al carrito:', currentScannedProduct);
+            console.log('🛒 Añadiendo al carrito:', currentScannedProduct);
             const success = addToCart(currentScannedProduct);
             if (success) {
                 showSuccessMessage(currentScannedProduct.name, currentScannedProduct.type);
@@ -537,61 +582,42 @@
         currentScannedProduct = null;
     });
 
-    // ========== CARRITO - MEJORADO Y CORREGIDO ==========
+    // ========== CARRITO ==========
     function addToCart(product) {
         try {
-            console.log('📦 Función addToCart iniciada con producto:', product);
-
-            // CAMBIO IMPORTANTE: Usar 'duvisoCart' en lugar de 'cart'
             let cart = [];
-            const cartData = localStorage.getItem('duvisoCart'); // ← CAMBIO AQUÍ
+            const cartData = localStorage.getItem('duvisoCart');
 
             if (cartData) {
                 try {
                     cart = JSON.parse(cartData);
-                    console.log('🛒 Carrito actual:', cart);
                 } catch (e) {
-                    console.warn('Error al parsear carrito, creando uno nuevo');
+                    console.warn('Error al parsear carrito');
                     cart = [];
                 }
             }
 
-            // Buscar si el producto ya existe en el carrito
             const existingItemIndex = cart.findIndex(item => item.code === product.code);
 
             if (existingItemIndex !== -1) {
-                // Si ya existe, incrementar cantidad
                 cart[existingItemIndex].quantity += 1;
-                console.log('✓ Producto existente, cantidad incrementada:', cart[existingItemIndex]);
             } else {
-                // Si no existe, añadir nuevo producto - FORMATO COMPATIBLE CON CARRITO.JS
                 const newItem = {
                     code: product.code,
                     name: product.name,
-                    price: product.priceNum, // ← Usar priceNum directamente
-                    priceOld: product.priceNum, // Para productos escaneados, no hay descuento
+                    price: product.priceNum,
+                    priceOld: product.priceNum,
                     discount: 0,
                     badge: product.type === 'compra' ? 'Producto nuevo' : 'Servicio de reparación',
                     image: product.image,
                     quantity: 1,
-                    type: product.type === 'reparacion' ? 'repair' : 'purchase' // ← IMPORTANTE
+                    type: product.type === 'reparacion' ? 'repair' : 'purchase'
                 };
                 cart.push(newItem);
-                console.log('✓ Nuevo producto añadido:', newItem);
             }
 
-            // Guardar en localStorage con la clave correcta
-            localStorage.setItem('duvisoCart', JSON.stringify(cart)); // ← CAMBIO AQUÍ
-            console.log('💾 Carrito guardado en localStorage:', cart);
-
-            // Verificar que se guardó correctamente
-            const verificacion = localStorage.getItem('duvisoCart'); // ← CAMBIO AQUÍ
-            console.log('🔍 Verificación de guardado:', verificacion);
-
-            // Actualizar contador del carrito
+            localStorage.setItem('duvisoCart', JSON.stringify(cart));
             updateCartCounter();
-
-            // Disparar evento personalizado para que otras páginas lo detecten
             window.dispatchEvent(new Event('cartUpdated'));
 
             return true;
@@ -601,13 +627,10 @@
         }
     }
 
-    // ========== ACTUALIZAR CONTADOR DEL CARRITO ==========
     function updateCartCounter() {
         try {
-            const cart = JSON.parse(localStorage.getItem('duvisoCart')) || []; // ← CAMBIO AQUÍ
+            const cart = JSON.parse(localStorage.getItem('duvisoCart')) || [];
             const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
-
-            console.log('🔢 Total de items en carrito:', totalItems);
 
             const cartIcon = document.querySelector('.cart-icon');
             if (cartIcon) {
@@ -638,15 +661,14 @@
                     });
                     cartIcon.style.position = 'relative';
                     cartIcon.appendChild(counter);
-                    console.log('✓ Contador del carrito actualizado:', totalItems);
                 }
             }
         } catch (error) {
-            console.error('Error al actualizar contador del carrito:', error);
+            console.error('Error al actualizar contador:', error);
         }
     }
 
-    // ========== HISTORIAL DE ESCANEOS (CON IMÁGENES Y TIPO) ==========
+    // ========== HISTORIAL DE ESCANEOS ==========
     function addToRecentScans(product) {
         const scanItem = {
             code: product.code,
@@ -726,6 +748,7 @@
     }
 
     // ========== INICIALIZAR ==========
+    console.log('✅ Inicialización completa');
     renderRecentScans();
     updateCartCounter();
 
