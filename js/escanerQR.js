@@ -793,7 +793,7 @@
                 if (type === 'compra') {
                     window.location.href = `infoCompras.html?code=${code}`;
                 } else if (type === 'reparacion') {
-                    window.location.href = `infoCompras.html?code=${code}&type=reparacion`;
+                    window.location.href = `infoReparacion.html?code=${code}`;
                 }
             });
         });
