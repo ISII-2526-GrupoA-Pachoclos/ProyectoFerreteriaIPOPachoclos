@@ -611,7 +611,7 @@
             if (currentScannedProduct.type === 'compra') {
                 window.location.href = `infoCompras.html?code=${currentScannedProduct.code}`;
             } else if (currentScannedProduct.type === 'reparacion') {
-                window.location.href = `infoCompras.html?code=${currentScannedProduct.code}&type=reparacion`;
+                window.location.href = `infoReparaciones.html?code=${currentScannedProduct.code}`;
             }
         }
     });
