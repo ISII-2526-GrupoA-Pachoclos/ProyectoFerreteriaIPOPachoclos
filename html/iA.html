@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chatbot - Duviso</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header-chatbot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #333;
+            margin: 0;
+            flex: 1;
+            text-align: center;
+        }
+
+        .btn-close {
+            padding: 8px 16px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+            .btn-close:hover {
+                background: #c82333;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            }
+
+            .btn-close:active {
+                transform: translateY(0);
+            }
+
+        .chat-container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+            textarea:focus {
+                outline: none;
+                border-color: #5a5aff;
+            }
+
+        .btn-enviar {
+            padding: 12px 24px;
+            background: #5a5aff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.3s;
+            white-space: nowrap;
+            align-self: flex-end;
+        }
+
+            .btn-enviar:hover {
+                background: #4a4aee;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(90, 90, 255, 0.3);
+            }
+
+            .btn-enviar:active {
+                transform: translateY(0);
+            }
+
+            .btn-enviar:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+                opacity: 0.6;
+            }
+
+        #respuesta {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            min-height: 100px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .loading {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+
+        .error {
+            color: #d32f2f;
+            background: #ffebee;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .status {
+            font-size: 12px;
+            color: #666;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-chatbot">
+        <h1>💬 Chatbot Duviso</h1>
+        <button class="btn-close" onclick="cerrarChatbot()">✕ Cerrar</button>
+    </div>
+
+    <div class="chat-container">
+        <div class="input-group">
+            <textarea id="mensaje" placeholder="Escribe tu pregunta aquí..."></textarea>
+            <button id="btnEnviar" class="btn-enviar" onclick="enviar()">Enviar</button>
+        </div>
+
+        <div id="respuesta"></div>
+        <div class="status" id="status"></div>
+    </div>
+
+    <script src="../js/iA.js"></script>
+    <script>
+        function cerrarChatbot() {
+            // Si está dentro de un iframe, enviar mensaje al padre para cerrar
+            if (window !== window.parent) {
+                window.parent.postMessage({ type: 'close-ia' }, '*');
+            } else {
+                // Si se abre directamente, ir al index
+                window.location.href = '../../index.html';
+            }
+        }
+
+        // Permitir cerrar con Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                cerrarChatbot();
+            }
+        });
+    </script>
+</body>
+</html>

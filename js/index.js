@@ -25,6 +25,60 @@
         window.location.href = 'html/carrito.html';
     });
 
+    // Abrir iA en overlay flotante
+    const iaButton = document.querySelector('.btn-ia');
+    let iaOverlay = null;
+
+    function openIA() {
+        if (iaOverlay) return;
+        iaOverlay = document.createElement('div');
+        iaOverlay.id = 'ia-overlay';
+        Object.assign(iaOverlay.style, {
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999
+        });
+
+        const panel = document.createElement('div');
+        Object.assign(panel.style, {
+            width: '94%', maxWidth: '800px', height: 'auto', maxHeight: '90vh', background: '#fff',
+            borderRadius: '10px', overflow: 'auto', position: 'relative', boxShadow: '0 20px 60px rgba(0,0,0,0.35)'
+        });
+
+        const closeBtn = document.createElement('button');
+        closeBtn.innerHTML = '✕';
+        Object.assign(closeBtn.style, {
+            position: 'absolute', top: '12px', right: '12px', zIndex: 2,
+            width: '42px', height: '42px', borderRadius: '50%', border: 'none',
+            background: 'rgba(0,0,0,0.7)', color: '#fff', cursor: 'pointer', fontSize: '18px'
+        });
+        closeBtn.addEventListener('click', closeIA);
+
+        const iframe = document.createElement('iframe');
+        iframe.src = 'html/iA.html';
+        iframe.title = 'Chat IA Duviso';
+        iframe.style.width = '100%';
+        iframe.style.height = '600px';
+        iframe.style.border = 'none';
+
+        panel.appendChild(closeBtn);
+        panel.appendChild(iframe);
+        iaOverlay.appendChild(panel);
+        document.body.appendChild(iaOverlay);
+
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeIA() {
+        if (!iaOverlay) return;
+        iaOverlay.remove();
+        iaOverlay = null;
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+    }
+
+    iaButton?.addEventListener('click', (e) => { e.preventDefault(); openIA(); });
+
     // Función para mostrar popup de error de administrador
     let errorAdminOverlay = null;
 
@@ -277,7 +331,7 @@
     helpButton?.addEventListener('click', (e) => { e.preventDefault(); openHelp(); });
 
     // Abrir idioma en overlay flotante
-    const languageButton = document.querySelector('.btn-header');
+    const languageButton = document.querySelector('.btn-header:not(.btn-help):not(.btn-ia):not(.btn-account)');
     let languageOverlay = null;
 
     function openLanguage() {
@@ -473,6 +527,11 @@
             setTimeout(() => {
                 openHelp();
             }, 1000);
+        } else if (lowerCommand.includes('ia') || lowerCommand.includes('inteligencia')) {
+            speak('Abriendo el chat de inteligencia artificial');
+            setTimeout(() => {
+                openIA();
+            }, 1000);
         } else if (lowerCommand.includes('idioma') || lowerCommand.includes('lengua')) {
             speak('Abriendo configuración de idioma');
             setTimeout(() => {
@@ -489,7 +548,7 @@
                 searchInput?.focus();
             }, 500);
         } else {
-            speak('Comando no reconocido. Intenta con: comprar, reparar, ofertas, carrito, mi cuenta, ayuda o idioma');
+            speak('Comando no reconocido. Intenta con: comprar, reparar, ofertas, carrito, mi cuenta, ayuda, ia o idioma');
         }
     }
 
@@ -671,6 +730,7 @@
             closeHelp();
             closeAccount();
             closeLanguage();
+            closeIA();
             closeAdminErrorPopup();
         }
     });
@@ -692,6 +752,10 @@
         }
         if (data.type === 'close-language') {
             closeLanguage();
+            return;
+        }
+        if (data.type === 'close-ia') {
+            closeIA();
             return;
         }
         if (data.type === 'language-changed') {
