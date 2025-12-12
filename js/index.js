@@ -1,10 +1,316 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
+    // ========================================
+    // FUNCIONALIDAD DE VOZ (Speech Recognition & Synthesis)
+    // ========================================
+
+    // Verificar compatibilidad del navegador
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechSynthesis = window.speechSynthesis;
+    let recognition = null;
+    let isListening = false;
+    let voiceIndicator = null;
+    let voiceText = null;
+    let recognitionTimeout = null;
+
+    // Función de síntesis de voz (Text-to-Speech) - DEFINIR PRIMERO
+    function speak(text) {
+        if (!SpeechSynthesis) {
+            console.warn('Síntesis de voz no soportada');
+            return;
+        }
+
+        // Cancelar cualquier síntesis en curso
+        SpeechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'es-ES';
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+
+        SpeechSynthesis.speak(utterance);
+    }
+
+    // Inicializar reconocimiento de voz Y crear elementos visuales PRIMERO
+    if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.lang = 'es-ES';
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.maxAlternatives = 3;
+
+        // Crear indicador visual de micrófono activo
+        voiceIndicator = document.createElement('div');
+        voiceIndicator.id = 'voice-indicator';
+        Object.assign(voiceIndicator.style, {
+            position: 'fixed',
+            bottom: '30px',
+            right: '30px',
+            width: '80px',
+            height: '80px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            display: 'none',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 10px 30px rgba(102, 126, 234, 0.5)',
+            zIndex: 10000,
+            animation: 'pulse 1.5s ease-in-out infinite'
+        });
+
+        const micIcon = document.createElement('div');
+        micIcon.innerHTML = '🎤';
+        micIcon.style.fontSize = '36px';
+        voiceIndicator.appendChild(micIcon);
+
+        voiceText = document.createElement('div');
+        voiceText.id = 'voice-text';
+        Object.assign(voiceText.style, {
+            position: 'fixed',
+            bottom: '120px',
+            right: '30px',
+            background: 'rgba(0, 0, 0, 0.85)',
+            color: '#fff',
+            padding: '15px 20px',
+            borderRadius: '10px',
+            display: 'none',
+            maxWidth: '300px',
+            fontSize: '14px',
+            zIndex: 10000,
+            fontWeight: '500',
+            textAlign: 'center'
+        });
+        voiceText.textContent = 'Escuchando...';
+
+        document.body.appendChild(voiceIndicator);
+        document.body.appendChild(voiceText);
+
+        // Agregar animación de pulso al CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0%, 100% {
+                    transform: scale(1);
+                    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+                }
+                50% {
+                    transform: scale(1.1);
+                    box-shadow: 0 10px 40px rgba(102, 126, 234, 0.8);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // Función para detener reconocimiento de voz
+    function stopVoiceRecognition() {
+        if (recognition && isListening) {
+            recognition.stop();
+        }
+        isListening = false;
+        if (voiceIndicator) voiceIndicator.style.display = 'none';
+        if (voiceText) voiceText.style.display = 'none';
+
+        // Limpiar timeout
+        if (recognitionTimeout) {
+            clearTimeout(recognitionTimeout);
+            recognitionTimeout = null;
+        }
+
+        console.log('Reconocimiento de voz detenido');
+    }
+
+    // ========================================
+    // MODO CEGUERA
+    // ========================================
+    let blindModeActive = false;
+    let pendingButtonAction = null;
+    let blindModeIndicator = null;
+
+    // Crear indicador visual de modo ceguera
+    blindModeIndicator = document.createElement('div');
+    blindModeIndicator.id = 'blind-mode-indicator';
+    Object.assign(blindModeIndicator.style, {
+        position: 'fixed',
+        top: '20px',
+        right: '20px',
+        padding: '12px 20px',
+        background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+        color: '#fff',
+        borderRadius: '25px',
+        display: 'none',
+        alignItems: 'center',
+        gap: '10px',
+        boxShadow: '0 5px 20px rgba(240, 147, 251, 0.5)',
+        zIndex: 10001,
+        fontWeight: 'bold',
+        fontSize: '14px'
+    });
+    blindModeIndicator.innerHTML = '👁️ Modo Ceguera Activo';
+    document.body.appendChild(blindModeIndicator);
+
+    function toggleBlindMode() {
+        blindModeActive = !blindModeActive;
+
+        if (blindModeActive) {
+            blindModeIndicator.style.display = 'flex';
+            speak('Modo ceguera activado. Al pulsar sobre cualquier botón, te diré su nombre y te preguntaré si deseas activarlo');
+            console.log('Modo ceguera ACTIVADO');
+        } else {
+            blindModeIndicator.style.display = 'none';
+            speak('Modo ceguera desactivado');
+            console.log('Modo ceguera DESACTIVADO');
+            pendingButtonAction = null;
+        }
+    }
+
+    function getButtonDescription(element) {
+        // Para iconos o elementos especiales primero
+        if (element.classList.contains('cart-icon')) {
+            return 'Carrito de compras';
+        }
+        if (element.classList.contains('logo')) {
+            return 'Logo, ir a inicio';
+        }
+        if (element.classList.contains('btn-account')) {
+            return 'Mi cuenta';
+        }
+        if (element.classList.contains('btn-help')) {
+            return 'Ayuda';
+        }
+        if (element.classList.contains('btn-header')) {
+            return 'Cambiar idioma';
+        }
+        if (element.classList.contains('product-card')) {
+            const productName = element.querySelector('h3')?.textContent || 'Producto';
+            return `Tarjeta de producto: ${productName}`;
+        }
+
+        // Intentar obtener descripción del botón de diferentes formas
+        if (element.textContent && element.textContent.trim()) {
+            return element.textContent.trim();
+        }
+        if (element.getAttribute('aria-label')) {
+            return element.getAttribute('aria-label');
+        }
+        if (element.getAttribute('title')) {
+            return element.getAttribute('title');
+        }
+        if (element.alt) {
+            return element.alt;
+        }
+
+        return 'Botón sin descripción';
+    }
+
+    function handleBlindModeClick(event, originalAction) {
+        console.log('handleBlindModeClick llamado, blindModeActive:', blindModeActive);
+
+        if (!blindModeActive) {
+            // Si modo ceguera no está activo, ejecutar acción normal
+            originalAction(event);
+            return;
+        }
+
+        // Prevenir acción por defecto
+        event.preventDefault();
+        event.stopPropagation();
+
+        // Obtener descripción del botón
+        const buttonDescription = getButtonDescription(event.currentTarget);
+
+        console.log('Modo ceguera - Botón clickeado:', buttonDescription);
+
+        // Guardar la acción pendiente
+        pendingButtonAction = originalAction;
+
+        // Anunciar el botón y preguntar
+        speak(`Botón: ${buttonDescription}. ¿Deseas pulsarlo? Di sí para confirmar o no para cancelar`);
+
+        // Activar reconocimiento de voz para confirmación
+        setTimeout(() => {
+            startBlindModeConfirmation();
+        }, 5000); // Esperar 5 segundos para que termine de hablar
+    }
+
+    function startBlindModeConfirmation() {
+        if (!recognition) {
+            alert('El reconocimiento de voz no está disponible');
+            return;
+        }
+
+        isListening = true;
+        if (voiceIndicator) voiceIndicator.style.display = 'flex';
+        if (voiceText) {
+            voiceText.style.display = 'block';
+            voiceText.textContent = '🎤 Esperando confirmación...';
+        }
+
+        try {
+            recognition.start();
+            console.log('Esperando confirmación de voz');
+
+            recognitionTimeout = setTimeout(() => {
+                if (isListening) {
+                    stopVoiceRecognition();
+                    speak('Tiempo agotado. Acción cancelada');
+                    pendingButtonAction = null;
+                }
+            }, 10000);
+
+        } catch (error) {
+            console.error('Error al iniciar reconocimiento:', error);
+            stopVoiceRecognition();
+        }
+    }
+
+    function processBlindModeConfirmation(command) {
+        const lowerCommand = command.toLowerCase().trim();
+        console.log('Confirmación recibida:', lowerCommand);
+
+        if (lowerCommand.includes('sí') || lowerCommand.includes('si') ||
+            lowerCommand.includes('confirmar') || lowerCommand.includes('aceptar') ||
+            lowerCommand.includes('ok') || lowerCommand.includes('vale')) {
+
+            speak('Confirmado. Ejecutando acción');
+
+            setTimeout(() => {
+                if (pendingButtonAction) {
+                    // Crear evento simulado sin modo ceguera temporalmente
+                    const tempBlindMode = blindModeActive;
+                    blindModeActive = false;
+                    pendingButtonAction(new Event('click'));
+                    blindModeActive = tempBlindMode;
+                    pendingButtonAction = null;
+                }
+            }, 1000);
+
+        } else if (lowerCommand.includes('no') || lowerCommand.includes('cancelar') ||
+            lowerCommand.includes('salir') || lowerCommand.includes('nada')) {
+
+            speak('Acción cancelada');
+            pendingButtonAction = null;
+
+        } else {
+            speak('No te he entendido. Por favor, di sí o no');
+            setTimeout(() => {
+                startBlindModeConfirmation();
+            }, 2500);
+        }
+    }
+
+    // ========================================
+    // FIN MODO CEGUERA
+    // ========================================
+
     // Navegación: logo siempre a index.html
     const logo = document.querySelector('.logo');
     if (logo) {
         logo.style.cursor = 'pointer';
-        logo.addEventListener('click', () => {
-            window.location.href = 'index.html';
+        logo.addEventListener('click', (e) => {
+            handleBlindModeClick(e, () => {
+                window.location.href = 'index.html';
+            });
         });
     }
 
@@ -21,9 +327,14 @@
     }
 
     // Placeholder carrito
-    document.querySelector('.cart-icon')?.addEventListener('click', () => {
-        window.location.href = 'html/carrito.html';
-    });
+    const cartIcon = document.querySelector('.cart-icon');
+    if (cartIcon) {
+        cartIcon.addEventListener('click', (e) => {
+            handleBlindModeClick(e, () => {
+                window.location.href = 'html/carrito.html';
+            });
+        });
+    }
 
     // Función para mostrar popup de error de administrador
     let errorAdminOverlay = null;
@@ -115,29 +426,33 @@
     actionBtns.forEach(btn => {
         const text = btn.textContent.trim().toLowerCase();
         if (text.includes('comprar herramientas')) {
-            btn.addEventListener('click', () => {
-                window.location.href = 'html/catalogoCompras.html';
+            btn.addEventListener('click', (e) => {
+                handleBlindModeClick(e, () => {
+                    window.location.href = 'html/catalogoCompras.html';
+                });
             });
         } else if (text.includes('reparar herramientas')) {
-            btn.addEventListener('click', () => {
-                window.location.href = 'html/repararHerramientas.html';
+            btn.addEventListener('click', (e) => {
+                handleBlindModeClick(e, () => {
+                    window.location.href = 'html/repararHerramientas.html';
+                });
             });
         } else if (text.includes('crear ofertas')) {
-            btn.addEventListener('click', () => {
-                // 50% de probabilidad de mostrar error de administrador
-                const isAdmin = Math.random() < 0.5;
-
-                if (isAdmin) {
-                    // Usuario es administrador, puede acceder
-                    window.location.href = 'html/crearOfertas.html';
-                } else {
-                    // Usuario no es administrador, mostrar error
-                    showAdminErrorPopup();
-                }
+            btn.addEventListener('click', (e) => {
+                handleBlindModeClick(e, () => {
+                    const isAdmin = Math.random() < 0.5;
+                    if (isAdmin) {
+                        window.location.href = 'html/crearOfertas.html';
+                    } else {
+                        showAdminErrorPopup();
+                    }
+                });
             });
         } else {
-            btn.addEventListener('click', () => {
-                console.log('Acción seleccionada:', text);
+            btn.addEventListener('click', (e) => {
+                handleBlindModeClick(e, () => {
+                    console.log('Acción seleccionada:', text);
+                });
             });
         }
     });
@@ -145,18 +460,17 @@
     // Hacer clickeables las tarjetas de productos
     const productCards = document.querySelectorAll('.product-card');
     productCards.forEach(card => {
-        // Agregar cursor pointer
         card.style.cursor = 'pointer';
 
-        // Agregar evento click
-        card.addEventListener('click', () => {
+        card.addEventListener('click', (e) => {
             const productCode = card.getAttribute('data-code');
-            if (productCode) {
-                window.location.href = `html/infoCompras.html?code=${productCode}`;
-            }
+            handleBlindModeClick(e, () => {
+                if (productCode) {
+                    window.location.href = `html/infoCompras.html?code=${productCode}`;
+                }
+            });
         });
 
-        // Agregar efecto hover
         card.addEventListener('mouseenter', () => {
             card.style.transform = 'translateY(-5px)';
             card.style.transition = 'transform 0.3s ease';
@@ -219,7 +533,14 @@
         document.body.style.overflow = '';
     }
 
-    accountButton?.addEventListener('click', (e) => { e.preventDefault(); openAccount(); });
+    if (accountButton) {
+        accountButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleBlindModeClick(e, () => {
+                openAccount();
+            });
+        });
+    }
 
     // Abrir ayuda en overlay flotante
     const helpButton = document.querySelector('.btn-help');
@@ -274,7 +595,14 @@
         document.body.style.overflow = '';
     }
 
-    helpButton?.addEventListener('click', (e) => { e.preventDefault(); openHelp(); });
+    if (helpButton) {
+        helpButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleBlindModeClick(e, () => {
+                openHelp();
+            });
+        });
+    }
 
     // Abrir idioma en overlay flotante
     const languageButton = document.querySelector('.btn-header');
@@ -331,114 +659,20 @@
     if (languageButton) {
         languageButton.addEventListener('click', (e) => {
             e.preventDefault();
-            openLanguage();
+            handleBlindModeClick(e, () => {
+                openLanguage();
+            });
         });
-    }
-
-    // ========================================
-    // FUNCIONALIDAD DE VOZ (Speech Recognition & Synthesis)
-    // ========================================
-
-    // Verificar compatibilidad del navegador
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const SpeechSynthesis = window.speechSynthesis;
-    let recognition = null;
-    let isListening = false;
-    let voiceIndicator = null;
-    let recognitionTimeout = null;
-
-    // Inicializar reconocimiento de voz
-    if (SpeechRecognition) {
-        recognition = new SpeechRecognition();
-        recognition.lang = 'es-ES';
-        recognition.continuous = true; // CAMBIADO: Mantener escuchando
-        recognition.interimResults = true; // CAMBIADO: Mostrar resultados mientras hablas
-        recognition.maxAlternatives = 3; // CAMBIADO: Más alternativas
-
-        // Crear indicador visual de micrófono activo
-        voiceIndicator = document.createElement('div');
-        voiceIndicator.id = 'voice-indicator';
-        Object.assign(voiceIndicator.style, {
-            position: 'fixed',
-            bottom: '30px',
-            right: '30px',
-            width: '80px',
-            height: '80px',
-            borderRadius: '50%',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            display: 'none',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 10px 30px rgba(102, 126, 234, 0.5)',
-            zIndex: 10000,
-            animation: 'pulse 1.5s ease-in-out infinite'
-        });
-
-        const micIcon = document.createElement('div');
-        micIcon.innerHTML = '🎤';
-        micIcon.style.fontSize = '36px';
-        voiceIndicator.appendChild(micIcon);
-
-        const voiceText = document.createElement('div');
-        voiceText.id = 'voice-text';
-        Object.assign(voiceText.style, {
-            position: 'fixed',
-            bottom: '120px',
-            right: '30px',
-            background: 'rgba(0, 0, 0, 0.85)',
-            color: '#fff',
-            padding: '15px 20px',
-            borderRadius: '10px',
-            display: 'none',
-            maxWidth: '300px',
-            fontSize: '14px',
-            zIndex: 10000,
-            fontWeight: '500',
-            textAlign: 'center'
-        });
-        voiceText.textContent = 'Escuchando...';
-
-        document.body.appendChild(voiceIndicator);
-        document.body.appendChild(voiceText);
-
-        // Agregar animación de pulso al CSS
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes pulse {
-                0%, 100% {
-                    transform: scale(1);
-                    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
-                }
-                50% {
-                    transform: scale(1.1);
-                    box-shadow: 0 10px 40px rgba(102, 126, 234, 0.8);
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
-    // Función de síntesis de voz (Text-to-Speech)
-    function speak(text) {
-        if (!SpeechSynthesis) {
-            console.warn('Síntesis de voz no soportada');
-            return;
-        }
-
-        // Cancelar cualquier síntesis en curso
-        SpeechSynthesis.cancel();
-
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'es-ES';
-        utterance.rate = 1.0;
-        utterance.pitch = 1.0;
-        utterance.volume = 1.0;
-
-        SpeechSynthesis.speak(utterance);
     }
 
     // Función para procesar comandos de voz
     function processVoiceCommand(command) {
+        // Si estamos esperando confirmación de modo ceguera
+        if (blindModeActive && pendingButtonAction) {
+            processBlindModeConfirmation(command);
+            return;
+        }
+
         const lowerCommand = command.toLowerCase().trim();
         console.log('Comando recibido:', lowerCommand);
 
@@ -553,7 +787,7 @@
                 searchInput?.focus();
             }, 500);
         } else {
-            speak('Comando no reconocido. Intenta con: comprar martillo, reparar destornillidores, o navegar a catálogo');
+            speak('Comando no reconocido. Intenta con: comprar martillo, reparar destornilladores, o navegar a catálogo');
         }
     }
 
@@ -570,9 +804,11 @@
         }
 
         isListening = true;
-        voiceIndicator.style.display = 'flex';
-        document.getElementById('voice-text').style.display = 'block';
-        document.getElementById('voice-text').textContent = '🎤 Preparando micrófono...';
+        if (voiceIndicator) voiceIndicator.style.display = 'flex';
+        if (voiceText) {
+            voiceText.style.display = 'block';
+            voiceText.textContent = '🎤 Preparando micrófono...';
+        }
 
         // Limpiar timeout anterior si existe
         if (recognitionTimeout) {
@@ -585,7 +821,7 @@
             try {
                 recognition.start();
                 console.log('Reconocimiento de voz iniciado');
-                document.getElementById('voice-text').textContent = '🎤 ¡Habla ahora!';
+                if (voiceText) voiceText.textContent = '🎤 ¡Habla ahora!';
 
                 // Timeout de seguridad: detener después de 10 segundos
                 recognitionTimeout = setTimeout(() => {
@@ -603,27 +839,8 @@
         }, 2000);
     }
 
-    // Función para detener reconocimiento de voz
-    function stopVoiceRecognition() {
-        if (recognition && isListening) {
-            recognition.stop();
-        }
-        isListening = false;
-        voiceIndicator.style.display = 'none';
-        document.getElementById('voice-text').style.display = 'none';
-
-        // Limpiar timeout
-        if (recognitionTimeout) {
-            clearTimeout(recognitionTimeout);
-            recognitionTimeout = null;
-        }
-
-        console.log('Reconocimiento de voz detenido');
-    }
-
     // Eventos del reconocimiento de voz
     if (recognition) {
-        // NUEVO: Manejar resultados intermedios
         recognition.onresult = (event) => {
             let interimTranscript = '';
             let finalTranscript = '';
@@ -639,9 +856,9 @@
 
             // Mostrar transcripción en tiempo real
             const displayText = finalTranscript || interimTranscript;
-            if (displayText) {
+            if (displayText && voiceText) {
                 console.log('Transcripción en tiempo real:', displayText);
-                document.getElementById('voice-text').textContent = `🎤 "${displayText}"`;
+                voiceText.textContent = `🎤 "${displayText}"`;
             }
 
             // Procesar comando final
@@ -669,14 +886,14 @@
             }
 
             if (event.error === 'no-speech') {
-                document.getElementById('voice-text').textContent = '⚠️ No se detectó voz';
+                if (voiceText) voiceText.textContent = '⚠️ No se detectó voz';
                 speak('No se detectó ningún comando. Intenta de nuevo.');
             } else if (event.error === 'not-allowed') {
                 alert('Permiso de micrófono denegado. Por favor, permite el acceso al micrófono en la configuración del navegador.');
             } else if (event.error === 'aborted') {
                 console.log('Reconocimiento abortado');
             } else {
-                document.getElementById('voice-text').textContent = '❌ Error al reconocer';
+                if (voiceText) voiceText.textContent = '❌ Error al reconocer';
                 speak('Error al reconocer el comando');
             }
 
@@ -693,16 +910,14 @@
             }
         };
 
-        // NUEVO: Evento cuando empieza a escuchar
         recognition.onstart = () => {
             console.log('Reconocimiento iniciado exitosamente');
-            document.getElementById('voice-text').textContent = '🎤 ¡Habla ahora!';
+            if (voiceText) voiceText.textContent = '🎤 ¡Habla ahora!';
         };
 
-        // NUEVO: Evento cuando detecta audio
         recognition.onaudiostart = () => {
             console.log('Audio detectado');
-            document.getElementById('voice-text').textContent = '🎤 Escuchando...';
+            if (voiceText) voiceText.textContent = '🎤 Escuchando...';
         };
 
         recognition.onaudioend = () => {
@@ -711,7 +926,7 @@
 
         recognition.onspeechstart = () => {
             console.log('Voz detectada');
-            document.getElementById('voice-text').textContent = '🎤 Te escucho...';
+            if (voiceText) voiceText.textContent = '🎤 Te escucho...';
         };
 
         recognition.onspeechend = () => {
@@ -720,14 +935,20 @@
     }
 
     // Detectar tecla V para activar reconocimiento de voz
+    // Detectar tecla C para activar modo ceguera
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'v' || e.key === 'V') {
-            // Verificar que no esté escribiendo en un input
-            const activeElement = document.activeElement;
-            if (activeElement.tagName !== 'INPUT' && activeElement.tagName !== 'TEXTAREA') {
-                e.preventDefault();
-                startVoiceRecognition();
-            }
+        // Verificar que no esté escribiendo en un input
+        const activeElement = document.activeElement;
+        const isTyping = activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA';
+
+        if ((e.key === 'v' || e.key === 'V') && !isTyping) {
+            e.preventDefault();
+            startVoiceRecognition();
+        }
+
+        if ((e.key === 'c' || e.key === 'C') && !isTyping) {
+            e.preventDefault();
+            toggleBlindMode();
         }
 
         if (e.key === 'Escape') {
@@ -736,6 +957,10 @@
             closeAccount();
             closeLanguage();
             closeAdminErrorPopup();
+
+            if (blindModeActive) {
+                toggleBlindMode();
+            }
         }
     });
 
@@ -760,7 +985,6 @@
         }
         if (data.type === 'language-changed') {
             console.log('Idioma cambiado a:', data.language);
-            // Aquí puedes agregar lógica adicional cuando cambie el idioma
             return;
         }
         if (data.type === 'toggle-mode') {
