@@ -221,7 +221,7 @@
         localStorage.setItem('duvisoCart', JSON.stringify(cart));
 
         // Redirigir al carrito
-        //window.location.href = 'carrito.html';
+        window.location.href = 'carrito.html';
     });
 
     // Navegación al hacer clic en el logo
