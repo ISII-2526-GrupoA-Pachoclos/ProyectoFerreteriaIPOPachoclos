@@ -136,7 +136,7 @@
     document.querySelector('.cart-icon')?.addEventListener('click', () => {
         window.location.href = 'carrito.html';
     });
-    
+
     // Abrir Mi Cuenta (overlay con iframe)
     const accountBtn = document.querySelector('.btn-account');
     let accountOverlay = null;
@@ -325,15 +325,6 @@
         }
     });
 
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            closeHelp();
-            closeAccount();
-            closeLanguage();
-            closeFilterAppliedPopup();
-        }
-    });
-
     // Filtros pills toggle con popup de confirmación
     document.querySelectorAll('.filter-pill').forEach(pill => {
         pill.addEventListener('click', () => {
@@ -493,6 +484,555 @@
         handlePriceChange(true); // Mostrar popup al soltar el slider
     });
 
+    // ========================================
+    // FUNCIONALIDAD DE VOZ (Speech Recognition & Synthesis)
+    // ========================================
+
+    // Verificar compatibilidad del navegador
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechSynthesis = window.speechSynthesis;
+    let recognition = null;
+    let isListening = false;
+    let voiceIndicator = null;
+    let recognitionTimeout = null;
+
+    // Inicializar reconocimiento de voz
+    if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.lang = 'es-ES';
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.maxAlternatives = 3;
+
+        // Crear indicador visual de micrófono activo
+        voiceIndicator = document.createElement('div');
+        voiceIndicator.id = 'voice-indicator';
+        Object.assign(voiceIndicator.style, {
+            position: 'fixed',
+            bottom: '30px',
+            right: '30px',
+            width: '80px',
+            height: '80px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            display: 'none',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 10px 30px rgba(102, 126, 234, 0.5)',
+            zIndex: 10001,
+            animation: 'pulse 1.5s ease-in-out infinite'
+        });
+
+        const micIcon = document.createElement('div');
+        micIcon.innerHTML = '🎤';
+        micIcon.style.fontSize = '36px';
+        voiceIndicator.appendChild(micIcon);
+
+        const voiceText = document.createElement('div');
+        voiceText.id = 'voice-text';
+        Object.assign(voiceText.style, {
+            position: 'fixed',
+            bottom: '120px',
+            right: '30px',
+            background: 'rgba(0, 0, 0, 0.85)',
+            color: '#fff',
+            padding: '15px 20px',
+            borderRadius: '10px',
+            display: 'none',
+            maxWidth: '300px',
+            fontSize: '14px',
+            zIndex: 10001,
+            fontWeight: '500',
+            textAlign: 'center'
+        });
+        voiceText.textContent = 'Escuchando...';
+
+        document.body.appendChild(voiceIndicator);
+        document.body.appendChild(voiceText);
+
+        // Agregar animación de pulso al CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0%, 100% {
+                    transform: scale(1);
+                    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+                }
+                50% {
+                    transform: scale(1.1);
+                    box-shadow: 0 10px 40px rgba(102, 126, 234, 0.8);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // Función de síntesis de voz (Text-to-Speech)
+    function speak(text) {
+        if (!SpeechSynthesis) {
+            console.warn('Síntesis de voz no soportada');
+            return;
+        }
+
+        SpeechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'es-ES';
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+
+        SpeechSynthesis.speak(utterance);
+    }
+
+    // Función para procesar comandos de voz en catálogo de compras
+    // Función para procesar comandos de voz en catálogo de compras
+    function processVoiceCommand(command) {
+        const lowerCommand = command.toLowerCase().trim();
+        console.log('Comando recibido en Catálogo:', lowerCommand);
+
+        // Comandos de navegación
+        if (lowerCommand.includes('inicio') || lowerCommand.includes('principal') || lowerCommand.includes('home')) {
+            speak('Volviendo a la página principal');
+            setTimeout(() => {
+                window.location.href = '../index.html';
+            }, 800);
+        } else if (lowerCommand.includes('reparar')) {
+            speak('Navegando a reparar herramientas');
+            setTimeout(() => {
+                window.location.href = 'repararHerramientas.html';
+            }, 800);
+        } else if (lowerCommand.includes('ofertas') || lowerCommand.includes('crear ofertas')) {
+            speak('Navegando a crear ofertas');
+            setTimeout(() => {
+                window.location.href = 'crearOfertas.html';
+            }, 800);
+        } else if (lowerCommand.includes('carrito') || lowerCommand.includes('carro')) {
+            speak('Abriendo carrito de compras');
+            setTimeout(() => {
+                window.location.href = 'carrito.html';
+            }, 800);
+        } else if (lowerCommand.includes('cuenta') || lowerCommand.includes('mi cuenta')) {
+            speak('Abriendo tu cuenta');
+            setTimeout(() => {
+                openAccount();
+            }, 800);
+        } else if (lowerCommand.includes('ayuda')) {
+            speak('Abriendo la ayuda');
+            setTimeout(() => {
+                openHelp();
+            }, 800);
+        } else if (lowerCommand.includes('idioma')) {
+            speak('Abriendo configuración de idioma');
+            setTimeout(() => {
+                openLanguage();
+            }, 800);
+        }
+        // Comandos de ordenamiento
+        else if (lowerCommand.includes('más nuevo') || lowerCommand.includes('mas nuevo') || lowerCommand.includes('nuevos')) {
+            speak('Ordenando por más nuevos');
+            currentSort = 'newest';
+            btnControls.forEach(b => b.classList.remove('active'));
+            btnControls[0]?.classList.add('active');
+            updateProductsView(true);
+        } else if (lowerCommand.includes('precio ascendente') || lowerCommand.includes('menor precio') || lowerCommand.includes('más barato') || lowerCommand.includes('mas barato')) {
+            speak('Ordenando por precio ascendente');
+            currentSort = 'price-asc';
+            btnControls.forEach(b => b.classList.remove('active'));
+            btnControls[1]?.classList.add('active');
+            updateProductsView(true);
+        } else if (lowerCommand.includes('precio descendente') || lowerCommand.includes('mayor precio') || lowerCommand.includes('más caro') || lowerCommand.includes('mas caro')) {
+            speak('Ordenando por precio descendente');
+            currentSort = 'price-desc';
+            btnControls.forEach(b => b.classList.remove('active'));
+            btnControls[2]?.classList.add('active');
+            updateProductsView(true);
+        } else if (lowerCommand.includes('mejor valorado') || lowerCommand.includes('valoración') || lowerCommand.includes('valoracion')) {
+            speak('Ordenando por mejor valorados');
+            currentSort = 'rating';
+            btnControls.forEach(b => b.classList.remove('active'));
+            btnControls[3]?.classList.add('active');
+            updateProductsView(true);
+        }
+        // COMANDOS PARA FILTRO DE PRECIO POR VOZ (CON CONVERSIÓN DE PALABRAS A NÚMEROS)
+        else if (lowerCommand.includes('filtrar precio') || lowerCommand.includes('filtro de precio') || lowerCommand.includes('precio entre')) {
+            // Extraer números del comando (dígitos o palabras)
+            const numbers = extractNumbers(lowerCommand);
+            if (numbers && numbers.length >= 2) {
+                const min = numbers[0];
+                const max = numbers[1];
+
+                if (priceMinInput) priceMinInput.value = min;
+                if (priceMaxInput) priceMaxInput.value = max;
+                if (priceSlider) priceSlider.value = max;
+
+                speak(`Filtrando productos entre ${min} y ${max} euros`);
+                updateProductsView(true);
+            } else if (numbers && numbers.length === 1) {
+                const price = numbers[0];
+                if (priceMaxInput) priceMaxInput.value = price;
+                if (priceSlider) priceSlider.value = price;
+
+                speak(`Filtrando productos hasta ${price} euros`);
+                updateProductsView(true);
+            } else {
+                speak('Por favor, especifica un rango de precio. Por ejemplo: filtrar precio entre diez y cincuenta');
+            }
+        } else if (lowerCommand.includes('precio máximo') || lowerCommand.includes('precio maximo') || lowerCommand.includes('hasta')) {
+            const numbers = extractNumbers(lowerCommand);
+            if (numbers && numbers.length > 0) {
+                const max = numbers[0];
+                if (priceMaxInput) priceMaxInput.value = max;
+                if (priceSlider) priceSlider.value = max;
+
+                speak(`Filtrando productos hasta ${max} euros`);
+                updateProductsView(true);
+            } else {
+                speak('Por favor, especifica un precio máximo. Por ejemplo: precio máximo cincuenta');
+            }
+        } else if (lowerCommand.includes('precio mínimo') || lowerCommand.includes('precio minimo') || lowerCommand.includes('desde')) {
+            const numbers = extractNumbers(lowerCommand);
+            if (numbers && numbers.length > 0) {
+                const min = numbers[0];
+                if (priceMinInput) priceMinInput.value = min;
+
+                speak(`Filtrando productos desde ${min} euros`);
+                updateProductsView(true);
+            } else {
+                speak('Por favor, especifica un precio mínimo. Por ejemplo: precio mínimo diez');
+            }
+        } else if (lowerCommand.includes('quitar filtro') || lowerCommand.includes('limpiar filtro') || lowerCommand.includes('borrar filtro') || lowerCommand.includes('resetear filtro')) {
+            if (priceMinInput) priceMinInput.value = '';
+            if (priceMaxInput) priceMaxInput.value = '';
+            if (priceSlider) priceSlider.value = 100;
+
+            speak('Filtros de precio eliminados');
+            updateProductsView(true);
+        } else if (lowerCommand.includes('productos baratos') || lowerCommand.includes('más baratos') || lowerCommand.includes('mas baratos')) {
+            if (priceMinInput) priceMinInput.value = '';
+            if (priceMaxInput) priceMaxInput.value = '15';
+            if (priceSlider) priceSlider.value = 15;
+
+            speak('Mostrando productos hasta 15 euros');
+            updateProductsView(true);
+        } else if (lowerCommand.includes('productos caros') || lowerCommand.includes('más caros') || lowerCommand.includes('mas caros')) {
+            if (priceMinInput) priceMinInput.value = '20';
+            if (priceMaxInput) priceMaxInput.value = '';
+            if (priceSlider) priceSlider.value = 100;
+
+            speak('Mostrando productos desde 20 euros');
+            updateProductsView(true);
+        } else if (lowerCommand.includes('rango medio') || lowerCommand.includes('precio medio')) {
+            if (priceMinInput) priceMinInput.value = '10';
+            if (priceMaxInput) priceMaxInput.value = '25';
+            if (priceSlider) priceSlider.value = 25;
+
+            speak('Mostrando productos entre 10 y 25 euros');
+            updateProductsView(true);
+        }
+        // Comandos de productos específicos
+        else if (lowerCommand.includes('destornillador')) {
+            speak('Abriendo información del juego de destornilladores');
+            setTimeout(() => {
+                window.location.href = 'infoCompras.html?code=00001';
+            }, 800);
+        } else if (lowerCommand.includes('martillo')) {
+            speak('Abriendo información del martillo');
+            setTimeout(() => {
+                window.location.href = 'infoCompras.html?code=00002';
+            }, 800);
+        } else if (lowerCommand.includes('alicate')) {
+            speak('Abriendo información de los alicates');
+            setTimeout(() => {
+                window.location.href = 'infoCompras.html?code=00003';
+            }, 800);
+        } else if (lowerCommand.includes('llave inglesa') || lowerCommand.includes('inglesa')) {
+            speak('Abriendo información de la llave inglesa');
+            setTimeout(() => {
+                window.location.href = 'infoCompras.html?code=00004';
+            }, 800);
+        } else if (lowerCommand.includes('cutter')) {
+            speak('Abriendo información del cutter profesional');
+            setTimeout(() => {
+                window.location.href = 'infoCompras.html?code=00005';
+            }, 800);
+        } else if (lowerCommand.includes('llaves allen') || lowerCommand.includes('allen')) {
+            speak('Abriendo información del juego de llaves Allen');
+            setTimeout(() => {
+                window.location.href = 'infoCompras.html?code=00006';
+            }, 800);
+        } else if (lowerCommand.includes('comandos') || lowerCommand.includes('qué puedo decir') || lowerCommand.includes('que puedo decir')) {
+            speak('Puedes decir: precio máximo quince, filtrar precio entre diez y treinta, productos baratos, o buscar productos por nombre');
+        } else {
+            speak('Comando no reconocido. Intenta con: precio máximo quince, o filtrar precio entre diez y treinta');
+        }
+    }
+
+    // Función para iniciar reconocimiento de voz
+    function startVoiceRecognition() {
+        if (!recognition) {
+            alert('El reconocimiento de voz no está disponible en tu navegador. Prueba con Chrome, Edge o Safari.');
+            return;
+        }
+
+        if (isListening) {
+            stopVoiceRecognition();
+            return;
+        }
+
+        isListening = true;
+        voiceIndicator.style.display = 'flex';
+        document.getElementById('voice-text').style.display = 'block';
+        document.getElementById('voice-text').textContent = '🎤 Preparando micrófono...';
+
+        if (recognitionTimeout) {
+            clearTimeout(recognitionTimeout);
+        }
+
+        speak('Te escucho. ¿Qué quieres hacer?');
+
+        setTimeout(() => {
+            try {
+                recognition.start();
+                console.log('Reconocimiento de voz iniciado en Catálogo');
+                document.getElementById('voice-text').textContent = '🎤 ¡Habla ahora!';
+
+                recognitionTimeout = setTimeout(() => {
+                    if (isListening) {
+                        console.log('Timeout alcanzado en Catálogo');
+                        stopVoiceRecognition();
+                        speak('Tiempo de espera agotado');
+                    }
+                }, 10000);
+            } catch (error) {
+                console.error('Error al iniciar reconocimiento en Catálogo:', error);
+                stopVoiceRecognition();
+            }
+        }, 2000);
+    }
+
+    // Función para detener reconocimiento de voz
+    function stopVoiceRecognition() {
+        if (recognition && isListening) {
+            recognition.stop();
+        }
+        isListening = false;
+        voiceIndicator.style.display = 'none';
+        document.getElementById('voice-text').style.display = 'none';
+
+        if (recognitionTimeout) {
+            clearTimeout(recognitionTimeout);
+            recognitionTimeout = null;
+        }
+
+        console.log('Reconocimiento de voz detenido en Catálogo');
+    }
+
+    // Eventos del reconocimiento de voz
+    if (recognition) {
+        recognition.onresult = (event) => {
+            let interimTranscript = '';
+            let finalTranscript = '';
+
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                const transcript = event.results[i][0].transcript;
+                if (event.results[i].isFinal) {
+                    finalTranscript += transcript;
+                } else {
+                    interimTranscript += transcript;
+                }
+            }
+
+            const displayText = finalTranscript || interimTranscript;
+            if (displayText) {
+                console.log('Transcripción en tiempo real (Catálogo):', displayText);
+                document.getElementById('voice-text').textContent = `🎤 "${displayText}"`;
+            }
+
+            if (finalTranscript) {
+                console.log('Transcripción final (Catálogo):', finalTranscript);
+
+                if (recognitionTimeout) {
+                    clearTimeout(recognitionTimeout);
+                }
+
+                setTimeout(() => {
+                    processVoiceCommand(finalTranscript);
+                    stopVoiceRecognition();
+                }, 300);
+            }
+        };
+
+        recognition.onerror = (event) => {
+            console.error('Error en reconocimiento de voz (Catálogo):', event.error);
+
+            if (recognitionTimeout) {
+                clearTimeout(recognitionTimeout);
+            }
+
+            if (event.error === 'no-speech') {
+                document.getElementById('voice-text').textContent = '⚠️ No se detectó voz';
+                speak('No se detectó ningún comando. Intenta de nuevo.');
+            } else if (event.error === 'not-allowed') {
+                alert('Permiso de micrófono denegado. Por favor, permite el acceso al micrófono.');
+            } else if (event.error === 'aborted') {
+                console.log('Reconocimiento abortado');
+            } else {
+                document.getElementById('voice-text').textContent = '❌ Error al reconocer';
+                speak('Error al reconocer el comando');
+            }
+
+            setTimeout(() => {
+                stopVoiceRecognition();
+            }, 2000);
+        };
+
+        recognition.onend = () => {
+            console.log('Evento onend disparado (Catálogo)');
+            if (isListening) {
+                console.log('Reconocimiento terminó inesperadamente (Catálogo)');
+                stopVoiceRecognition();
+            }
+        };
+
+        recognition.onstart = () => {
+            console.log('Reconocimiento iniciado exitosamente (Catálogo)');
+            document.getElementById('voice-text').textContent = '🎤 ¡Habla ahora!';
+        };
+
+        recognition.onaudiostart = () => {
+            console.log('Audio detectado (Catálogo)');
+            document.getElementById('voice-text').textContent = '🎤 Escuchando...';
+        };
+
+        recognition.onspeechstart = () => {
+            console.log('Voz detectada (Catálogo)');
+            document.getElementById('voice-text').textContent = '🎤 Te escucho...';
+        };
+    }
+
+    // Detectar tecla V para activar reconocimiento de voz
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'v' || e.key === 'V') {
+            const activeElement = document.activeElement;
+            if (activeElement.tagName !== 'INPUT' && activeElement.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                startVoiceRecognition();
+            }
+        }
+
+        if (e.key === 'Escape') {
+            stopVoiceRecognition();
+            closeHelp();
+            closeAccount();
+            closeLanguage();
+            closeFilterAppliedPopup();
+        }
+    });
+
+    // ========================================
+    // FIN FUNCIONALIDAD DE VOZ
+    // ========================================
+
     // Renderizado inicial (sin popup)
     updateProductsView(false);
+        // Función para convertir números en palabras a números
+        function wordsToNumber(text) {
+            const numberWords = {
+                // Números básicos
+                'cero': 0, 'uno': 1, 'dos': 2, 'tres': 3, 'cuatro': 4,
+                'cinco': 5, 'seis': 6, 'siete': 7, 'ocho': 8, 'nueve': 9,
+                'diez': 10, 'once': 11, 'doce': 12, 'trece': 13, 'catorce': 14,
+                'quince': 15, 'dieciséis': 16, 'dieciseis': 16, 'diecisiete': 17, 
+                'dieciocho': 18, 'diecinueve': 19,
+                // Decenas
+                'veinte': 20, 'veintiuno': 21, 'veintidós': 22, 'veintidos': 22,
+                'veintitrés': 23, 'veintitres': 23, 'veinticuatro': 24,
+                'veinticinco': 25, 'veintiséis': 26, 'veintiseis': 26,
+                'veintisiete': 27, 'veintiocho': 28, 'veintinueve': 29,
+                'treinta': 30, 'cuarenta': 40, 'cincuenta': 50,
+                'sesenta': 60, 'setenta': 70, 'ochenta': 80, 'noventa': 90,
+                // Centenas
+                'cien': 100, 'ciento': 100, 'doscientos': 200, 'trescientos': 300,
+                'cuatrocientos': 400, 'quinientos': 500, 'seiscientos': 600,
+                'setecientos': 700, 'ochocientos': 800, 'novecientos': 900
+            };
+
+            // Convertir a minúsculas y limpiar
+            const lowerText = text.toLowerCase().trim();
+            
+            // Primero intentar buscar números directos (dígitos)
+            const directNumbers = lowerText.match(/\d+/g);
+            if (directNumbers && directNumbers.length > 0) {
+                return directNumbers.map(n => parseInt(n));
+            }
+
+            // Buscar palabras de números en el texto
+            const foundNumbers = [];
+            const words = lowerText.split(/\s+/);
+            
+            let i = 0;
+            while (i < words.length) {
+                let currentNumber = 0;
+                let hasNumber = false;
+
+                // Intentar construir un número compuesto
+                while (i < words.length) {
+                    const word = words[i];
+                    
+                    // Verificar si es una palabra de número simple
+                    if (numberWords.hasOwnProperty(word)) {
+                        const value = numberWords[word];
+                        
+                        if (value >= 100) {
+                            // Centenas
+                            currentNumber += value;
+                        } else if (value >= 10 && value < 100) {
+                            // Decenas
+                            currentNumber += value;
+                        } else {
+                            // Unidades
+                            currentNumber += value;
+                        }
+                        hasNumber = true;
+                        i++;
+                        
+                        // Verificar si la siguiente palabra es "y" para números compuestos
+                        if (i < words.length && words[i] === 'y') {
+                            i++; // saltar "y"
+                            continue;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+
+                if (hasNumber) {
+                    foundNumbers.push(currentNumber);
+                } else {
+                    i++;
+                }
+            }
+
+            return foundNumbers.length > 0 ? foundNumbers : null;
+        }
+
+        // Función auxiliar para extraer números (dígitos o palabras) de un comando
+        function extractNumbers(command) {
+            const lowerCommand = command.toLowerCase().trim();
+            
+            // Primero intentar extraer números como dígitos
+            const digitNumbers = lowerCommand.match(/\d+/g);
+            if (digitNumbers && digitNumbers.length > 0) {
+                return digitNumbers.map(n => parseInt(n));
+            }
+
+            // Si no hay dígitos, intentar extraer números como palabras
+            const wordNumbers = wordsToNumber(lowerCommand);
+            if (wordNumbers && wordNumbers.length > 0) {
+                return wordNumbers;
+            }
+
+            return null;
+        }
 });

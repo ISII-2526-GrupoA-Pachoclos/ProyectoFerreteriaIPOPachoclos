@@ -164,37 +164,57 @@
         document.body.style.overflow = '';
     }
 
-    // Navegación entre interfaces
-    const actionBtns = document.querySelectorAll('.action-btn');
-    actionBtns.forEach(btn => {
-        const text = btn.textContent.trim().toLowerCase();
-        if (text.includes('comprar herramientas')) {
-            btn.addEventListener('click', () => {
-                window.location.href = 'html/catalogoCompras.html';
-            });
-        } else if (text.includes('reparar herramientas')) {
-            btn.addEventListener('click', () => {
-                window.location.href = 'html/repararHerramientas.html';
-            });
-        } else if (text.includes('crear ofertas')) {
-            btn.addEventListener('click', () => {
-                // 50% de probabilidad de mostrar error de administrador
-                const isAdmin = Math.random() < 0.5;
+    // Navegación entre interfaces - ACTUALIZADO CON IDs ESPECÍFICOS
+    const btnComprar = document.getElementById('btn-comprar');
+    const btnReparar = document.getElementById('btn-reparar');
+    const btnOfertas = document.getElementById('btn-ofertas');
+    const btnGenerarQR = document.getElementById('btn-generar-qr');
+    const btnEscanearQR = document.getElementById('btn-escanear-qr');
 
-                if (isAdmin) {
-                    // Usuario es administrador, puede acceder
-                    window.location.href = 'html/crearOfertas.html';
-                } else {
-                    // Usuario no es administrador, mostrar error
-                    showAdminErrorPopup();
-                }
-            });
-        } else {
-            btn.addEventListener('click', () => {
-                console.log('Acción seleccionada:', text);
-            });
-        }
-    });
+    // Comprar Herramientas
+    if (btnComprar) {
+        btnComprar.addEventListener('click', () => {
+            window.location.href = 'html/catalogoCompras.html';
+        });
+    }
+
+    // Reparar Herramientas
+    if (btnReparar) {
+        btnReparar.addEventListener('click', () => {
+            window.location.href = 'html/repararHerramientas.html';
+        });
+    }
+
+    // Crear Ofertas
+    if (btnOfertas) {
+        btnOfertas.addEventListener('click', () => {
+            // 50% de probabilidad de mostrar error de administrador
+            const isAdmin = Math.random() < 0.5;
+
+            if (isAdmin) {
+                // Usuario es administrador, puede acceder
+                window.location.href = 'html/crearOfertas.html';
+            } else {
+                // Usuario no es administrador, mostrar error
+                showAdminErrorPopup();
+            }
+        });
+    }
+
+    // NUEVOS BOTONES QR
+    // Generar QR
+    if (btnGenerarQR) {
+        btnGenerarQR.addEventListener('click', () => {
+            window.location.href = 'html/generadorQR.html';
+        });
+    }
+
+    // Escanear QR
+    if (btnEscanearQR) {
+        btnEscanearQR.addEventListener('click', () => {
+            window.location.href = 'html/escanerQR.html';
+        });
+    }
 
     // Hacer clickeables las tarjetas de productos
     const productCards = document.querySelectorAll('.product-card');
@@ -405,9 +425,9 @@
     if (SpeechRecognition) {
         recognition = new SpeechRecognition();
         recognition.lang = 'es-ES';
-        recognition.continuous = true; // CAMBIADO: Mantener escuchando
-        recognition.interimResults = true; // CAMBIADO: Mostrar resultados mientras hablas
-        recognition.maxAlternatives = 3; // CAMBIADO: Más alternativas
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.maxAlternatives = 3;
 
         // Crear indicador visual de micrófono activo
         voiceIndicator = document.createElement('div');
@@ -479,7 +499,6 @@
             return;
         }
 
-        // Cancelar cualquier síntesis en curso
         SpeechSynthesis.cancel();
 
         const utterance = new SpeechSynthesisUtterance(text);
@@ -491,12 +510,11 @@
         SpeechSynthesis.speak(utterance);
     }
 
-    // Función para procesar comandos de voz
+    // Función para procesar comandos de voz - ACTUALIZADO CON COMANDOS QR
     function processVoiceCommand(command) {
         const lowerCommand = command.toLowerCase().trim();
         console.log('Comando recibido:', lowerCommand);
 
-        // Comandos para navegar a diferentes interfaces
         if (lowerCommand.includes('comprar') || lowerCommand.includes('catálogo') || lowerCommand.includes('catalogo') || lowerCommand.includes('compra')) {
             speak('Navegando a comprar herramientas');
             setTimeout(() => {
@@ -511,6 +529,16 @@
             speak('Navegando a crear ofertas');
             setTimeout(() => {
                 window.location.href = 'html/crearOfertas.html';
+            }, 1000);
+        } else if (lowerCommand.includes('generar') && (lowerCommand.includes('qr') || lowerCommand.includes('código'))) {
+            speak('Navegando al generador de códigos QR');
+            setTimeout(() => {
+                window.location.href = 'html/generadorQR.html';
+            }, 1000);
+        } else if (lowerCommand.includes('escanear') && (lowerCommand.includes('qr') || lowerCommand.includes('código'))) {
+            speak('Navegando al escáner de códigos QR');
+            setTimeout(() => {
+                window.location.href = 'html/escanerQR.html';
             }, 1000);
         } else if (lowerCommand.includes('carrito') || lowerCommand.includes('carro') || lowerCommand.includes('cesta')) {
             speak('Navegando al carrito de compras');
@@ -548,7 +576,7 @@
                 searchInput?.focus();
             }, 500);
         } else {
-            speak('Comando no reconocido. Intenta con: comprar, reparar, ofertas, carrito, mi cuenta, ayuda, ia o idioma');
+            speak('Comando no reconocido. Intenta con: comprar, reparar, ofertas, generar QR, escanear QR, carrito, mi cuenta, ayuda o idioma');
         }
     }
 
@@ -569,7 +597,6 @@
         document.getElementById('voice-text').style.display = 'block';
         document.getElementById('voice-text').textContent = '🎤 Preparando micrófono...';
 
-        // Limpiar timeout anterior si existe
         if (recognitionTimeout) {
             clearTimeout(recognitionTimeout);
         }
@@ -582,7 +609,6 @@
                 console.log('Reconocimiento de voz iniciado');
                 document.getElementById('voice-text').textContent = '🎤 ¡Habla ahora!';
 
-                // Timeout de seguridad: detener después de 10 segundos
                 recognitionTimeout = setTimeout(() => {
                     if (isListening) {
                         console.log('Timeout alcanzado, deteniendo reconocimiento');
@@ -607,7 +633,6 @@
         voiceIndicator.style.display = 'none';
         document.getElementById('voice-text').style.display = 'none';
 
-        // Limpiar timeout
         if (recognitionTimeout) {
             clearTimeout(recognitionTimeout);
             recognitionTimeout = null;
@@ -618,7 +643,6 @@
 
     // Eventos del reconocimiento de voz
     if (recognition) {
-        // NUEVO: Manejar resultados intermedios
         recognition.onresult = (event) => {
             let interimTranscript = '';
             let finalTranscript = '';
@@ -632,18 +656,15 @@
                 }
             }
 
-            // Mostrar transcripción en tiempo real
             const displayText = finalTranscript || interimTranscript;
             if (displayText) {
                 console.log('Transcripción en tiempo real:', displayText);
                 document.getElementById('voice-text').textContent = `🎤 "${displayText}"`;
             }
 
-            // Procesar comando final
             if (finalTranscript) {
                 console.log('Transcripción final:', finalTranscript);
 
-                // Limpiar timeout
                 if (recognitionTimeout) {
                     clearTimeout(recognitionTimeout);
                 }
@@ -658,7 +679,6 @@
         recognition.onerror = (event) => {
             console.error('Error en reconocimiento de voz:', event.error);
 
-            // Limpiar timeout
             if (recognitionTimeout) {
                 clearTimeout(recognitionTimeout);
             }
@@ -688,13 +708,11 @@
             }
         };
 
-        // NUEVO: Evento cuando empieza a escuchar
         recognition.onstart = () => {
             console.log('Reconocimiento iniciado exitosamente');
             document.getElementById('voice-text').textContent = '🎤 ¡Habla ahora!';
         };
 
-        // NUEVO: Evento cuando detecta audio
         recognition.onaudiostart = () => {
             console.log('Audio detectado');
             document.getElementById('voice-text').textContent = '🎤 Escuchando...';
@@ -717,7 +735,6 @@
     // Detectar tecla V para activar reconocimiento de voz
     document.addEventListener('keydown', (e) => {
         if (e.key === 'v' || e.key === 'V') {
-            // Verificar que no esté escribiendo en un input
             const activeElement = document.activeElement;
             if (activeElement.tagName !== 'INPUT' && activeElement.tagName !== 'TEXTAREA') {
                 e.preventDefault();
@@ -734,10 +751,6 @@
             closeAdminErrorPopup();
         }
     });
-
-    // ========================================
-    // FIN FUNCIONALIDAD DE VOZ
-    // ========================================
 
     window.addEventListener('message', (ev) => {
         if (!ev?.data) return;
@@ -760,7 +773,6 @@
         }
         if (data.type === 'language-changed') {
             console.log('Idioma cambiado a:', data.language);
-            // Aquí puedes agregar lógica adicional cuando cambie el idioma
             return;
         }
         if (data.type === 'toggle-mode') {
