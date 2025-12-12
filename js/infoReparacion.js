@@ -1,8 +1,8 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
-    // Base de datos de productos para reparación
+    // Base de datos de productos para reparación - ACTUALIZADA CON CÓDIGOS R
     const productsData = {
-        '00001': {
-            name: 'Juego Destornilladores',
+        'R0001': {  // ← Cambiar de '00001' a 'R0001'
+            name: 'Reparación Destornilladores',
             image: '../images/destornilladores.jpg',
             price: 5.45,
             days: '1-3 días',
@@ -15,8 +15,8 @@
                 }
             ]
         },
-        '00002': {
-            name: 'Martillo Bellota',
+        'R0002': {  // ← Cambiar de '00002' a 'R0002'
+            name: 'Reparación Martillo',
             image: '../images/martillo.jpg',
             price: 9.75,
             days: '1-5 días',
@@ -36,8 +36,8 @@
                 }
             ]
         },
-        '00003': {
-            name: 'Alicates',
+        'R0003': {  // ← Cambiar de '00003' a 'R0003'
+            name: 'Reparación Alicates',
             image: '../images/alicates.jpg',
             price: 11.89,
             days: '1-3 días',
@@ -57,8 +57,8 @@
                 }
             ]
         },
-        '00004': {
-            name: 'Llave Inglesa',
+        'R0004': {  // ← Cambiar de '00004' a 'R0004'
+            name: 'Reparación Llave Inglesa',
             image: '../images/llave-inglesa.jpg',
             price: 14.37,
             days: '1-3 días',
@@ -78,8 +78,8 @@
                 }
             ]
         },
-        '00005': {
-            name: 'Cutter Profesional',
+        'R0005': {  // ← Cambiar de '00005' a 'R0005'
+            name: 'Reparación Cutter',
             image: '../images/cutter.jpg',
             price: 2.95,
             days: '1-3 días',
@@ -93,10 +93,10 @@
                 }
             ]
         },
-        '00006': {
-            name: 'Juego de Llaves Allen',
+        'R0006': {  // ← Cambiar de '00006' a 'R0006'
+            name: 'Reparación Llaves Allen',
             image: '../images/llaves.jpg',
-            price: 8.69,
+            price: 6.65,
             days: '1-3 días',
             description: [
                 {
@@ -118,10 +118,10 @@
 
     // Obtener el código del producto desde la URL
     const urlParams = new URLSearchParams(window.location.search);
-    const productCode = urlParams.get('code') || '00001';
+    const productCode = urlParams.get('code') || 'R0001';  // ← Cambiar default a 'R0001'
 
     // Cargar datos del producto
-    const product = productsData[productCode] || productsData['00001'];
+    const product = productsData[productCode] || productsData['R0001'];  // ← Cambiar fallback a 'R0001'
 
     // Actualizar la interfaz con los datos del producto
     document.getElementById('product-name').textContent = product.name;

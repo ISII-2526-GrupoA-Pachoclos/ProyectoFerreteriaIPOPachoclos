@@ -1,0 +1,562 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    background: #f0f0f0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ========== HEADER ========== */
+header {
+    background: #ff8c42;
+    padding: 12px 32px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+    .logo:hover {
+        transform: scale(1.05);
+    }
+
+.logo-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .logo-circle img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.page-title {
+    font-size: 1.3rem;
+    color: #fff;
+    font-weight: 600;
+}
+
+.header-actions {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+}
+
+.btn-header {
+    padding: 8px 16px;
+    background: transparent;
+    color: white;
+    border: 2px solid #fff;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+    font-weight: 700;
+}
+
+    .btn-header:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+.btn-account {
+    background: #5a5aff;
+    border-color: #5a5aff;
+}
+
+    .btn-account:hover {
+        background: #4a4aee;
+    }
+
+.cart-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #5a5aff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .cart-icon:hover {
+        background: #4a4aee;
+        transform: scale(1.1);
+    }
+
+/* ========== MAIN CONTAINER ========== */
+.main-container {
+    flex: 1;
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2rem;
+    background: #fff;
+}
+
+/* ========== GENERATOR CARD ========== */
+.generator-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+    .generator-card h2 {
+        font-size: 1.8rem;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+
+    .generator-card > p {
+        color: #666;
+        margin-bottom: 2rem;
+    }
+
+/* ========== BULK ACTIONS ========== */
+.bulk-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.btn-bulk {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-download-all {
+    background: #28a745;
+    color: white;
+}
+
+    .btn-download-all:hover {
+        background: #218838;
+        transform: translateY(-2px);
+    }
+
+.btn-print-all {
+    background: #17a2b8;
+    color: white;
+}
+
+    .btn-print-all:hover {
+        background: #138496;
+        transform: translateY(-2px);
+    }
+
+/* ========== CATEGORY SECTIONS ========== */
+.category-section {
+    margin-bottom: 3rem;
+}
+
+.category-header {
+    font-size: 1.4rem;
+    color: #333;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid #ff8c42;
+    font-weight: 600;
+}
+
+/* ========== PRODUCTS GRID ========== */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.product-card-qr {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+    .product-card-qr:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transform: translateY(-3px);
+    }
+
+.product-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+}
+
+.badge-compra {
+    background: #28a745;
+}
+
+.badge-reparacion {
+    background: #17a2b8;
+}
+
+.product-image-qr {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+    .product-image-qr img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+
+.product-name-qr {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.product-code-qr {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.3rem;
+}
+
+.product-price-qr {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #ff8c42;
+    margin-bottom: 1rem;
+}
+
+.qr-container {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-generate-qr {
+    width: 100%;
+    padding: 10px;
+    background: #5a5aff;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .btn-generate-qr:hover {
+        background: #4a4aee;
+        transform: translateY(-2px);
+    }
+
+    .btn-generate-qr:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+    }
+
+.qr-generated {
+    border-color: #28a745;
+    background: #f0fff4;
+}
+
+/* ========== FOOTER ========== */
+footer {
+    background: #f5f5f5;
+    padding: 2rem;
+    margin-top: auto;
+    border-top: 1px solid #ddd;
+}
+
+.footer-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 180px 1fr 1fr 1fr;
+    gap: 2rem;
+}
+
+.footer-column h3 {
+    margin-bottom: 1rem;
+    color: #222;
+    font-size: 1.1rem;
+}
+
+.footer-column ul {
+    list-style: none;
+}
+
+    .footer-column ul li {
+        margin-bottom: 0.5rem;
+    }
+
+        .footer-column ul li a {
+            color: #555;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+            .footer-column ul li a:hover {
+                color: #ff8c42;
+            }
+
+.social-icons {
+    display: flex;
+    gap: 1rem;
+}
+
+.social-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+    .social-icon:hover {
+        transform: scale(1.1);
+    }
+
+    .social-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.hidden {
+    display: none !important;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+    }
+
+    .page-title {
+        font-size: 1rem;
+    }
+
+    .main-container {
+        padding: 1rem;
+    }
+
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+
+    .bulk-actions {
+        flex-direction: column;
+    }
+
+    .footer-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ========== QR DISPLAY PANEL ========== */
+.qr-display-panel {
+    margin-top: 3rem;
+    background: #fff;
+    border: 3px solid #28a745;
+    border-radius: 12px;
+    padding: 2rem;
+    animation: slideDown 0.5s ease;
+}
+
+.qr-display-panel.hidden {
+    display: none;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.qr-panel-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.qr-panel-header h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin: 0;
+}
+
+.qr-badge-success {
+    background: #28a745;
+    color: white;
+    padding: 6px 16px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.qr-panel-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.qr-code-display {
+    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 12px;
+    border: 2px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qr-product-info {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1.5rem;
+    align-items: center;
+}
+
+.qr-info-label {
+    font-weight: 600;
+    color: #666;
+    font-size: 0.95rem;
+}
+
+.qr-info-value {
+    font-size: 1.1rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.qr-panel-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-qr-action {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-download-qr-panel {
+    background: #28a745;
+    color: white;
+}
+
+.btn-download-qr-panel:hover {
+    background: #218838;
+    transform: translateY(-2px);
+}
+
+.btn-print-qr-panel {
+    background: #17a2b8;
+    color: white;
+}
+
+.btn-print-qr-panel:hover {
+    background: #138496;
+    transform: translateY(-2px);
+}
+
+.btn-close-qr-panel {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-close-qr-panel:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+}
+
+/* Ajuste responsive para el panel QR */
+@media (max-width: 768px) {
+    .qr-panel-content {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .qr-panel-actions {
+        flex-direction: column;
+    }
+
+    .btn-qr-action {
+        width: 100%;
+    }
+}

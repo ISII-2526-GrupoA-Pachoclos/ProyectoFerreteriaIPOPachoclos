@@ -1,0 +1,179 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Escáner QR - Suministros Duviso</title>
+    <link rel="stylesheet" href="../css/escanerQR.css?v=2">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="header-left">
+                <div class="logo" role="button" tabindex="0" id="logo-link">
+                    <div class="logo-circle">
+                        <img src="../images/logo-duviso.jpg" alt="Logo Duviso">
+                    </div>
+                </div>
+                <h1 class="page-title">Escáner de Productos</h1>
+            </div>
+
+            <div class="header-actions">
+                <button class="btn-header btn-help">⚙️ Ayuda</button>
+                <button class="btn-header btn-language">🌐 Idioma</button>
+                <button class="btn-header btn-account">👤 Mi cuenta</button>
+                <div class="cart-icon" role="button" tabindex="0">🛒</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- COLUMNA IZQUIERDA: Escáner -->
+        <div class="scanner-column">
+            <!-- Panel de inicio del escáner -->
+            <div id="scanner-start" class="scanner-start">
+                <div class="scanner-icon">📷</div>
+                <h2>Escanear Código QR</h2>
+                <p>Acerca tu cámara al código QR del producto para obtener información instantánea</p>
+
+                <button id="btn-start-scanner" class="btn-start-scanner">
+                    <span>🔍</span> Iniciar Escáner
+                </button>
+
+                <div class="manual-entry-section">
+                    <p>¿No tienes un código QR?</p>
+                    <button id="btn-manual-entry" class="btn-manual-entry">Ingresar código manualmente</button>
+                </div>
+            </div>
+
+            <!-- Panel del escáner activo -->
+            <div id="scanner-active" class="scanner-active hidden">
+                <div class="scanner-controls">
+                    <button id="btn-close-scanner" class="btn-close-scanner">✕ Cerrar</button>
+                    <p class="scanner-instruction">Centra el código QR en el marco</p>
+                </div>
+                <div id="reader" class="qr-reader"></div>
+                <div class="scanner-buttons">
+                    <button id="btn-switch-camera" class="btn-scanner-action">
+                        🔄 Cambiar Cámara
+                    </button>
+                </div>
+            </div>
+
+            <!-- Panel de entrada manual -->
+            <div id="manual-input" class="manual-input hidden">
+                <h2>Ingresa el código del producto</h2>
+                <div class="input-group">
+                    <input type="text" id="manual-code-input" placeholder="Ej: 00001" maxlength="10">
+                </div>
+                <div class="manual-actions">
+                    <button id="btn-submit-manual" class="btn-submit-manual">
+                        ✓ Buscar Producto
+                    </button>
+                    <button id="btn-cancel-manual" class="btn-cancel-manual">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Panel de resultado del escaneo -->
+            <div id="scan-result" class="scan-result hidden">
+                <div class="result-header">
+                    <h3>✓ Código Escaneado</h3>
+                </div>
+                <div class="result-product-card">
+                    <div id="result-product-image" class="result-product-image">
+                        <img src="" alt="Producto">
+                    </div>
+                    <div class="result-product-info">
+                        <div id="result-product-name" class="result-product-name"></div>
+                        <div class="result-product-details">
+                            <span class="result-label">Código:</span>
+                            <span id="result-product-code" class="result-value"></span>
+                        </div>
+                        <div id="result-product-price" class="result-product-price"></div>
+                    </div>
+                </div>
+                <div class="result-actions">
+                    <button id="btn-view-product" class="btn-result-action btn-view">
+                        <span>👁️</span> Ver Producto
+                    </button>
+                    <button id="btn-add-to-cart" class="btn-result-action btn-add-cart">
+                        <span>🛒</span> Añadir al Carrito
+                    </button>
+                    <button id="btn-scan-again" class="btn-result-action btn-scan-again">
+                        <span>🔍</span> Escanear Otro
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: Historial de escaneos -->
+        <div class="history-column">
+            <div class="history-header">
+                <h3>Últimos productos escaneados</h3>
+            </div>
+            <div id="recent-scans-list" class="recent-scans-list"></div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column social-column">
+                <div class="social-icons">
+                    <a href="https://x.com/sanchezcastejon" target="_blank" class="social-icon">
+                        <img src="../images/x.png" alt="Twitter/X">
+                    </a>
+                    <a href="https://instagram.com/javierjimenezh" target="_blank" class="social-icon">
+                        <img src="../images/instagram.png" alt="Instagram">
+                    </a>
+                    <a href="https://www.youtube.com/channel/UCaY_-ksFSQtTGk0y1HA_3YQ" target="_blank" class="social-icon">
+                        <img src="../images/youtube.png" alt="YouTube">
+                    </a>
+                    <a href="https://www.linkedin.com/in/francisco-parre%C3%B1o-torres-21a0651a/" target="_blank" class="social-icon">
+                        <img src="../images/linkedin.png" alt="LinkedIn">
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-column">
+                <h3>Sobre Ferretería Duviso</h3>
+                <ul>
+                    <li><a href="#">Quienes somos</a></li>
+                    <li><a href="#">Condiciones generales</a></li>
+                    <li><a href="#">Política de privacidad</a></li>
+                    <li><a href="#">Aviso legal</a></li>
+                    <li><a href="#">Política de cookies</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Compra con Confianza</h3>
+                <ul>
+                    <li><a href="#">¿Cómo hacer un pedido?</a></li>
+                    <li><a href="#">Envíos y entregas</a></li>
+                    <li><a href="#">Formas de pago</a></li>
+                    <li><a href="#">Garantía compra segura</a></li>
+                    <li><a href="#">Devoluciones y reembolso</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Atención al cliente</h3>
+                <ul>
+                    <li><a href="#">Seguimiento del pedido</a></li>
+                    <li><a href="#">Contáctanos</a></li>
+                    <li><a href="#">Ayuda</a></li>
+                    <li><a href="#">Proceso de devolución</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script src="../js/escanerQR.js" defer></script>
+</body>
+</html>
