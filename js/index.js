@@ -442,8 +442,72 @@
         const lowerCommand = command.toLowerCase().trim();
         console.log('Comando recibido:', lowerCommand);
 
-        // Comandos para navegar a diferentes interfaces
-        if (lowerCommand.includes('comprar') || lowerCommand.includes('catálogo') || lowerCommand.includes('catalogo') || lowerCommand.includes('compra')) {
+        // Comandos para navegar directamente a productos de COMPRA
+        if (lowerCommand.includes('comprar destornillador') || lowerCommand.includes('comprar destornilladores')) {
+            speak('Abriendo información de compra de destornilladores');
+            setTimeout(() => {
+                window.location.href = 'html/infoCompras.html?code=00001';
+            }, 1000);
+        } else if (lowerCommand.includes('comprar martillo')) {
+            speak('Abriendo información de compra de martillo');
+            setTimeout(() => {
+                window.location.href = 'html/infoCompras.html?code=00002';
+            }, 1000);
+        } else if (lowerCommand.includes('comprar alicate') || lowerCommand.includes('comprar alicates')) {
+            speak('Abriendo información de compra de alicates');
+            setTimeout(() => {
+                window.location.href = 'html/infoCompras.html?code=00003';
+            }, 1000);
+        } else if (lowerCommand.includes('comprar llave inglesa') || lowerCommand.includes('comprar inglesa')) {
+            speak('Abriendo información de compra de llave inglesa');
+            setTimeout(() => {
+                window.location.href = 'html/infoCompras.html?code=00004';
+            }, 1000);
+        } else if (lowerCommand.includes('comprar cutter')) {
+            speak('Abriendo información de compra de cutter');
+            setTimeout(() => {
+                window.location.href = 'html/infoCompras.html?code=00005';
+            }, 1000);
+        } else if (lowerCommand.includes('comprar llaves allen') || lowerCommand.includes('comprar allen')) {
+            speak('Abriendo información de compra de llaves Allen');
+            setTimeout(() => {
+                window.location.href = 'html/infoCompras.html?code=00006';
+            }, 1000);
+        }
+        // Comandos para navegar directamente a productos de REPARACIÓN
+        else if (lowerCommand.includes('reparar destornillador') || lowerCommand.includes('reparar destornilladores')) {
+            speak('Abriendo información de reparación de destornilladores');
+            setTimeout(() => {
+                window.location.href = 'html/infoReparacion.html?code=00001';
+            }, 1000);
+        } else if (lowerCommand.includes('reparar martillo')) {
+            speak('Abriendo información de reparación de martillo');
+            setTimeout(() => {
+                window.location.href = 'html/infoReparacion.html?code=00002';
+            }, 1000);
+        } else if (lowerCommand.includes('reparar alicate') || lowerCommand.includes('reparar alicates')) {
+            speak('Abriendo información de reparación de alicates');
+            setTimeout(() => {
+                window.location.href = 'html/infoReparacion.html?code=00003';
+            }, 1000);
+        } else if (lowerCommand.includes('reparar llave inglesa') || lowerCommand.includes('reparar inglesa')) {
+            speak('Abriendo información de reparación de llave inglesa');
+            setTimeout(() => {
+                window.location.href = 'html/infoReparacion.html?code=00004';
+            }, 1000);
+        } else if (lowerCommand.includes('reparar cutter')) {
+            speak('Abriendo información de reparación de cutter');
+            setTimeout(() => {
+                window.location.href = 'html/infoReparacion.html?code=00005';
+            }, 1000);
+        } else if (lowerCommand.includes('reparar llaves allen') || lowerCommand.includes('reparar allen')) {
+            speak('Abriendo información de reparación de llaves Allen');
+            setTimeout(() => {
+                window.location.href = 'html/infoReparacion.html?code=00006';
+            }, 1000);
+        }
+        // Comandos para navegar a diferentes interfaces (sin producto específico)
+        else if (lowerCommand.includes('comprar') || lowerCommand.includes('catálogo') || lowerCommand.includes('catalogo') || lowerCommand.includes('compra')) {
             speak('Navegando a comprar herramientas');
             setTimeout(() => {
                 window.location.href = 'html/catalogoCompras.html';
@@ -489,7 +553,7 @@
                 searchInput?.focus();
             }, 500);
         } else {
-            speak('Comando no reconocido. Intenta con: comprar, reparar, ofertas, carrito, mi cuenta, ayuda o idioma');
+            speak('Comando no reconocido. Intenta con: comprar martillo, reparar destornillidores, o navegar a catálogo');
         }
     }
 
