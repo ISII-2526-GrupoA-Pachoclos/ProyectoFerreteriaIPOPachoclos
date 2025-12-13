@@ -732,13 +732,243 @@
         };
     }
 
-    // Detectar tecla V para activar reconocimiento de voz
+    // ========================================
+    // MODO CEGUERA (BLINDNESS MODE)
+    // ========================================
+
+    let blindnessMode = false;
+    let currentHoveredButton = null;
+    let blindnessIndicator = null;
+
+    // Crear indicador visual del modo ceguera
+    function createBlindnessIndicator() {
+        if (blindnessIndicator) return;
+
+        blindnessIndicator = document.createElement('div');
+        blindnessIndicator.id = 'blindness-indicator';
+        Object.assign(blindnessIndicator.style, {
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            padding: '12px 20px',
+            background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%)',
+            color: '#fff',
+            borderRadius: '25px',
+            fontSize: '14px',
+            fontWeight: '700',
+            boxShadow: '0 4px 15px rgba(255, 107, 107, 0.4)',
+            zIndex: 10001,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+        });
+        blindnessIndicator.innerHTML = '👁️ Modo Ceguera Activo';
+        document.body.appendChild(blindnessIndicator);
+    }
+
+    function removeBlindnessIndicator() {
+        if (blindnessIndicator) {
+            blindnessIndicator.remove();
+            blindnessIndicator = null;
+        }
+    }
+
+    // Mapa de descripciones de botones
+    const buttonDescriptions = {
+        'btn-comprar': 'Comprar Herramientas',
+        'btn-reparar': 'Reparar Herramientas',
+        'btn-ofertas': 'Crear Ofertas',
+        'btn-generar-qr': 'Generar código QR',
+        'btn-escanear-qr': 'Escanear código QR',
+        'btn-account': 'Mi Cuenta',
+        'btn-help': 'Ayuda',
+        'btn-ia': 'Chatbot de Inteligencia Artificial',
+        'btn-header': 'Idioma',
+        'cart-icon': 'Carrito de Compras',
+        'logo': 'Página Principal',
+        'product-card': 'Producto'
+    };
+
+    // Función para obtener la descripción del botón
+    function getButtonDescription(element) {
+        // Verificar por ID
+        if (element.id && buttonDescriptions[element.id]) {
+            return buttonDescriptions[element.id];
+        }
+
+        // Verificar por clases
+        for (const [key, value] of Object.entries(buttonDescriptions)) {
+            if (element.classList.contains(key)) {
+                return value;
+            }
+        }
+
+        // Para tarjetas de productos, obtener el nombre del producto
+        if (element.classList.contains('product-card')) {
+            const productName = element.querySelector('.product-name')?.textContent;
+            return productName ? `Producto: ${productName}` : 'Producto';
+        }
+
+        // Para botones genéricos
+        if (element.tagName === 'BUTTON' || element.classList.contains('action-btn')) {
+            return element.textContent.trim() || 'Botón';
+        }
+
+        return null;
+    }
+
+    // Función para anunciar el botón y activar voz automáticamente
+    function announceButton(element) {
+        const description = getButtonDescription(element);
+        if (!description) return;
+
+        // Guardar el botón actual
+        currentHoveredButton = element;
+
+        // Hablar la descripción
+        speak(`Estás sobre el botón de ${description}. ¿Quieres acceder a esta interfaz? Di sí o no.`);
+
+        // ACTIVAR AUTOMÁTICAMENTE EL RECONOCIMIENTO DE VOZ
+        // Esperar un poco para que termine de hablar
+        setTimeout(() => {
+            if (currentHoveredButton === element && blindnessMode && !isListening) {
+                startVoiceRecognitionForBlindness();
+            }
+        }, 3500); // Tiempo suficiente para que termine el mensaje de voz
+    }
+
+    // Nueva función específica para iniciar reconocimiento en modo ceguera
+    function startVoiceRecognitionForBlindness() {
+        if (!recognition) {
+            console.error('Reconocimiento de voz no disponible');
+            return;
+        }
+
+        if (isListening) {
+            return; // Ya está escuchando
+        }
+
+        isListening = true;
+        voiceIndicator.style.display = 'flex';
+        document.getElementById('voice-text').style.display = 'block';
+        document.getElementById('voice-text').textContent = '🎤 Escuchando tu respuesta...';
+
+        if (recognitionTimeout) {
+            clearTimeout(recognitionTimeout);
+        }
+
+        try {
+            recognition.start();
+            console.log('Reconocimiento de voz iniciado automáticamente (modo ceguera)');
+
+            // Timeout más corto para respuesta rápida
+            recognitionTimeout = setTimeout(() => {
+                if (isListening) {
+                    console.log('Timeout en modo ceguera');
+                    stopVoiceRecognition();
+                    speak('No se detectó respuesta');
+                    currentHoveredButton = null;
+                }
+            }, 8000); // 8 segundos para responder
+
+        } catch (error) {
+            console.error('Error al iniciar reconocimiento en modo ceguera:', error);
+            stopVoiceRecognition();
+        }
+    }
+
+    // Función para manejar hover sobre botones
+    function handleButtonHover(event) {
+        if (!blindnessMode) return;
+
+        const target = event.target;
+
+        // Buscar el elemento clickeable más cercano
+        const button = target.closest('button, .action-btn, .product-card, .cart-icon, .logo, .btn-header, .btn-account, .btn-help, .btn-ia');
+
+        if (button && button !== currentHoveredButton) {
+            // Si hay reconocimiento activo, detenerlo
+            if (isListening) {
+                stopVoiceRecognition();
+            }
+            announceButton(button);
+        }
+    }
+
+    // Función para procesar respuesta de voz en modo ceguera
+    function processBlindnessModeCommand(command) {
+        const lowerCommand = command.toLowerCase().trim();
+
+        if (lowerCommand.includes('sí') || lowerCommand.includes('si') || lowerCommand.includes('afirmativo') || lowerCommand.includes('vale') || lowerCommand.includes('ok')) {
+            if (currentHoveredButton) {
+                speak('Accediendo');
+                setTimeout(() => {
+                    currentHoveredButton.click();
+                    currentHoveredButton = null;
+                }, 800);
+            } else {
+                speak('No hay ningún botón seleccionado');
+            }
+        } else if (lowerCommand.includes('no') || lowerCommand.includes('negativo') || lowerCommand.includes('cancelar')) {
+            speak('Cancelado');
+            currentHoveredButton = null;
+        } else {
+            speak('No he entendido. Di sí para acceder o no para cancelar.');
+        }
+    }
+
+    // Modificar el procesador de comandos de voz existente
+    const originalProcessVoiceCommand = processVoiceCommand;
+    processVoiceCommand = function (command) {
+        if (blindnessMode && currentHoveredButton) {
+            processBlindnessModeCommand(command);
+        } else {
+            originalProcessVoiceCommand(command);
+        }
+    };
+
+    // Activar/desactivar modo ceguera
+    function toggleBlindnessMode() {
+        blindnessMode = !blindnessMode;
+
+        if (blindnessMode) {
+            createBlindnessIndicator();
+            speak('Modo ceguera activado. Pasa el cursor sobre los botones para escuchar su descripción y responde automáticamente con sí o no.');
+
+            // Agregar event listeners a todos los elementos interactivos
+            document.addEventListener('mouseover', handleButtonHover);
+        } else {
+            removeBlindnessIndicator();
+            speak('Modo ceguera desactivado');
+            currentHoveredButton = null;
+
+            // Detener reconocimiento si está activo
+            if (isListening) {
+                stopVoiceRecognition();
+            }
+
+            // Remover event listeners
+            document.removeEventListener('mouseover', handleButtonHover);
+        }
+    }
+
+    // Detectar tecla V para activar reconocimiento de voz y C para modo ceguera
     document.addEventListener('keydown', (e) => {
+        // Tecla V para voz (solo cuando NO está en modo ceguera)
         if (e.key === 'v' || e.key === 'V') {
+            const activeElement = document.activeElement;
+            if (activeElement.tagName !== 'INPUT' && activeElement.tagName !== 'TEXTAREA' && !blindnessMode) {
+                e.preventDefault();
+                startVoiceRecognition();
+            }
+        }
+
+        // Tecla C para modo ceguera
+        if (e.key === 'c' || e.key === 'C') {
             const activeElement = document.activeElement;
             if (activeElement.tagName !== 'INPUT' && activeElement.tagName !== 'TEXTAREA') {
                 e.preventDefault();
-                startVoiceRecognition();
+                toggleBlindnessMode();
             }
         }
 
@@ -749,6 +979,11 @@
             closeLanguage();
             closeIA();
             closeAdminErrorPopup();
+
+            // Si está en modo ceguera, limpiar botón actual
+            if (blindnessMode) {
+                currentHoveredButton = null;
+            }
         }
     });
 

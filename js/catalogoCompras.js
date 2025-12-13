@@ -585,7 +585,92 @@
         SpeechSynthesis.speak(utterance);
     }
 
-    // Función para procesar comandos de voz en catálogo de compras
+    // Función para convertir números en palabras a números
+    function wordsToNumber(text) {
+        const numberWords = {
+            'cero': 0, 'uno': 1, 'dos': 2, 'tres': 3, 'cuatro': 4,
+            'cinco': 5, 'seis': 6, 'siete': 7, 'ocho': 8, 'nueve': 9,
+            'diez': 10, 'once': 11, 'doce': 12, 'trece': 13, 'catorce': 14,
+            'quince': 15, 'dieciséis': 16, 'dieciseis': 16, 'diecisiete': 17,
+            'dieciocho': 18, 'diecinueve': 19,
+            'veinte': 20, 'veintiuno': 21, 'veintidós': 22, 'veintidos': 22,
+            'veintitrés': 23, 'veintitres': 23, 'veinticuatro': 24,
+            'veinticinco': 25, 'veintiséis': 26, 'veintiseis': 26,
+            'veintisiete': 27, 'veintiocho': 28, 'veintinueve': 29,
+            'treinta': 30, 'cuarenta': 40, 'cincuenta': 50,
+            'sesenta': 60, 'setenta': 70, 'ochenta': 80, 'noventa': 90,
+            'cien': 100, 'ciento': 100, 'doscientos': 200, 'trescientos': 300,
+            'cuatrocientos': 400, 'quinientos': 500, 'seiscientos': 600,
+            'setecientos': 700, 'ochocientos': 800, 'novecientos': 900
+        };
+
+        const lowerText = text.toLowerCase().trim();
+
+        const directNumbers = lowerText.match(/\d+/g);
+        if (directNumbers && directNumbers.length > 0) {
+            return directNumbers.map(n => parseInt(n));
+        }
+
+        const foundNumbers = [];
+        const words = lowerText.split(/\s+/);
+
+        let i = 0;
+        while (i < words.length) {
+            let currentNumber = 0;
+            let hasNumber = false;
+
+            while (i < words.length) {
+                const word = words[i];
+
+                if (numberWords.hasOwnProperty(word)) {
+                    const value = numberWords[word];
+
+                    if (value >= 100) {
+                        currentNumber += value;
+                    } else if (value >= 10 && value < 100) {
+                        currentNumber += value;
+                    } else {
+                        currentNumber += value;
+                    }
+                    hasNumber = true;
+                    i++;
+
+                    if (i < words.length && words[i] === 'y') {
+                        i++;
+                        continue;
+                    }
+                } else {
+                    break;
+                }
+            }
+
+            if (hasNumber) {
+                foundNumbers.push(currentNumber);
+            } else {
+                i++;
+            }
+        }
+
+        return foundNumbers.length > 0 ? foundNumbers : null;
+    }
+
+    // Función auxiliar para extraer números
+    function extractNumbers(command) {
+        const lowerCommand = command.toLowerCase().trim();
+
+        const digitNumbers = lowerCommand.match(/\d+/g);
+        if (digitNumbers && digitNumbers.length > 0) {
+            return digitNumbers.map(n => parseInt(n));
+        }
+
+        const wordNumbers = wordsToNumber(lowerCommand);
+        if (wordNumbers && wordNumbers.length > 0) {
+            return wordNumbers;
+        }
+
+        return null;
+    }
+
     // Función para procesar comandos de voz en catálogo de compras
     function processVoiceCommand(command) {
         const lowerCommand = command.toLowerCase().trim();
@@ -654,9 +739,8 @@
             btnControls[3]?.classList.add('active');
             updateProductsView(true);
         }
-        // COMANDOS PARA FILTRO DE PRECIO POR VOZ (CON CONVERSIÓN DE PALABRAS A NÚMEROS)
+        // COMANDOS PARA FILTRO DE PRECIO POR VOZ
         else if (lowerCommand.includes('filtrar precio') || lowerCommand.includes('filtro de precio') || lowerCommand.includes('precio entre')) {
-            // Extraer números del comando (dígitos o palabras)
             const numbers = extractNumbers(lowerCommand);
             if (numbers && numbers.length >= 2) {
                 const min = numbers[0];
@@ -688,7 +772,7 @@
                 speak(`Filtrando productos hasta ${max} euros`);
                 updateProductsView(true);
             } else {
-                speak('Por favor, especifica un precio máximo. Por ejemplo: precio máximo cincuenta');
+                speak('Por favor, especifica un precio máximo');
             }
         } else if (lowerCommand.includes('precio mínimo') || lowerCommand.includes('precio minimo') || lowerCommand.includes('desde')) {
             const numbers = extractNumbers(lowerCommand);
@@ -699,7 +783,7 @@
                 speak(`Filtrando productos desde ${min} euros`);
                 updateProductsView(true);
             } else {
-                speak('Por favor, especifica un precio mínimo. Por ejemplo: precio mínimo diez');
+                speak('Por favor, especifica un precio mínimo');
             }
         } else if (lowerCommand.includes('quitar filtro') || lowerCommand.includes('limpiar filtro') || lowerCommand.includes('borrar filtro') || lowerCommand.includes('resetear filtro')) {
             if (priceMinInput) priceMinInput.value = '';
@@ -911,13 +995,241 @@
         };
     }
 
-    // Detectar tecla V para activar reconocimiento de voz
+    // ========================================
+    // MODO CEGUERA (BLINDNESS MODE)
+    // ========================================
+
+    let blindnessMode = false;
+    let currentHoveredButton = null;
+    let blindnessIndicator = null;
+
+    // Crear indicador visual del modo ceguera
+    function createBlindnessIndicator() {
+        if (blindnessIndicator) return;
+
+        blindnessIndicator = document.createElement('div');
+        blindnessIndicator.id = 'blindness-indicator';
+        Object.assign(blindnessIndicator.style, {
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            padding: '12px 20px',
+            background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%)',
+            color: '#fff',
+            borderRadius: '25px',
+            fontSize: '14px',
+            fontWeight: '700',
+            boxShadow: '0 4px 15px rgba(255, 107, 107, 0.4)',
+            zIndex: 10002,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+        });
+        blindnessIndicator.innerHTML = '👁️ Modo Ceguera Activo';
+        document.body.appendChild(blindnessIndicator);
+    }
+
+    function removeBlindnessIndicator() {
+        if (blindnessIndicator) {
+            blindnessIndicator.remove();
+            blindnessIndicator = null;
+        }
+    }
+
+    // Mapa de descripciones de botones para catálogo
+    const buttonDescriptions = {
+        'logo-link': 'Página Principal',
+        'btn-account': 'Mi Cuenta',
+        'btn-help': 'Ayuda',
+        'cart-icon': 'Carrito de Compras',
+        'btn-control': 'Ordenar productos',
+        'product-card': 'Producto',
+        'filter-pill': 'Filtro'
+    };
+
+    // Función para obtener la descripción del botón
+    function getButtonDescription(element) {
+        // Verificar por ID
+        if (element.id && buttonDescriptions[element.id]) {
+            return buttonDescriptions[element.id];
+        }
+
+        // Verificar por clases
+        for (const [key, value] of Object.entries(buttonDescriptions)) {
+            if (element.classList.contains(key)) {
+                // Para tarjetas de productos
+                if (key === 'product-card') {
+                    const productName = element.querySelector('.product-name')?.textContent;
+                    const price = element.querySelector('.price-current')?.textContent;
+                    return productName ? `Producto: ${productName}. Precio: ${price}` : 'Producto';
+                }
+                // Para botones de control
+                if (key === 'btn-control') {
+                    const buttonText = element.textContent.trim();
+                    return `Ordenar por: ${buttonText}`;
+                }
+                return value;
+            }
+        }
+
+        // Para botones genéricos
+        if (element.tagName === 'BUTTON' || element.classList.contains('btn-action')) {
+            return element.textContent.trim() || 'Botón';
+        }
+
+        return null;
+    }
+
+    // Función para anunciar el botón y activar voz automáticamente
+    function announceButton(element) {
+        const description = getButtonDescription(element);
+        if (!description) return;
+
+        // Guardar el botón actual
+        currentHoveredButton = element;
+
+        // Hablar la descripción
+        speak(`Estás sobre ${description}. ¿Quieres acceder? Di sí o no.`);
+
+        // ACTIVAR AUTOMÁTICAMENTE EL RECONOCIMIENTO DE VOZ
+        setTimeout(() => {
+            if (currentHoveredButton === element && blindnessMode && !isListening) {
+                startVoiceRecognitionForBlindness();
+            }
+        }, 3500);
+    }
+
+    // Nueva función específica para iniciar reconocimiento en modo ceguera
+    function startVoiceRecognitionForBlindness() {
+        if (!recognition) {
+            console.error('Reconocimiento de voz no disponible');
+            return;
+        }
+
+        if (isListening) {
+            return;
+        }
+
+        isListening = true;
+        voiceIndicator.style.display = 'flex';
+        document.getElementById('voice-text').style.display = 'block';
+        document.getElementById('voice-text').textContent = '🎤 Escuchando tu respuesta...';
+
+        if (recognitionTimeout) {
+            clearTimeout(recognitionTimeout);
+        }
+
+        try {
+            recognition.start();
+            console.log('Reconocimiento de voz iniciado automáticamente (modo ceguera - catálogo)');
+
+            recognitionTimeout = setTimeout(() => {
+                if (isListening) {
+                    console.log('Timeout en modo ceguera (catálogo)');
+                    stopVoiceRecognition();
+                    speak('No se detectó respuesta');
+                    currentHoveredButton = null;
+                }
+            }, 8000);
+
+        } catch (error) {
+            console.error('Error al iniciar reconocimiento en modo ceguera (catálogo):', error);
+            stopVoiceRecognition();
+        }
+    }
+
+    // Función para manejar hover sobre botones
+    function handleButtonHover(event) {
+        if (!blindnessMode) return;
+
+        const target = event.target;
+
+        // Buscar el elemento clickeable más cercano
+        const button = target.closest('button, .btn-action, .product-card, .cart-icon, #logo-link, .btn-header, .btn-account, .btn-help, .btn-control, .filter-pill');
+
+        if (button && button !== currentHoveredButton) {
+            // Si hay reconocimiento activo, detenerlo
+            if (isListening) {
+                stopVoiceRecognition();
+            }
+            announceButton(button);
+        }
+    }
+
+    // Función para procesar respuesta de voz en modo ceguera
+    function processBlindnessModeCommand(command) {
+        const lowerCommand = command.toLowerCase().trim();
+
+        if (lowerCommand.includes('sí') || lowerCommand.includes('si') || lowerCommand.includes('afirmativo') || lowerCommand.includes('vale') || lowerCommand.includes('ok')) {
+            if (currentHoveredButton) {
+                speak('Accediendo');
+                setTimeout(() => {
+                    currentHoveredButton.click();
+                    currentHoveredButton = null;
+                }, 800);
+            } else {
+                speak('No hay ningún botón seleccionado');
+            }
+        } else if (lowerCommand.includes('no') || lowerCommand.includes('negativo') || lowerCommand.includes('cancelar')) {
+            speak('Cancelado');
+            currentHoveredButton = null;
+        } else {
+            speak('No he entendido. Di sí para acceder o no para cancelar.');
+        }
+    }
+
+    // Modificar el procesador de comandos de voz existente
+    const originalProcessVoiceCommand = processVoiceCommand;
+    processVoiceCommand = function (command) {
+        if (blindnessMode && currentHoveredButton) {
+            processBlindnessModeCommand(command);
+        } else {
+            originalProcessVoiceCommand(command);
+        }
+    };
+
+    // Activar/desactivar modo ceguera
+    function toggleBlindnessMode() {
+        blindnessMode = !blindnessMode;
+
+        if (blindnessMode) {
+            createBlindnessIndicator();
+            speak('Modo ceguera activado en catálogo de compras. Pasa el cursor sobre los elementos para escuchar su descripción y responde automáticamente con sí o no.');
+
+            // Agregar event listeners
+            document.addEventListener('mouseover', handleButtonHover);
+        } else {
+            removeBlindnessIndicator();
+            speak('Modo ceguera desactivado');
+            currentHoveredButton = null;
+
+            // Detener reconocimiento si está activo
+            if (isListening) {
+                stopVoiceRecognition();
+            }
+
+            // Remover event listeners
+            document.removeEventListener('mouseover', handleButtonHover);
+        }
+    }
+
+    // Detectar tecla V para activar reconocimiento de voz y C para modo ceguera
     document.addEventListener('keydown', (e) => {
+        // Tecla V para voz (solo cuando NO está en modo ceguera)
         if (e.key === 'v' || e.key === 'V') {
+            const activeElement = document.activeElement;
+            if (activeElement.tagName !== 'INPUT' && activeElement.tagName !== 'TEXTAREA' && !blindnessMode) {
+                e.preventDefault();
+                startVoiceRecognition();
+            }
+        }
+
+        // Tecla C para modo ceguera
+        if (e.key === 'c' || e.key === 'C') {
             const activeElement = document.activeElement;
             if (activeElement.tagName !== 'INPUT' && activeElement.tagName !== 'TEXTAREA') {
                 e.preventDefault();
-                startVoiceRecognition();
+                toggleBlindnessMode();
             }
         }
 
@@ -927,112 +1239,18 @@
             closeAccount();
             closeLanguage();
             closeFilterAppliedPopup();
+
+            // Si está en modo ceguera, limpiar botón actual
+            if (blindnessMode) {
+                currentHoveredButton = null;
+            }
         }
     });
 
     // ========================================
-    // FIN FUNCIONALIDAD DE VOZ
+    // FIN MODO CEGUERA
     // ========================================
 
     // Renderizado inicial (sin popup)
     updateProductsView(false);
-        // Función para convertir números en palabras a números
-        function wordsToNumber(text) {
-            const numberWords = {
-                // Números básicos
-                'cero': 0, 'uno': 1, 'dos': 2, 'tres': 3, 'cuatro': 4,
-                'cinco': 5, 'seis': 6, 'siete': 7, 'ocho': 8, 'nueve': 9,
-                'diez': 10, 'once': 11, 'doce': 12, 'trece': 13, 'catorce': 14,
-                'quince': 15, 'dieciséis': 16, 'dieciseis': 16, 'diecisiete': 17, 
-                'dieciocho': 18, 'diecinueve': 19,
-                // Decenas
-                'veinte': 20, 'veintiuno': 21, 'veintidós': 22, 'veintidos': 22,
-                'veintitrés': 23, 'veintitres': 23, 'veinticuatro': 24,
-                'veinticinco': 25, 'veintiséis': 26, 'veintiseis': 26,
-                'veintisiete': 27, 'veintiocho': 28, 'veintinueve': 29,
-                'treinta': 30, 'cuarenta': 40, 'cincuenta': 50,
-                'sesenta': 60, 'setenta': 70, 'ochenta': 80, 'noventa': 90,
-                // Centenas
-                'cien': 100, 'ciento': 100, 'doscientos': 200, 'trescientos': 300,
-                'cuatrocientos': 400, 'quinientos': 500, 'seiscientos': 600,
-                'setecientos': 700, 'ochocientos': 800, 'novecientos': 900
-            };
-
-            // Convertir a minúsculas y limpiar
-            const lowerText = text.toLowerCase().trim();
-            
-            // Primero intentar buscar números directos (dígitos)
-            const directNumbers = lowerText.match(/\d+/g);
-            if (directNumbers && directNumbers.length > 0) {
-                return directNumbers.map(n => parseInt(n));
-            }
-
-            // Buscar palabras de números en el texto
-            const foundNumbers = [];
-            const words = lowerText.split(/\s+/);
-            
-            let i = 0;
-            while (i < words.length) {
-                let currentNumber = 0;
-                let hasNumber = false;
-
-                // Intentar construir un número compuesto
-                while (i < words.length) {
-                    const word = words[i];
-                    
-                    // Verificar si es una palabra de número simple
-                    if (numberWords.hasOwnProperty(word)) {
-                        const value = numberWords[word];
-                        
-                        if (value >= 100) {
-                            // Centenas
-                            currentNumber += value;
-                        } else if (value >= 10 && value < 100) {
-                            // Decenas
-                            currentNumber += value;
-                        } else {
-                            // Unidades
-                            currentNumber += value;
-                        }
-                        hasNumber = true;
-                        i++;
-                        
-                        // Verificar si la siguiente palabra es "y" para números compuestos
-                        if (i < words.length && words[i] === 'y') {
-                            i++; // saltar "y"
-                            continue;
-                        }
-                    } else {
-                        break;
-                    }
-                }
-
-                if (hasNumber) {
-                    foundNumbers.push(currentNumber);
-                } else {
-                    i++;
-                }
-            }
-
-            return foundNumbers.length > 0 ? foundNumbers : null;
-        }
-
-        // Función auxiliar para extraer números (dígitos o palabras) de un comando
-        function extractNumbers(command) {
-            const lowerCommand = command.toLowerCase().trim();
-            
-            // Primero intentar extraer números como dígitos
-            const digitNumbers = lowerCommand.match(/\d+/g);
-            if (digitNumbers && digitNumbers.length > 0) {
-                return digitNumbers.map(n => parseInt(n));
-            }
-
-            // Si no hay dígitos, intentar extraer números como palabras
-            const wordNumbers = wordsToNumber(lowerCommand);
-            if (wordNumbers && wordNumbers.length > 0) {
-                return wordNumbers;
-            }
-
-            return null;
-        }
 });
