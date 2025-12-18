@@ -2,8 +2,8 @@
 
 Proyecto de Interacción Persona-Ordenador (IPO) desarrollado por el **Grupo Pachoclos**
 
-![HTML5](https://img.shields.io/badge/HTML5-18. 4%25-E34F26?style=flat&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-23.3%25-1572B6? style=flat&logo=css3&logoColor=white)
+![HTML5](https://img.shields.io/badge/HTML5-18.4%25-E34F26?style=flat&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-23.3%25-1572B6?style=flat&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-58.3%25-F7DF1E?style=flat&logo=javascript&logoColor=black)
 
 Última actualización: **Diciembre 2025**
